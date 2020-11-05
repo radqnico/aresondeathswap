@@ -1,0 +1,4 @@
+name: DeathSwap
+version: ${project.version}
+main: me.dewoji.deathswap.DeathSwap
+api-version: 1.16
