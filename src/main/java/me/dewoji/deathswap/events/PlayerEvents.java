@@ -19,6 +19,7 @@ public class PlayerEvents implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
+        e.getPlayer().sendMessage(String.valueOf(countdownPlayers.size()));
         if (countdownPlayers.size() < 2) {
             if (!countdownPlayers.contains(e.getPlayer())) {
                 countdownPlayers.add(e.getPlayer());
@@ -26,7 +27,7 @@ public class PlayerEvents implements Listener {
             }
         } else if (countdownPlayers.size() == 2) {
             String message = ChatColor.translateAlternateColorCodes('&', instance.getConfig().getString("messaggio_pre_partita"));
-            (new TimerCountdown(countdownPlayers, 10, false, () -> {
+            (new TimerCountdown(countdownPlayers, 20, () -> {
                 for (Player p : countdownPlayers) {
                     p.sendMessage("Hai vinto");
                 }

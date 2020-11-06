@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class TimerCountdown {
 
@@ -12,6 +13,10 @@ public class TimerCountdown {
     private String message;
     private int countdownTime;
     private int currentValue;
+    private int teleportTime;
+
+    private int min;
+    private int max;
 
     private Player firstPlayer;
     private Player secondPlayer;
@@ -24,7 +29,7 @@ public class TimerCountdown {
     private Runnable stopTaskOk;
     private Runnable stopError;
 
-    public TimerCountdown(ArrayList<Player> countdownPlayers, int countdownTime, boolean theGameStarted, Runnable stopTaskOk, String message) {
+    public TimerCountdown(ArrayList<Player> countdownPlayers, int countdownTime, Runnable stopTaskOk, String message) {
         this.countdownPlayers = countdownPlayers;
         this.countdownTime = countdownTime;
         this.currentValue = 0;
@@ -32,7 +37,9 @@ public class TimerCountdown {
         this.isRunning = false;
         this.stopTaskOk = stopTaskOk;
         this.message = message;
-        this.theGameStarted = theGameStarted;
+        this.theGameStarted = false;
+        this.min = 60;
+        this.max = 300;
         this.stopError = () -> {
             for (Player p : this.countdownPlayers) {
                 p.sendMessage("Non ci sono abbastanza player per startare, annullamento");
@@ -43,6 +50,7 @@ public class TimerCountdown {
     public void start() {
         isRunning = true;
         currentValue = countdownTime;
+        teleportTime = (int) (Math.random() * (max - min + 1) + min);
         taskId = DeathSwap.getInstance().getServer().getScheduler().scheduleSyncRepeatingTask(DeathSwap.getInstance(), () -> {
                     if (!theGameStarted) {
                         if(countdownPlayers.size() == 2) {
@@ -54,7 +62,6 @@ public class TimerCountdown {
                                     p.sendMessage(message + " " + currentValue);
                                 }
                             }
-
                             countdownPlayers = DeathSwap.getCountdownPlayers();
                             currentValue--;
                         } else {
@@ -62,11 +69,12 @@ public class TimerCountdown {
                             return;
                         }
                     }
-                    currentValue = countdownTime;
+                    currentValue = teleportTime;
                     if (theGameStarted) {
                         if (currentValue == 0) {
                             if (countdownPlayers.size() == 2) {
-                                currentValue = countdownTime;
+                                teleportTime = (int) (Math.random() * (max - min + 1) + min);
+                                currentValue = teleportTime;
                                 firstPlayer = countdownPlayers.get(0);
                                 secondPlayer = countdownPlayers.get(1);
 
