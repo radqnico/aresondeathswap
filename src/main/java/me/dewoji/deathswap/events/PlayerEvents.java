@@ -1,55 +1,51 @@
 package me.dewoji.deathswap.events;
 
 import me.dewoji.deathswap.DeathSwap;
-import me.dewoji.deathswap.utils.TimerCountdown;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
+import me.dewoji.deathswap.utils.Countdown;
+import me.dewoji.deathswap.utils.GameHandler;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.ArrayList;
-
 public class PlayerEvents implements Listener {
 
     private static DeathSwap instance = DeathSwap.getInstance();
-    private static ArrayList<Player> countdownPlayers = DeathSwap.getCountdownPlayers();
+    private Countdown preGameCountdown;
+    private GameHandler gameHandler;
+
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
-        e.getPlayer().sendMessage(String.valueOf(countdownPlayers.size()));
-        if (countdownPlayers.size() < 2) {
-            if (!countdownPlayers.contains(e.getPlayer())) {
-                countdownPlayers.add(e.getPlayer());
-                DeathSwap.setCountdownPlayers(countdownPlayers);
+        if (instance.getServer().getOnlinePlayers().size() >= 2) {
+            preGameCountdown = (new Countdown(instance, 11, () -> {
+                gameHandler = new GameHandler(instance, 60, 300, instance.getConfig().getString("messaggio_avviso_in_partita"));
+                gameHandler.startGame();
+            }, () -> {
+                instance.getServer().broadcastMessage(instance.getConfig().getString("messaggio_non_abbastanza_player"));
+            },
+                    10, instance.getConfig().getString("messaggio_pre_partita")));
+
+            if (!preGameCountdown.isRunning()) {
+                preGameCountdown.start();
             }
-        } else if (countdownPlayers.size() == 2) {
-            String message = ChatColor.translateAlternateColorCodes('&', instance.getConfig().getString("messaggio_pre_partita"));
-            (new TimerCountdown(countdownPlayers, 20, () -> {
-                for (Player p : countdownPlayers) {
-                    p.sendMessage("Hai vinto");
-                }
-            }, message)).start();
-        } else {
-            e.getPlayer().kickPlayer("Lobby piena");
         }
     }
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e) {
-        if (countdownPlayers.contains(e.getPlayer())) {
-            countdownPlayers.remove(e.getPlayer());
-            DeathSwap.setCountdownPlayers(countdownPlayers);
+        if (preGameCountdown.isRunning()) {
+            if (instance.getServer().getOnlinePlayers().size() < 2) {
+                preGameCountdown.stopInterrupt();
+            }
         }
     }
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent e) {
-        if(countdownPlayers.contains(e.getEntity().getPlayer())) {
-            countdownPlayers.remove(e.getEntity().getPlayer());
-            DeathSwap.setCountdownPlayers(countdownPlayers);
+        if (gameHandler.isRunning()) {
+            e.getEntity().getPlayer().kickPlayer("Sei morto");
         }
     }
 
