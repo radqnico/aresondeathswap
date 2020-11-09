@@ -31,5 +31,7 @@ public class PlayerHolder {
         for (int i = 0; i < onlinePlayers.size(); i++) {
             onlinePlayers.get(i).teleport(locations.get(i));
         }
+
+        System.out.println("AAAA");
     }
 }
