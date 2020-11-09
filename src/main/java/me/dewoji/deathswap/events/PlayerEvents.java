@@ -40,6 +40,11 @@ public class PlayerEvents implements Listener {
                 preGameCountdown.stopInterrupt();
             }
         }
+        if(gameHandler.isRunning()) {
+            if (instance.getServer().getOnlinePlayers().size() < 2) {
+                gameHandler.stop();
+            }
+        }
     }
 
     @EventHandler

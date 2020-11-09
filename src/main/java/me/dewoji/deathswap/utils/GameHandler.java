@@ -30,6 +30,7 @@ public class GameHandler {
                 instance.getServer().broadcastMessage(instance.getConfig().getString("messaggio_vittoria"));
             }
         }, () -> {
+            instance.getServer().broadcastMessage("messaggio_vittoria");
         }, 10, shoutMessage);
 
         gameCountdown.start();
@@ -43,5 +44,11 @@ public class GameHandler {
 
     public boolean isRunning() {
         return gameCountdown.isRunning();
+    }
+
+    public void stop() {
+        if(isRunning()) {
+            gameCountdown.stopInterrupt();
+        }
     }
 }
