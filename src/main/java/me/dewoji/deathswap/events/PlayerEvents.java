@@ -20,7 +20,7 @@ public class PlayerEvents implements Listener {
     public void onPlayerJoin(PlayerJoinEvent e) {
         if (instance.getServer().getOnlinePlayers().size() >= 2) {
             preGameCountdown = (new Countdown(instance, 11, () -> {
-                gameHandler = new GameHandler(instance, 60, 300, instance.getConfig().getString("messaggio_avviso_in_partita"));
+                gameHandler = new GameHandler(instance, 13, 30, instance.getConfig().getString("messaggio_avviso_in_partita"));
                 gameHandler.startGame();
             }, () -> {
                 instance.getServer().broadcastMessage(instance.getConfig().getString("messaggio_non_abbastanza_player"));

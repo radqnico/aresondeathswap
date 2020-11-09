@@ -31,6 +31,8 @@ public class GameHandler {
             }
         }, () -> {
         }, 10, shoutMessage);
+
+        gameCountdown.start();
     }
 
     private int randomTeleportTime() {
