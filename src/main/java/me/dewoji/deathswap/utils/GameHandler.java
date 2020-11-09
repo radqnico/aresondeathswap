@@ -23,6 +23,7 @@ public class GameHandler {
     public void startGame() {
         gameCountdown = new Countdown(instance, randomTeleportTime(), () -> {
             if (instance.getServer().getOnlinePlayers().size() >= 2) {
+                players.playerRotate();
                 gameCountdown.resetCountdown(randomTeleportTime());
                 gameCountdown.start();
             } else {
@@ -34,6 +35,7 @@ public class GameHandler {
 
     private int randomTeleportTime() {
         int randomNumber = (int) (Math.random() * (max - min + 1) + min);
+        System.out.println(randomNumber);
         return randomNumber;
     }
 
