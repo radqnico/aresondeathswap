@@ -2,12 +2,16 @@ package me.dewoji.deathswap.events;
 
 import me.dewoji.deathswap.DeathSwap;
 import me.dewoji.deathswap.utils.Countdown;
-import me.dewoji.deathswap.utils.GameHandler;
+import me.dewoji.deathswap.handlers.GameHandler;
+import org.bukkit.GameMode;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+
+import java.util.ArrayList;
 
 public class PlayerEvents implements Listener {
 
@@ -15,10 +19,16 @@ public class PlayerEvents implements Listener {
     private Countdown preGameCountdown;
     private GameHandler gameHandler;
 
+    private ArrayList<Player> alivePlayers = DeathSwap.getAlivePlayers();
+
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
-        if (instance.getServer().getOnlinePlayers().size() >= 2) {
+        if(!alivePlayers.contains(e.getPlayer())) {
+            alivePlayers.add(e.getPlayer());
+            DeathSwap.setAlivePlayers(alivePlayers);
+        }
+        if (alivePlayers.size() >= 2) {
             preGameCountdown = (new Countdown(instance, 11, () -> {
                 gameHandler = new GameHandler(instance, 13, 30, instance.getConfig().getString("messaggio_avviso_in_partita"));
                 gameHandler.startGame();
@@ -35,8 +45,12 @@ public class PlayerEvents implements Listener {
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e) {
+        if(!alivePlayers.contains(e.getPlayer())) {
+            alivePlayers.remove(e.getPlayer());
+            DeathSwap.setAlivePlayers(alivePlayers);
+        }
         if (preGameCountdown.isRunning()) {
-            if (instance.getServer().getOnlinePlayers().size() < 2) {
+            if (alivePlayers.size() < 2) {
                 preGameCountdown.stopInterrupt();
             }
         }
@@ -49,8 +63,16 @@ public class PlayerEvents implements Listener {
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent e) {
+        Player player = e.getEntity().getPlayer();
+        player.setGameMode(GameMode.SPECTATOR);
+        if(!alivePlayers.contains(player)) {
+            alivePlayers.remove(player);
+            DeathSwap.setAlivePlayers(alivePlayers);
+        }
         if (gameHandler.isRunning()) {
-            e.getEntity().getPlayer().kickPlayer("Sei morto");
+            if(instance.getServer().getOnlinePlayers().size() < 2) {
+                gameHandler.stop();
+            }
         }
     }
 

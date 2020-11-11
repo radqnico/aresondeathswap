@@ -1,5 +1,8 @@
-package me.dewoji.deathswap.utils;
+package me.dewoji.deathswap.handlers;
 
+import me.dewoji.deathswap.utils.Countdown;
+import me.dewoji.deathswap.utils.PlayerHolder;
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class GameHandler {
@@ -21,16 +24,17 @@ public class GameHandler {
     }
 
     public void startGame() {
+        String victoryMessage = ChatColor.translateAlternateColorCodes('&', instance.getConfig().getString("messaggio_vittoria"));
         gameCountdown = new Countdown(instance, randomTeleportTime(), () -> {
             if (instance.getServer().getOnlinePlayers().size() >= 2) {
                 players.playerRotate();
                 gameCountdown.resetCountdown(randomTeleportTime());
                 gameCountdown.start();
             } else {
-                instance.getServer().broadcastMessage(instance.getConfig().getString("messaggio_vittoria"));
+                instance.getServer().broadcastMessage(victoryMessage);
             }
         }, () -> {
-            instance.getServer().broadcastMessage("messaggio_vittoria");
+            instance.getServer().broadcastMessage(victoryMessage);
         }, 10, shoutMessage);
 
         gameCountdown.start();

@@ -1,6 +1,7 @@
 package me.dewoji.deathswap.utils;
 
 import me.dewoji.deathswap.DeathSwap;
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Countdown {
@@ -24,7 +25,7 @@ public class Countdown {
         this.stopTaskFinish = stopTaskFinish;
         this.stopTaskInterrupted = stopTaskInterrupted;
         this.timeBeforeShouting = timeBeforeShouting;
-        this.shoutingMessage = shoutingMessage;
+        this.shoutingMessage = ChatColor.translateAlternateColorCodes('&', shoutingMessage);
         isRunning = false;
         taskId = 0;
         currentValue = 0;

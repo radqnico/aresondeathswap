@@ -1,6 +1,8 @@
 package me.dewoji.deathswap;
 
 import me.dewoji.deathswap.events.PlayerEvents;
+import me.dewoji.deathswap.handlers.WorldHandler;
+import org.bukkit.WorldCreator;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -9,8 +11,9 @@ import java.util.ArrayList;
 public final class DeathSwap extends JavaPlugin {
 
     private static DeathSwap instance;
-    private static ArrayList<Player> countdownPlayers = new ArrayList<>();
+    private static ArrayList<Player> alivePlayers = new ArrayList<>();
     private static boolean theGameIsRunning = false;
+    private WorldHandler worldHandler = new WorldHandler(instance);
 
     @Override
     public void onEnable() {
@@ -35,12 +38,12 @@ public final class DeathSwap extends JavaPlugin {
         return instance;
     }
 
-    public static ArrayList<Player> getCountdownPlayers() {
-        return countdownPlayers;
+    public static ArrayList<Player> getAlivePlayers() {
+        return alivePlayers;
     }
 
-    public static void setCountdownPlayers(ArrayList<Player> countdownPlayers) {
-        DeathSwap.countdownPlayers = countdownPlayers;
+    public static void setAlivePlayers(ArrayList<Player> alivePlayers) {
+        DeathSwap.alivePlayers = alivePlayers;
     }
 
     public static boolean isTheGameIsRunning() {
