@@ -26,7 +26,7 @@ public class GameHandler {
 
     public void startGame() {
         String victoryMessage = ChatColor.translateAlternateColorCodes('&', instance.getConfig().getString("messaggio_vittoria"));
-
+        players.playerMassMover(DeathSwap.getLobbyPlayers(), DeathSwap.getAlivePlayers());
         gameCountdown = new Countdown(instance, randomTeleportTime(), () -> {
             if (instance.getServer().getOnlinePlayers().size() >= 2) {
                 players.playerRotate();
@@ -35,6 +35,7 @@ public class GameHandler {
             } else {
                 instance.getServer().broadcastMessage(victoryMessage);
                 players.playerMassMover(DeathSwap.getAlivePlayers(), DeathSwap.getLobbyPlayers());
+                players.playerMassMover(DeathSwap.getDeadPlayers(), DeathSwap.getLobbyPlayers());
             }
         }, () -> {
             instance.getServer().broadcastMessage(victoryMessage);
