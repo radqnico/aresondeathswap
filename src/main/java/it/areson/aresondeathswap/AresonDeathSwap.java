@@ -76,7 +76,7 @@ public final class AresonDeathSwap extends JavaPlugin {
                     arenasPlayers.put(arenaName, new HashSet<>());
 
                     //Countdowns
-                    Countdown countdown = new Countdown(instance, 20,
+                    Countdown countdown = new Countdown(this, 20,
                             () -> new GameHandler(
                                     this,
                                     13,
