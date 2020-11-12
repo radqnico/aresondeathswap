@@ -51,14 +51,9 @@ public class PlayerEvents implements Listener {
                 Countdown countdown = aresonDeathSwap.arenasCountdowns.get(arenaName);
 
                 if (countdown != null) {
-                    if (arenaPlayers.size() >= 2) {
+                    if (arenaPlayers.size() >= aresonDeathSwap.MIN_PLAYERS) {
                         if (!countdown.isRunning()) {
                             countdown.start();
-                            //TODO Messaggio
-                        }
-                    } else {
-                        if (countdown.isRunning()) {
-                            countdown.interrupt();
                             //TODO Messaggio
                         }
                     }
@@ -74,32 +69,30 @@ public class PlayerEvents implements Listener {
     }
 
     @EventHandler
-    public void onPlayerLeave(PlayerQuitEvent e) {
-        Player player = e.getPlayer();
-        alivePlayers = AresonDeathSwap.getAlivePlayers();
-        lobbyPlayers = AresonDeathSwap.getLobbyPlayers();
-        deadPlayers = AresonDeathSwap.getDeadPlayers();
+    public void onPlayerQuitEvent(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
 
-        if (alivePlayers.contains(player)) {
-            alivePlayers.remove(e.getPlayer());
-            AresonDeathSwap.setAlivePlayers(alivePlayers);
-        } else if (lobbyPlayers.contains(player)) {
-            lobbyPlayers.remove(player);
-            AresonDeathSwap.setDeadPlayers(lobbyPlayers);
-        } else if (deadPlayers.contains(player)) {
-            deadPlayers.remove(player);
-            AresonDeathSwap.setDeadPlayers(deadPlayers);
-        }
-        if (preGameCountdown.isRunning()) {
-            if (alivePlayers.size() < 2) {
-                preGameCountdown.interrupt();
+        aresonDeathSwap.waitingPlayers.remove(player);
+        aresonDeathSwap.arenasPlayers.forEach((arenaName, arenaPlayers) -> {
+            if(arenaPlayers.contains(player)) {
+                arenaPlayers.remove(player);
+                Countdown countdown = aresonDeathSwap.arenasCountdowns.get(arenaName);
+                if(countdown != null) {
+                    if(arenaPlayers.size() < aresonDeathSwap.MIN_PLAYERS) {
+                        countdown.interrupt();
+                    }
+                } else {
+                    //TODO inconsistenza
+                }
             }
-        }
-        if (gameHandler.isRunning()) {
-            if (instance.getServer().getOnlinePlayers().size() < 2) {
-                gameHandler.stop();
-            }
-        }
+
+        });
+
+//        if (gameHandler.isRunning()) {
+//            if (instance.getServer().getOnlinePlayers().size() < 2) {
+//                gameHandler.stop();
+//            }
+//        }
     }
 
     @EventHandler

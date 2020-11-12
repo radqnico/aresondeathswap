@@ -17,6 +17,7 @@ import java.util.*;
 public final class AresonDeathSwap extends JavaPlugin {
 
     public final String ARENA_PATH = "arena";
+    public final int MIN_PLAYERS = 2;
 
     public HashMap<String, Boolean> joinableArenas;
     public ArrayList<Player> waitingPlayers;
