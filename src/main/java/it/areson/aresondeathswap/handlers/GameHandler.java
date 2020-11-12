@@ -39,7 +39,6 @@ public class GameHandler {
         }
 
 
-//        String victoryMessage = ChatColor.translateAlternateColorCodes('&', aresonDeathSwap.getConfig().getString("messaggio_vittoria"));
         gameCountdown = new Countdown(aresonDeathSwap, randomTeleportTime(), () -> {
             players.playerRotate();
             gameCountdown.resetCountdown(randomTeleportTime());
