@@ -1,9 +1,9 @@
-package me.dewoji.deathswap.events;
+package it.areson.aresondeathswap.events;
 
-import me.dewoji.deathswap.DeathSwap;
-import me.dewoji.deathswap.utils.Countdown;
-import me.dewoji.deathswap.handlers.GameHandler;
-import me.dewoji.deathswap.utils.PlayerHolder;
+import it.areson.aresondeathswap.handlers.GameHandler;
+import it.areson.aresondeathswap.AresonDeathSwap;
+import it.areson.aresondeathswap.utils.Countdown;
+import it.areson.aresondeathswap.utils.PlayerHolder;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,24 +17,24 @@ import java.util.ArrayList;
 
 public class PlayerEvents implements Listener {
 
-    private static DeathSwap instance = DeathSwap.getInstance();
+    private static AresonDeathSwap instance = AresonDeathSwap.getInstance();
     private Countdown preGameCountdown;
     private GameHandler gameHandler;
     private PlayerHolder playerHolder = new PlayerHolder(instance);
 
-    private ArrayList<Player> alivePlayers = DeathSwap.getAlivePlayers();
-    private ArrayList<Player> lobbyPlayers = DeathSwap.getLobbyPlayers();
-    private ArrayList<Player> deadPlayers = DeathSwap.getDeadPlayers();
+    private ArrayList<Player> alivePlayers = AresonDeathSwap.getAlivePlayers();
+    private ArrayList<Player> lobbyPlayers = AresonDeathSwap.getLobbyPlayers();
+    private ArrayList<Player> deadPlayers = AresonDeathSwap.getDeadPlayers();
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
-        alivePlayers = DeathSwap.getAlivePlayers();
-        lobbyPlayers = DeathSwap.getLobbyPlayers();
-        deadPlayers = DeathSwap.getDeadPlayers();
+        alivePlayers = AresonDeathSwap.getAlivePlayers();
+        lobbyPlayers = AresonDeathSwap.getLobbyPlayers();
+        deadPlayers = AresonDeathSwap.getDeadPlayers();
 
         if(!lobbyPlayers.contains(e.getPlayer())) {
             lobbyPlayers.add(e.getPlayer());
-            DeathSwap.setLobbyPlayers(lobbyPlayers);
+            AresonDeathSwap.setLobbyPlayers(lobbyPlayers);
         }
         if (lobbyPlayers.size() >= 2) {
             preGameCountdown = (new Countdown(instance, 20, () -> {
@@ -54,19 +54,19 @@ public class PlayerEvents implements Listener {
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e) {
         Player player = e.getPlayer();
-        alivePlayers = DeathSwap.getAlivePlayers();
-        lobbyPlayers = DeathSwap.getLobbyPlayers();
-        deadPlayers = DeathSwap.getDeadPlayers();
+        alivePlayers = AresonDeathSwap.getAlivePlayers();
+        lobbyPlayers = AresonDeathSwap.getLobbyPlayers();
+        deadPlayers = AresonDeathSwap.getDeadPlayers();
 
         if(alivePlayers.contains(player)) {
             alivePlayers.remove(e.getPlayer());
-            DeathSwap.setAlivePlayers(alivePlayers);
+            AresonDeathSwap.setAlivePlayers(alivePlayers);
         } else if(lobbyPlayers.contains(player)) {
             lobbyPlayers.remove(player);
-            DeathSwap.setDeadPlayers(lobbyPlayers);
+            AresonDeathSwap.setDeadPlayers(lobbyPlayers);
         } else if(deadPlayers.contains(player)) {
             deadPlayers.remove(player);
-            DeathSwap.setDeadPlayers(deadPlayers);
+            AresonDeathSwap.setDeadPlayers(deadPlayers);
         }
         if (preGameCountdown.isRunning()) {
             if (alivePlayers.size() < 2) {
@@ -85,7 +85,7 @@ public class PlayerEvents implements Listener {
         Player player = e.getEntity().getPlayer();
         player.setGameMode(GameMode.SPECTATOR);
         if(alivePlayers.contains(player)) {
-            playerHolder.deathPlayerMover(player, DeathSwap.getAlivePlayers(), DeathSwap.getDeadPlayers());
+            playerHolder.deathPlayerMover(player, AresonDeathSwap.getAlivePlayers(), AresonDeathSwap.getDeadPlayers());
         }
         if (gameHandler.isRunning()) {
             if(instance.getServer().getOnlinePlayers().size() < 2) {

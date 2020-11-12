@@ -1,5 +1,5 @@
-name: DeathSwap
+name: ${project.artifactId}
 version: ${project.version}
-main: me.dewoji.deathswap.DeathSwap
-api-version: 1.16
-load: startup
+main: ${project.groupId}.aresondeathswap.${project.artifactId}
+api-version: "1.16"
+author: Areson

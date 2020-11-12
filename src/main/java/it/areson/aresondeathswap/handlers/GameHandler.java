@@ -1,8 +1,8 @@
-package me.dewoji.deathswap.handlers;
+package it.areson.aresondeathswap.handlers;
 
-import me.dewoji.deathswap.DeathSwap;
-import me.dewoji.deathswap.utils.Countdown;
-import me.dewoji.deathswap.utils.PlayerHolder;
+import it.areson.aresondeathswap.AresonDeathSwap;
+import it.areson.aresondeathswap.utils.Countdown;
+import it.areson.aresondeathswap.utils.PlayerHolder;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -26,7 +26,7 @@ public class GameHandler {
 
     public void startGame() {
         String victoryMessage = ChatColor.translateAlternateColorCodes('&', instance.getConfig().getString("messaggio_vittoria"));
-        players.playerMassMover(DeathSwap.getLobbyPlayers(), DeathSwap.getAlivePlayers());
+        players.playerMassMover(AresonDeathSwap.getLobbyPlayers(), AresonDeathSwap.getAlivePlayers());
         gameCountdown = new Countdown(instance, randomTeleportTime(), () -> {
             if (instance.getServer().getOnlinePlayers().size() >= 2) {
                 players.playerRotate();
@@ -34,13 +34,13 @@ public class GameHandler {
                 gameCountdown.start();
             } else {
                 instance.getServer().broadcastMessage(victoryMessage);
-                players.playerMassMover(DeathSwap.getAlivePlayers(), DeathSwap.getLobbyPlayers());
-                players.playerMassMover(DeathSwap.getDeadPlayers(), DeathSwap.getLobbyPlayers());
+                players.playerMassMover(AresonDeathSwap.getAlivePlayers(), AresonDeathSwap.getLobbyPlayers());
+                players.playerMassMover(AresonDeathSwap.getDeadPlayers(), AresonDeathSwap.getLobbyPlayers());
             }
         }, () -> {
             instance.getServer().broadcastMessage(victoryMessage);
-            players.playerMassMover(DeathSwap.getAlivePlayers(), DeathSwap.getLobbyPlayers());
-            players.playerMassMover(DeathSwap.getDeadPlayers(), DeathSwap.getLobbyPlayers());
+            players.playerMassMover(AresonDeathSwap.getAlivePlayers(), AresonDeathSwap.getLobbyPlayers());
+            players.playerMassMover(AresonDeathSwap.getDeadPlayers(), AresonDeathSwap.getLobbyPlayers());
         }, 10, shoutMessage);
 
         gameCountdown.start();

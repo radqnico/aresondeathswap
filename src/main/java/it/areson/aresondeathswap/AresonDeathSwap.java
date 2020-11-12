@@ -1,16 +1,17 @@
-package me.dewoji.deathswap;
+package it.areson.aresondeathswap;
 
-import me.dewoji.deathswap.events.PlayerEvents;
-import me.dewoji.deathswap.handlers.WorldHandler;
+import it.areson.aresondeathswap.commands.TestCommand;
+import it.areson.aresondeathswap.events.PlayerEvents;
+import it.areson.aresondeathswap.handlers.WorldHandler;
 import org.bukkit.WorldCreator;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 
-public final class DeathSwap extends JavaPlugin {
+public final class AresonDeathSwap extends JavaPlugin {
 
-    private static DeathSwap instance;
+    private static AresonDeathSwap instance;
     private static ArrayList<Player> alivePlayers = new ArrayList<>();
     private static ArrayList<Player> lobbyPlayers = new ArrayList<>();
     private static ArrayList<Player> deadPlayers = new ArrayList<>();
@@ -25,18 +26,16 @@ public final class DeathSwap extends JavaPlugin {
 
         saveConfig();
         saveDefaultConfig();
-    }
 
-    @Override
-    public void onDisable() {
-
+        new WorldCreator("worldTest").createWorld();
+        new TestCommand(this);
     }
 
     public static void registerEvents() {
         getInstance().getServer().getPluginManager().registerEvents(new PlayerEvents(), instance);
     }
 
-    public static DeathSwap getInstance() {
+    public static AresonDeathSwap getInstance() {
         return instance;
     }
 
@@ -45,7 +44,7 @@ public final class DeathSwap extends JavaPlugin {
     }
 
     public static void setAlivePlayers(ArrayList<Player> alivePlayers) {
-        DeathSwap.alivePlayers = alivePlayers;
+        AresonDeathSwap.alivePlayers = alivePlayers;
     }
 
     public static ArrayList<Player> getLobbyPlayers() {
@@ -53,7 +52,7 @@ public final class DeathSwap extends JavaPlugin {
     }
 
     public static void setLobbyPlayers(ArrayList<Player> lobbyPlayers) {
-        DeathSwap.lobbyPlayers = lobbyPlayers;
+        AresonDeathSwap.lobbyPlayers = lobbyPlayers;
     }
 
     public static ArrayList<Player> getDeadPlayers() {
@@ -61,7 +60,7 @@ public final class DeathSwap extends JavaPlugin {
     }
 
     public static void setDeadPlayers(ArrayList<Player> deadPlayers) {
-        DeathSwap.deadPlayers = deadPlayers;
+        AresonDeathSwap.deadPlayers = deadPlayers;
     }
 
     public static boolean isTheGameIsRunning() {
@@ -69,6 +68,6 @@ public final class DeathSwap extends JavaPlugin {
     }
 
     public static void setTheGameIsRunning(boolean theGameIsRunning) {
-        DeathSwap.theGameIsRunning = theGameIsRunning;
+        AresonDeathSwap.theGameIsRunning = theGameIsRunning;
     }
 }

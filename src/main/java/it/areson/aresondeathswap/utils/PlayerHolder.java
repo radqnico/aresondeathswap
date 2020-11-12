@@ -1,6 +1,6 @@
-package me.dewoji.deathswap.utils;
+package it.areson.aresondeathswap.utils;
 
-import me.dewoji.deathswap.DeathSwap;
+import it.areson.aresondeathswap.AresonDeathSwap;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -17,12 +17,12 @@ public class PlayerHolder {
 
     public PlayerHolder(JavaPlugin instance) {
         this.instance = instance;
-        this.alivePlayers = DeathSwap.getAlivePlayers();
-        this.lobbyPlayers = DeathSwap.getLobbyPlayers();
+        this.alivePlayers = AresonDeathSwap.getAlivePlayers();
+        this.lobbyPlayers = AresonDeathSwap.getLobbyPlayers();
     }
 
     public void playerRotate() {
-        ArrayList<Player> onlinePlayers = DeathSwap.getAlivePlayers();
+        ArrayList<Player> onlinePlayers = AresonDeathSwap.getAlivePlayers();
         List<Location> locations = onlinePlayers.stream().map(Player::getLocation).collect(Collectors.toList());
 
         int lastIndex = locations.size() - 1;
@@ -41,15 +41,15 @@ public class PlayerHolder {
         for (Player p: fromList) {
             fromList.remove(p);
             toList.add(p);
-            DeathSwap.setLobbyPlayers(fromList);
-            DeathSwap.setAlivePlayers(toList);
+            AresonDeathSwap.setLobbyPlayers(fromList);
+            AresonDeathSwap.setAlivePlayers(toList);
         }
     }
 
     public void deathPlayerMover(Player toMove, ArrayList<Player> fromList, ArrayList<Player> toList) {
         fromList.remove(toMove);
         toList.add(toMove);
-        DeathSwap.setAlivePlayers(fromList);
-        DeathSwap.setDeadPlayers(toList);
+        AresonDeathSwap.setAlivePlayers(fromList);
+        AresonDeathSwap.setDeadPlayers(toList);
     }
 }

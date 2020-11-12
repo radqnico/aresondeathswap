@@ -1,6 +1,6 @@
-package me.dewoji.deathswap.utils;
+package it.areson.aresondeathswap.utils;
 
-import me.dewoji.deathswap.DeathSwap;
+import it.areson.aresondeathswap.AresonDeathSwap;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -48,14 +48,14 @@ public class Countdown {
     private void stopFinish() {
         isRunning = false;
         instance.getServer().getScheduler().cancelTask(taskId);
-        instance.getServer().getScheduler().scheduleSyncDelayedTask(DeathSwap.getInstance(), stopTaskFinish, 0);
+        instance.getServer().getScheduler().scheduleSyncDelayedTask(AresonDeathSwap.getInstance(), stopTaskFinish, 0);
 
     }
 
     public void stopInterrupt() {
         isRunning = false;
         instance.getServer().getScheduler().cancelTask(taskId);
-        instance.getServer().getScheduler().scheduleSyncDelayedTask(DeathSwap.getInstance(), stopTaskInterrupted, 0);
+        instance.getServer().getScheduler().scheduleSyncDelayedTask(AresonDeathSwap.getInstance(), stopTaskInterrupted, 0);
     }
 
     public boolean isRunning() {

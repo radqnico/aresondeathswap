@@ -1,4 +1,4 @@
-package me.dewoji.deathswap.handlers;
+package it.areson.aresondeathswap.handlers;
 
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
