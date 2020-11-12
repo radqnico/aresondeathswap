@@ -41,7 +41,6 @@ public final class AresonDeathSwap extends JavaPlugin {
 
     @Override
     public void onDisable() {
-
         getServer().getOnlinePlayers().forEach(player -> player.kickPlayer("Server chiuso"));
 
         unloadArenaWorlds(dataFile);
@@ -67,8 +66,11 @@ public final class AresonDeathSwap extends JavaPlugin {
 
         if (!Objects.isNull(arenaSection)) {
             arenaSection.getKeys(false).forEach(arenaName -> {
-                getLogger().info("Unloading world " + arenaName);
-                getServer().unloadWorld(arenaName, false);
+                if(getServer().unloadWorld(arenaName, false)) {
+                    getLogger().info("World " + arenaName + " unloaded successfully");
+                } else {
+                    getLogger().info("Error while unloading world " + arenaName);
+                }
             });
         }
     }
