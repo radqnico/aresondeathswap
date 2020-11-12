@@ -3,3 +3,8 @@ version: ${project.version}
 main: ${project.groupId}.aresondeathswap.${project.artifactId}
 api-version: "1.16"
 author: Areson
+
+
+commands:
+  test:
+    usage: "/<command>"

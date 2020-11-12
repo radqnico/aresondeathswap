@@ -16,7 +16,6 @@ public final class AresonDeathSwap extends JavaPlugin {
     private static ArrayList<Player> alivePlayers = new ArrayList<>();
     private static ArrayList<Player> lobbyPlayers = new ArrayList<>();
     private static ArrayList<Player> deadPlayers = new ArrayList<>();
-    private static boolean theGameIsRunning = false;
     private WorldHandler worldHandler = new WorldHandler(instance);
 
     @Override
@@ -65,11 +64,4 @@ public final class AresonDeathSwap extends JavaPlugin {
         AresonDeathSwap.deadPlayers = deadPlayers;
     }
 
-    public static boolean isTheGameIsRunning() {
-        return theGameIsRunning;
-    }
-
-    public static void setTheGameIsRunning(boolean theGameIsRunning) {
-        AresonDeathSwap.theGameIsRunning = theGameIsRunning;
-    }
 }
