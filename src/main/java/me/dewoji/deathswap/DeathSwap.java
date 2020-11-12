@@ -12,6 +12,8 @@ public final class DeathSwap extends JavaPlugin {
 
     private static DeathSwap instance;
     private static ArrayList<Player> alivePlayers = new ArrayList<>();
+    private static ArrayList<Player> lobbyPlayers = new ArrayList<>();
+    private static ArrayList<Player> deadPlayers = new ArrayList<>();
     private static boolean theGameIsRunning = false;
     private WorldHandler worldHandler = new WorldHandler(instance);
 
@@ -44,6 +46,22 @@ public final class DeathSwap extends JavaPlugin {
 
     public static void setAlivePlayers(ArrayList<Player> alivePlayers) {
         DeathSwap.alivePlayers = alivePlayers;
+    }
+
+    public static ArrayList<Player> getLobbyPlayers() {
+        return lobbyPlayers;
+    }
+
+    public static void setLobbyPlayers(ArrayList<Player> lobbyPlayers) {
+        DeathSwap.lobbyPlayers = lobbyPlayers;
+    }
+
+    public static ArrayList<Player> getDeadPlayers() {
+        return deadPlayers;
+    }
+
+    public static void setDeadPlayers(ArrayList<Player> deadPlayers) {
+        DeathSwap.deadPlayers = deadPlayers;
     }
 
     public static boolean isTheGameIsRunning() {
