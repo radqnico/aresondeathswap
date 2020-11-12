@@ -41,6 +41,9 @@ public final class AresonDeathSwap extends JavaPlugin {
 
     @Override
     public void onDisable() {
+
+        getServer().getOnlinePlayers().forEach(player -> player.kickPlayer("Server chiuso"));
+
         unloadArenaWorlds(dataFile);
     }
 
