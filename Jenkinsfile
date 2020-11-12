@@ -54,7 +54,7 @@ pipeline {
                                 sshPublisherDesc(
                                         configName: "Areson",
                                         transfers: [
-                                                sshTransfer(execCommand: "screen -S test -X stuff ^[^M^Mend^M")
+                                                sshTransfer(execCommand: "screen -S test -X stuff ^[^M^Mstop^M")
                                         ]
                                 )
                         ]
