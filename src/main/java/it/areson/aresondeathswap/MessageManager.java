@@ -11,7 +11,7 @@ import java.util.Objects;
 
 public class MessageManager extends FileManager {
 
-    public MessageManager(JavaPlugin plugin, String fileName) {
+    public MessageManager(AresonDeathSwap plugin, String fileName) {
         super(plugin, fileName);
     }
 
