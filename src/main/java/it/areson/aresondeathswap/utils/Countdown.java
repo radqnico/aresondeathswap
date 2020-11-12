@@ -2,25 +2,27 @@ package it.areson.aresondeathswap.utils;
 
 import it.areson.aresondeathswap.AresonDeathSwap;
 import org.bukkit.ChatColor;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.entity.Player;
+
+import java.util.HashSet;
 
 public class Countdown {
 
-    private JavaPlugin instance;
+    private AresonDeathSwap aresonDeathSwap;
 
     private int countdownTime;
     private int currentValue;
 
     private int taskId;
     private boolean isRunning;
-    private Runnable stopTaskFinish;
-    private Runnable stopTaskInterrupted;
-    private int timeBeforeShouting;
+    private final Runnable stopTaskFinish;
+    private final Runnable stopTaskInterrupted;
+    private final int timeBeforeShouting;
+    private final String shoutingMessage;
+    private final String arenaName;
 
-    private String shoutingMessage;
-
-    public Countdown(JavaPlugin instance, int countdownTime, Runnable stopTaskFinish, Runnable stopTaskInterrupted, int timeBeforeShouting, String shoutingMessage) {
-        this.instance = instance;
+    public Countdown(AresonDeathSwap plugin, int countdownTime, Runnable stopTaskFinish, Runnable stopTaskInterrupted, int timeBeforeShouting, String shoutingMessage, String arenaName) {
+        aresonDeathSwap = plugin;
         this.countdownTime = countdownTime;
         this.stopTaskFinish = stopTaskFinish;
         this.stopTaskInterrupted = stopTaskInterrupted;
@@ -29,33 +31,41 @@ public class Countdown {
         isRunning = false;
         taskId = 0;
         currentValue = 0;
+        this.arenaName = arenaName;
     }
 
     public void start() {
-        isRunning = true;
-        currentValue = countdownTime;
-        taskId = instance.getServer().getScheduler().scheduleSyncRepeatingTask(instance, () -> {
-            if (currentValue == 0) {
-                stopFinish();
-            }
-            if (currentValue <= timeBeforeShouting) {
-                instance.getServer().broadcastMessage(shoutingMessage.replaceAll("%secs%", currentValue + ""));
-            }
-            currentValue--;
-        }, 0, 20);
+        if (!isRunning) {
+            isRunning = true;
+            currentValue = countdownTime;
+            taskId = aresonDeathSwap.getServer().getScheduler().scheduleSyncRepeatingTask(aresonDeathSwap, () -> {
+                if (currentValue == 0) {
+                    end();
+                }
+                if (currentValue <= timeBeforeShouting) {
+                    HashSet<Player> players = aresonDeathSwap.arenasPlayers.get(arenaName);
+                    if (players != null) {
+                        players.forEach(player -> player.sendMessage(shoutingMessage.replaceAll("%seconds%", currentValue + "")));
+                    }
+                }
+                currentValue--;
+            }, 0, 20);
+        }
     }
 
-    private void stopFinish() {
+    private void end() {
         isRunning = false;
-        instance.getServer().getScheduler().cancelTask(taskId);
-        instance.getServer().getScheduler().scheduleSyncDelayedTask(AresonDeathSwap.getInstance(), stopTaskFinish, 0);
+        aresonDeathSwap.getServer().getScheduler().cancelTask(taskId);
+        aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(AresonDeathSwap.getInstance(), stopTaskFinish, 0);
 
     }
 
-    public void stopInterrupt() {
-        isRunning = false;
-        instance.getServer().getScheduler().cancelTask(taskId);
-        instance.getServer().getScheduler().scheduleSyncDelayedTask(AresonDeathSwap.getInstance(), stopTaskInterrupted, 0);
+    public void interrupt() {
+        if (isRunning) {
+            isRunning = false;
+            aresonDeathSwap.getServer().getScheduler().cancelTask(taskId);
+            aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(AresonDeathSwap.getInstance(), stopTaskInterrupted, 0);
+        }
     }
 
     public boolean isRunning() {

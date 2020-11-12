@@ -34,7 +34,7 @@ public class MessageManager extends FileManager {
         }
     }
 
-    public String getPlainMessage(Player player, String messageKey) {
+    public String getPlainMessage(String messageKey) {
         String message = getFileConfiguration().getString(messageKey);
         if (Objects.nonNull(message)) {
             return ChatColor.translateAlternateColorCodes('&', message);

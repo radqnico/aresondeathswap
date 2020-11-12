@@ -4,46 +4,63 @@ import it.areson.aresondeathswap.AresonDeathSwap;
 import it.areson.aresondeathswap.utils.Countdown;
 import it.areson.aresondeathswap.utils.PlayerHolder;
 import org.bukkit.ChatColor;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.World;
+import org.bukkit.entity.Player;
+
+import java.util.HashSet;
 
 public class GameHandler {
 
-    private JavaPlugin instance;
-    private PlayerHolder players;
+    private final AresonDeathSwap aresonDeathSwap;
+    private final PlayerHolder players;
     private Countdown gameCountdown;
+    private final String arenaName;
 
     private String shoutMessage;
     private int min;
     private int max;
 
-    public GameHandler(JavaPlugin instance, int minimumTime, int maximumTime, String shoutMessage) {
-        this.instance = instance;
-        this.players = new PlayerHolder(instance);
+    public GameHandler(AresonDeathSwap plugin, int minimumTime, int maximumTime, String shoutMessage, String arenaName) {
+        aresonDeathSwap = plugin;
+        this.players = new PlayerHolder(plugin);
         this.min = minimumTime;
         this.max = maximumTime;
         this.shoutMessage = shoutMessage;
+        this.arenaName = arenaName;
     }
 
     public void startGame() {
-        String victoryMessage = ChatColor.translateAlternateColorCodes('&', instance.getConfig().getString("messaggio_vittoria"));
-        players.playerMassMover(AresonDeathSwap.getLobbyPlayers(), AresonDeathSwap.getAlivePlayers());
-        gameCountdown = new Countdown(instance, randomTeleportTime(), () -> {
-            if (instance.getServer().getOnlinePlayers().size() >= 2) {
-                players.playerRotate();
-                gameCountdown.resetCountdown(randomTeleportTime());
-                gameCountdown.start();
+        World world = aresonDeathSwap.getServer().getWorld(arenaName);
+        if(world != null) {
+            HashSet<Player> players = aresonDeathSwap.arenasPlayers.get(arenaName);
+            if(players != null) {
+                players.forEach(player -> player.teleport(world.getSpawnLocation()));
             } else {
-                instance.getServer().broadcastMessage(victoryMessage);
-                players.playerMassMover(AresonDeathSwap.getAlivePlayers(), AresonDeathSwap.getLobbyPlayers());
-                players.playerMassMover(AresonDeathSwap.getDeadPlayers(), AresonDeathSwap.getLobbyPlayers());
+                //TODO Incosistenza
             }
-        }, () -> {
-            instance.getServer().broadcastMessage(victoryMessage);
-            players.playerMassMover(AresonDeathSwap.getAlivePlayers(), AresonDeathSwap.getLobbyPlayers());
-            players.playerMassMover(AresonDeathSwap.getDeadPlayers(), AresonDeathSwap.getLobbyPlayers());
-        }, 10, shoutMessage);
+        } else {
+            //TODO inconsistenza
+        }
 
-        gameCountdown.start();
+
+//        String victoryMessage = ChatColor.translateAlternateColorCodes('&', aresonDeathSwap.getConfig().getString("messaggio_vittoria"));
+//        gameCountdown = new Countdown(aresonDeathSwap, randomTeleportTime(), () -> {
+//            if (aresonDeathSwap.getServer().getOnlinePlayers().size() >= 2) {
+//                players.playerRotate();
+//                gameCountdown.resetCountdown(randomTeleportTime());
+//                gameCountdown.start();
+//            } else {
+//                aresonDeathSwap.getServer().broadcastMessage(victoryMessage);
+//                players.playerMassMover(AresonDeathSwap.getAlivePlayers(), AresonDeathSwap.getLobbyPlayers());
+//                players.playerMassMover(AresonDeathSwap.getDeadPlayers(), AresonDeathSwap.getLobbyPlayers());
+//            }
+//        }, () -> {
+//            aresonDeathSwap.getServer().broadcastMessage(victoryMessage);
+//            players.playerMassMover(AresonDeathSwap.getAlivePlayers(), AresonDeathSwap.getLobbyPlayers());
+//            players.playerMassMover(AresonDeathSwap.getDeadPlayers(), AresonDeathSwap.getLobbyPlayers());
+//        }, 10, shoutMessage);
+//
+//        gameCountdown.start();
     }
 
     private int randomTeleportTime() {
@@ -57,8 +74,8 @@ public class GameHandler {
     }
 
     public void stop() {
-        if(isRunning()) {
-            gameCountdown.stopInterrupt();
+        if (isRunning()) {
+            gameCountdown.interrupt();
         }
     }
 }
