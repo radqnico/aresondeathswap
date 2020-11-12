@@ -18,8 +18,8 @@ public final class AresonDeathSwap extends JavaPlugin {
 
     public final String ARENA_PATH = "arena";
     public final int MIN_PLAYERS = 2;
-    public final int MIN_SWAP_TIME_SECONDS = 60;
-    public final int MAX_SWAP_TIME_SECONDS = 300;
+    public final int MIN_SWAP_TIME_SECONDS = 10;
+    public final int MAX_SWAP_TIME_SECONDS = 15;
     public final String MAIN_WORLD_NAME = "world";
 
     public HashMap<String, Boolean> joinableArenas;
