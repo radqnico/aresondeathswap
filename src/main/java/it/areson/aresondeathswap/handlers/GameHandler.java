@@ -63,6 +63,8 @@ public class GameHandler {
             }
         }, 10, aresonDeathSwap.messages.getPlainMessage("countdown-swap-message"),
                 arenaName, aresonDeathSwap.messages.getPlainMessage("countdown-prepare-message"));
+
+        gameCountdown.start();
     }
 
     private int randomTeleportTime() {
