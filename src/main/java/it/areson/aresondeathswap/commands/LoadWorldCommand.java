@@ -1,18 +1,27 @@
 package it.areson.aresondeathswap.commands;
 
+import it.areson.aresondeathswap.AresonDeathSwap;
+import it.areson.aresondeathswap.FileManager;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class LoadWorldCommand implements CommandExecutor, TabCompleter {
+
+    public LoadWorldCommand(AresonDeathSwap plugin) {
+
+        PluginCommand pluginCommand = plugin.getCommand("setArena");
+        if (!Objects.isNull(pluginCommand)) {
+            pluginCommand.setExecutor(this);
+        }
+    }
+
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] arguments) {
 

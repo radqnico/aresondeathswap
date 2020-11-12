@@ -13,22 +13,20 @@ import java.util.Optional;
 
 public class FileManager {
 
-    protected JavaPlugin plugin;
+    protected AresonDeathSwap aresonDeathSwap;
     protected FileConfiguration fileConfiguration;
     private final File file;
-    private final String arenaPath;
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public FileManager(JavaPlugin plugin, String fileName) {
-        this.plugin = plugin;
-        file = new File(this.plugin.getDataFolder(), fileName);
+    public FileManager(AresonDeathSwap plugin, String fileName) {
+        aresonDeathSwap = plugin;
+        file = new File(aresonDeathSwap.getDataFolder(), fileName);
         if (!file.exists()) {
             file.getParentFile().mkdirs();
-            this.plugin.saveResource(fileName, true);
+            aresonDeathSwap.saveResource(fileName, true);
 
         }
         fileConfiguration = YamlConfiguration.loadConfiguration(file);
-        arenaPath = "arena.";
     }
 
     public void reloadConfig() {
@@ -57,7 +55,7 @@ public class FileManager {
         } else {
             String world = fileConfiguration.getString(path + ".world");
             if (world != null) {
-                return Optional.of(new Location(plugin.getServer().getWorld(world), fileConfiguration.getDouble(path + ".x"), fileConfiguration.getDouble(path + ".y"), fileConfiguration.getDouble(path + ".z"), (float) fileConfiguration.getDouble(path + ".yaw"), (float) fileConfiguration.getDouble(path + ".pitch")));
+                return Optional.of(new Location(aresonDeathSwap.getServer().getWorld(world), fileConfiguration.getDouble(path + ".x"), fileConfiguration.getDouble(path + ".y"), fileConfiguration.getDouble(path + ".z"), (float) fileConfiguration.getDouble(path + ".yaw"), (float) fileConfiguration.getDouble(path + ".pitch")));
             } else {
                 return Optional.empty();
             }
@@ -78,7 +76,7 @@ public class FileManager {
         World world = location.getWorld();
 
         if(world != null) {
-            String commonPath = arenaPath + world.getName();
+            String commonPath = aresonDeathSwap.ARENA_PATH + "." + world.getName();
 
             setLocation(commonPath, location);
         }

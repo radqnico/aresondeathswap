@@ -1,16 +1,21 @@
 package it.areson.aresondeathswap;
 
+import it.areson.aresondeathswap.commands.LoadWorldCommand;
 import it.areson.aresondeathswap.commands.SetArenaCommand;
 import it.areson.aresondeathswap.events.PlayerEvents;
 import it.areson.aresondeathswap.handlers.WorldHandler;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public final class AresonDeathSwap extends JavaPlugin {
+
+    public final String ARENA_PATH = "arena";
 
     private static AresonDeathSwap instance;
     private static ArrayList<Player> alivePlayers = new ArrayList<>();
@@ -22,11 +27,14 @@ public final class AresonDeathSwap extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
+
         registerEvents();
         saveDefaultConfig();
 
         FileManager dataFile = new FileManager(this, "data.yml");
+        loadArenaWorlds(dataFile);
         new SetArenaCommand(this, dataFile);
+        new LoadWorldCommand(this);
     }
 
     public void loadArenaWorld(String worldName) {
@@ -35,6 +43,16 @@ public final class AresonDeathSwap extends JavaPlugin {
             world.setAutoSave(false);
         }
     }
+
+    private void loadArenaWorlds(FileManager dataFile) {
+        ConfigurationSection arenaSection = dataFile.getFileConfiguration().getConfigurationSection(ARENA_PATH);
+
+        if (!Objects.isNull(arenaSection)) {
+            arenaSection.getKeys(false).forEach(this::loadArenaWorld);
+        }
+    }
+
+
 
     public static void registerEvents() {
         getInstance().getServer().getPluginManager().registerEvents(new PlayerEvents(), instance);
