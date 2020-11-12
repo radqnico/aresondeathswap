@@ -1,6 +1,6 @@
 package it.areson.aresondeathswap;
 
-import it.areson.aresondeathswap.commands.TestCommand;
+import it.areson.aresondeathswap.commands.SetArenaCommand;
 import it.areson.aresondeathswap.events.PlayerEvents;
 import it.areson.aresondeathswap.handlers.WorldHandler;
 import org.bukkit.World;
@@ -23,13 +23,17 @@ public final class AresonDeathSwap extends JavaPlugin {
         instance = this;
 
         registerEvents();
-
-        saveConfig();
         saveDefaultConfig();
 
-        World worldTest = new WorldCreator("worldTest").createWorld();
-        worldTest.setAutoSave(false);
-        new TestCommand(this);
+        FileManager dataFile = new FileManager(this, "data.yml");
+        new SetArenaCommand(this, dataFile);
+    }
+
+    public void loadArenaWorld(String worldName) {
+        World world = new WorldCreator(worldName).createWorld();
+        if (world != null) {
+            world.setAutoSave(false);
+        }
     }
 
     public static void registerEvents() {

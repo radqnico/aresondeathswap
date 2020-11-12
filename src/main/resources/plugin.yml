@@ -6,5 +6,7 @@ author: Areson
 
 
 commands:
-  test:
-    usage: "/<command>"
+  setArena:
+    usage: "/setArena"
+  loadWorld:
+    usage: "/loadWorld"

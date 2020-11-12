@@ -31,15 +31,11 @@ public class TestCommand implements CommandExecutor {
             if(strings[0].equalsIgnoreCase("back")) {
                 location = aresonDeathSwap.getServer().getWorld("world").getSpawnLocation();
             } else {
-                location = aresonDeathSwap.getServer().getWorld("worldTest").getSpawnLocation();
+                location = aresonDeathSwap.getServer().getWorld(strings[0]).getSpawnLocation();
             }
             ((Player) commandSender).teleport(location);
 
             commandSender.sendMessage("Teleport");
-        } else {
-            //unload
-            aresonDeathSwap.getServer().unloadWorld("worldTest", false);
-            commandSender.sendMessage("Unload");
         }
 
         return true;
