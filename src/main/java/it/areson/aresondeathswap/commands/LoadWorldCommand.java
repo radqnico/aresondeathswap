@@ -16,7 +16,7 @@ public class LoadWorldCommand implements CommandExecutor, TabCompleter {
 
     public LoadWorldCommand(AresonDeathSwap plugin) {
 
-        PluginCommand pluginCommand = plugin.getCommand("setArena");
+        PluginCommand pluginCommand = plugin.getCommand("loadWorld");
         if (!Objects.isNull(pluginCommand)) {
             pluginCommand.setExecutor(this);
         }
