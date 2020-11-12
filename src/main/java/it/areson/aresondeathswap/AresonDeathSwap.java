@@ -3,6 +3,7 @@ package it.areson.aresondeathswap;
 import it.areson.aresondeathswap.commands.TestCommand;
 import it.areson.aresondeathswap.events.PlayerEvents;
 import it.areson.aresondeathswap.handlers.WorldHandler;
+import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -27,7 +28,8 @@ public final class AresonDeathSwap extends JavaPlugin {
         saveConfig();
         saveDefaultConfig();
 
-        new WorldCreator("worldTest").createWorld();
+        World worldTest = new WorldCreator("worldTest").createWorld();
+        worldTest.setAutoSave(false);
         new TestCommand(this);
     }
 
