@@ -119,7 +119,7 @@ public final class AresonDeathSwap extends JavaPlugin {
 
 
     private void registerEvents() {
-        getInstance().getServer().getPluginManager().registerEvents(new PlayerEvents(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerEvents(this), this);
     }
 
     public static AresonDeathSwap getInstance() {
