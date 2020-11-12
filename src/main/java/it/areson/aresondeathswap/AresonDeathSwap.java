@@ -93,7 +93,8 @@ public final class AresonDeathSwap extends JavaPlugin {
                             },
                             10,
                             messages.getPlainMessage("countdown-starting-message"),
-                            arenaName
+                            arenaName,
+                            messages.getPlainMessage("countdown-start-message")
                     );
                     arenasCountdowns.put(arenaName, countdown);
 

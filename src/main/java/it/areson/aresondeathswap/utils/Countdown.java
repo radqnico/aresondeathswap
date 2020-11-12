@@ -20,8 +20,9 @@ public class Countdown {
     private final int timeBeforeShouting;
     private final String shoutingMessage;
     private final String arenaName;
+    private final String startingMessage;
 
-    public Countdown(AresonDeathSwap plugin, int countdownTime, Runnable taskEnded, Runnable taskInterrupted, int timeBeforeShouting, String shoutingMessage, String arenaName) {
+    public Countdown(AresonDeathSwap plugin, int countdownTime, Runnable taskEnded, Runnable taskInterrupted, int timeBeforeShouting, String shoutingMessage, String arenaName, String startingMessage) {
         aresonDeathSwap = plugin;
         this.countdownTime = countdownTime;
         this.taskEnded = taskEnded;
@@ -32,24 +33,31 @@ public class Countdown {
         taskId = 0;
         currentValue = 0;
         this.arenaName = arenaName;
+        this.startingMessage = startingMessage;
     }
 
     public void start() {
         if (!isRunning) {
             isRunning = true;
             currentValue = countdownTime;
+            sendMessages(startingMessage.replaceAll("%seconds%", countdownTime + ""));
+
             taskId = aresonDeathSwap.getServer().getScheduler().scheduleSyncRepeatingTask(aresonDeathSwap, () -> {
                 if (currentValue == 0) {
                     end();
                 }
                 if (currentValue <= timeBeforeShouting) {
-                    HashSet<Player> players = aresonDeathSwap.arenasPlayers.get(arenaName);
-                    if (players != null) {
-                        players.forEach(player -> player.sendMessage(shoutingMessage.replaceAll("%seconds%", currentValue + "")));
-                    }
+                    sendMessages(shoutingMessage.replaceAll("%seconds%", currentValue + ""));
                 }
                 currentValue--;
             }, 0, 20);
+        }
+    }
+
+    private void sendMessages(String message) {
+        HashSet<Player> players = aresonDeathSwap.arenasPlayers.get(arenaName);
+        if (players != null) {
+            players.forEach(player -> player.sendMessage(message));
         }
     }
 
