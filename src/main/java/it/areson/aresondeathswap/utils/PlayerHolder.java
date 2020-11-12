@@ -37,19 +37,5 @@ public class PlayerHolder {
             onlinePlayers.get(i).teleport(locations.get(i));
         }
     }
-    public void playerMassMover(ArrayList<Player> fromList, ArrayList<Player> toList) {
-        for (Player p: fromList) {
-            fromList.remove(p);
-            toList.add(p);
-            AresonDeathSwap.setLobbyPlayers(fromList);
-            AresonDeathSwap.setAlivePlayers(toList);
-        }
-    }
 
-    public void deathPlayerMover(Player toMove, ArrayList<Player> fromList, ArrayList<Player> toList) {
-        fromList.remove(toMove);
-        toList.add(toMove);
-        AresonDeathSwap.setAlivePlayers(fromList);
-        AresonDeathSwap.setDeadPlayers(toList);
-    }
 }

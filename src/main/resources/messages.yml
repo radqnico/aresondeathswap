@@ -5,4 +5,8 @@ countdown-interrupted: "&cNon ci sono abbastanza giocatori per iniziare la parti
 
 countdown-start-message: "&aNumero minimo di giocatori raggiunto. Il gioco inizierà tra %seconds% secondi."
 
-messaggio_vittoria: "Hai vinto!"
+countdown-swap-message: "&aLo swap verrà eseguito tra %seconds% secondi."
+
+victory-message: "&6%player% ha vinto una partita!"
+
+countdown-prepare-message: "&aPreparati al prossimo swap!"

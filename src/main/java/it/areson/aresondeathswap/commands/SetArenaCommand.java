@@ -34,7 +34,7 @@ public class SetArenaCommand implements CommandExecutor, TabCompleter {
             World locationWorld = playerLocation.getWorld();
             if (locationWorld != null) {
                 String worldName = locationWorld.getName();
-                if (!worldName.equalsIgnoreCase("world")) {
+                if (!worldName.equalsIgnoreCase(aresonDeathSwap.MAIN_WORLD_NAME)) {
                     locationWorld.setSpawnLocation(playerLocation);
                     dataFile.setArenaLocation(playerLocation);//TODO Remove to array
                     aresonDeathSwap.getServer().getOnlinePlayers().forEach(

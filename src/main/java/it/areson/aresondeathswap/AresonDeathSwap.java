@@ -18,13 +18,17 @@ public final class AresonDeathSwap extends JavaPlugin {
 
     public final String ARENA_PATH = "arena";
     public final int MIN_PLAYERS = 2;
+    public final int MIN_SWAP_TIME_SECONDS = 60;
+    public final int MAX_SWAP_TIME_SECONDS = 300;
+    public final String MAIN_WORLD_NAME = "world";
 
     public HashMap<String, Boolean> joinableArenas;
     public ArrayList<Player> waitingPlayers;
     public HashMap<String, HashSet<Player>> arenasPlayers;
     public HashMap<String, Countdown> arenasCountdowns;
+    public HashMap<String, GameHandler> arenasGameHandlers;
+    public MessageManager messages;
 
-    private MessageManager messages;
     private FileManager dataFile;
 
 
@@ -39,6 +43,7 @@ public final class AresonDeathSwap extends JavaPlugin {
         waitingPlayers = new ArrayList<>();
         arenasPlayers = new HashMap<>();
         arenasCountdowns = new HashMap<>();
+        arenasGameHandlers = new HashMap<>();
 
         messages = new MessageManager(this, "messages.yml");
         dataFile = new FileManager(this, "data.yml");
@@ -78,13 +83,11 @@ public final class AresonDeathSwap extends JavaPlugin {
 
                     //Countdowns
                     Countdown countdown = new Countdown(this, 20,
-                            () -> new GameHandler(
-                                    this,
-                                    13,
-                                    30,
-                                    getConfig().getString("messaggio_avviso_in_partita"),
-                                    arenaName
-                            ).startGame(),
+                            () -> {
+                                joinableArenas.put(arenaName, false);
+                                //TODO Da salvare su arenasGameHandlers
+                                new GameHandler(this, arenaName).startGame();
+                            },
                             () -> {
                                 HashSet<Player> players = arenasPlayers.get(arenaName);
                                 if (players != null) {
@@ -122,6 +125,15 @@ public final class AresonDeathSwap extends JavaPlugin {
 
     public Optional<String> getFirstFreeArena() {
         return joinableArenas.entrySet().stream().filter(tuple -> !tuple.getValue()).map(Map.Entry::getKey).findFirst();
+    }
+
+    public void teleportToLobbySpawn(Player player) {
+        World world = getServer().getWorld(MAIN_WORLD_NAME);
+        if (world != null) {
+            player.teleport(world.getSpawnLocation());
+        } else {
+            //TODO Main world not found
+        }
     }
 
 

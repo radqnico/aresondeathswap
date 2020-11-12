@@ -37,6 +37,8 @@ public class PlayerEvents implements Listener {
     @EventHandler
     public void onPlayerJoinEvent(PlayerJoinEvent event) {
 
+        aresonDeathSwap.teleportToLobbySpawn(event.getPlayer());
+
         Optional<String> firstFreeArena = aresonDeathSwap.getFirstFreeArena();
 
         if (firstFreeArena.isPresent()) {
@@ -100,7 +102,7 @@ public class PlayerEvents implements Listener {
         Player player = e.getEntity().getPlayer();
         player.setGameMode(GameMode.SPECTATOR);
         if (alivePlayers.contains(player)) {
-            playerHolder.deathPlayerMover(player, AresonDeathSwap.getAlivePlayers(), AresonDeathSwap.getDeadPlayers());
+//            playerHolder.deathPlayerMover(player, AresonDeathSwap.getAlivePlayers(), AresonDeathSwap.getDeadPlayers());
         }
         if (gameHandler.isRunning()) {
             if (instance.getServer().getOnlinePlayers().size() < 2) {
