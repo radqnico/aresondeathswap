@@ -20,7 +20,7 @@ public class MessageManager extends FileManager {
         if (Objects.nonNull(message)) {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
         } else {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lError: '" + messageKey + "' message does not exists!"));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cError: '" + messageKey + "' message does not exists!"));
         }
     }
 
@@ -30,7 +30,7 @@ public class MessageManager extends FileManager {
             BaseComponent[] rawMessage = ComponentSerializer.parse(message);
             player.spigot().sendMessage(rawMessage);
         } else {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lError: '" + messageKey + "' message does not exists!"));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cError: '" + messageKey + "' message does not exists!"));
         }
     }
 
@@ -39,7 +39,7 @@ public class MessageManager extends FileManager {
         if (Objects.nonNull(message)) {
             return ChatColor.translateAlternateColorCodes('&', message);
         } else {
-            return ChatColor.translateAlternateColorCodes('&', "&c&lError: '" + messageKey + "' message does not exists!");
+            return ChatColor.translateAlternateColorCodes('&', "&cError: '" + messageKey + "' message does not exists!");
         }
     }
 
@@ -48,7 +48,7 @@ public class MessageManager extends FileManager {
         if (Objects.nonNull(message)) {
             return ComponentSerializer.parse(message);
         } else {
-            return TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', "&c&lError: '" + messageKey + "' message does not exists!"));
+            return TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', "&cError: '" + messageKey + "' message does not exists!"));
         }
     }
 }
