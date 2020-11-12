@@ -63,7 +63,10 @@ public final class AresonDeathSwap extends JavaPlugin {
         ConfigurationSection arenaSection = dataFile.getFileConfiguration().getConfigurationSection(ARENA_PATH);
 
         if (!Objects.isNull(arenaSection)) {
-            arenaSection.getKeys(false).forEach(arenaName -> getServer().unloadWorld(arenaName, false));
+            arenaSection.getKeys(false).forEach(arenaName -> {
+                getLogger().info("Unloading world " + arenaName);
+                getServer().unloadWorld(arenaName, false);
+            });
         }
     }
 
