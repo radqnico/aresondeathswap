@@ -17,6 +17,8 @@ public final class AresonDeathSwap extends JavaPlugin {
 
     public final String ARENA_PATH = "arena";
 
+    private FileManager dataFile;
+
     private static AresonDeathSwap instance;
     private static ArrayList<Player> alivePlayers = new ArrayList<>();
     private static ArrayList<Player> lobbyPlayers = new ArrayList<>();
@@ -31,10 +33,15 @@ public final class AresonDeathSwap extends JavaPlugin {
         registerEvents();
         saveDefaultConfig();
 
-        FileManager dataFile = new FileManager(this, "data.yml");
+        dataFile = new FileManager(this, "data.yml");
         loadArenaWorlds(dataFile);
         new SetArenaCommand(this, dataFile);
         new LoadWorldCommand(this);
+    }
+
+    @Override
+    public void onDisable() {
+        unloadArenaWorlds(dataFile);
     }
 
     public void loadArenaWorld(String worldName) {
@@ -49,6 +56,14 @@ public final class AresonDeathSwap extends JavaPlugin {
 
         if (!Objects.isNull(arenaSection)) {
             arenaSection.getKeys(false).forEach(this::loadArenaWorld);
+        }
+    }
+
+    private void unloadArenaWorlds(FileManager dataFile) {
+        ConfigurationSection arenaSection = dataFile.getFileConfiguration().getConfigurationSection(ARENA_PATH);
+
+        if (!Objects.isNull(arenaSection)) {
+            arenaSection.getKeys(false).forEach(arenaName -> getServer().unloadWorld(arenaName, false));
         }
     }
 
