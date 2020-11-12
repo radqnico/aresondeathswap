@@ -27,8 +27,12 @@ public class TestCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if(strings.length > 0) {
-            //Tp
-            Location location = aresonDeathSwap.getServer().getWorld("worldTest").getSpawnLocation();
+            Location location;
+            if(strings[0].equalsIgnoreCase("back")) {
+                location = aresonDeathSwap.getServer().getWorld("world").getSpawnLocation();
+            } else {
+                location = aresonDeathSwap.getServer().getWorld("worldTest").getSpawnLocation();
+            }
             ((Player) commandSender).teleport(location);
 
             commandSender.sendMessage("Teleport");
