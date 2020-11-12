@@ -85,7 +85,12 @@ public final class AresonDeathSwap extends JavaPlugin {
                                     getConfig().getString("messaggio_avviso_in_partita"),
                                     arenaName
                             ).startGame(),
-                            () -> getServer().broadcastMessage(messages.getPlainMessage("countdown-starting-message")),
+                            () -> {
+                                HashSet<Player> players = arenasPlayers.get(arenaName);
+                                if (players != null) {
+                                    players.forEach(player -> messages.sendPlainMessage(player, "countdown-interrupted"));
+                                }
+                            },
                             10,
                             messages.getPlainMessage("countdown-starting-message"),
                             arenaName

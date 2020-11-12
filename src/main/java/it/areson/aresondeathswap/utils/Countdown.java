@@ -15,17 +15,17 @@ public class Countdown {
 
     private int taskId;
     private boolean isRunning;
-    private final Runnable stopTaskFinish;
-    private final Runnable stopTaskInterrupted;
+    private final Runnable taskEnded;
+    private final Runnable taskInterrupted;
     private final int timeBeforeShouting;
     private final String shoutingMessage;
     private final String arenaName;
 
-    public Countdown(AresonDeathSwap plugin, int countdownTime, Runnable stopTaskFinish, Runnable stopTaskInterrupted, int timeBeforeShouting, String shoutingMessage, String arenaName) {
+    public Countdown(AresonDeathSwap plugin, int countdownTime, Runnable taskEnded, Runnable taskInterrupted, int timeBeforeShouting, String shoutingMessage, String arenaName) {
         aresonDeathSwap = plugin;
         this.countdownTime = countdownTime;
-        this.stopTaskFinish = stopTaskFinish;
-        this.stopTaskInterrupted = stopTaskInterrupted;
+        this.taskEnded = taskEnded;
+        this.taskInterrupted = taskInterrupted;
         this.timeBeforeShouting = timeBeforeShouting;
         this.shoutingMessage = ChatColor.translateAlternateColorCodes('&', shoutingMessage);
         isRunning = false;
@@ -56,7 +56,7 @@ public class Countdown {
     private void end() {
         isRunning = false;
         aresonDeathSwap.getServer().getScheduler().cancelTask(taskId);
-        aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(AresonDeathSwap.getInstance(), stopTaskFinish, 0);
+        aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(AresonDeathSwap.getInstance(), taskEnded, 0);
 
     }
 
@@ -64,7 +64,7 @@ public class Countdown {
         if (isRunning) {
             isRunning = false;
             aresonDeathSwap.getServer().getScheduler().cancelTask(taskId);
-            aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(AresonDeathSwap.getInstance(), stopTaskInterrupted, 0);
+            aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(AresonDeathSwap.getInstance(), taskInterrupted, 0);
         }
     }
 

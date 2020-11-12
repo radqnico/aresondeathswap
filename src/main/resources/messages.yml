@@ -1,4 +1,4 @@
 countdown-starting-message: "Il gioco inizierà tra %seconds%!"
-messaggio_non_abbastanza_player: "Non ci sono abbastanza giocatori per iniziare la partita!"
+countdown-interrupted: "Non ci sono abbastanza giocatori per iniziare la partita!"
 countdown-starting-message2: "Verrai tippato tra %secs%!"
 messaggio_vittoria: "Hai vinto!"
