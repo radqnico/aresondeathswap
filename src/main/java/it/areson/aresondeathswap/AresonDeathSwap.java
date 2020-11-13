@@ -4,7 +4,6 @@ import it.areson.aresondeathswap.commands.LoadWorldCommand;
 import it.areson.aresondeathswap.commands.SetArenaCommand;
 import it.areson.aresondeathswap.events.PlayerEvents;
 import it.areson.aresondeathswap.handlers.GameHandler;
-import it.areson.aresondeathswap.handlers.WorldHandler;
 import it.areson.aresondeathswap.utils.Countdown;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
