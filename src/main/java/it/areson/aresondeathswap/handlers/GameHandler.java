@@ -85,7 +85,7 @@ public class GameHandler {
         HashSet<Player> players = aresonDeathSwap.arenasPlayers.get(arenaName);
         if (players != null) {
             ArrayList<Player> playersArrayList = new ArrayList<>(players);
-            List<Location> locations = players.stream().map(Player::getLocation).collect(Collectors.toList());
+            List<Location> locations = playersArrayList.stream().map(Player::getLocation).collect(Collectors.toList());
 
             int lastIndex = locations.size() - 1;
             Location lastLocation = locations.get(lastIndex);
