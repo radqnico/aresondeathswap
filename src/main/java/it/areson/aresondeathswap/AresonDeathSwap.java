@@ -24,7 +24,7 @@ public final class AresonDeathSwap extends JavaPlugin {
 
     public HashMap<String, Boolean> joinableArenas;
     public ArrayList<Player> waitingPlayers;
-    public HashMap<String, HashSet<Player>> arenasPlayers;
+    public HashMap<String, HashSet<Player>> arenasPlayers;//TODO To arraylist
     public HashMap<String, Countdown> arenasCountdowns;
     public HashMap<String, GameHandler> arenasGameHandlers;
     public MessageManager messages;

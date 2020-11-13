@@ -3,13 +3,12 @@ package it.areson.aresondeathswap.handlers;
 import it.areson.aresondeathswap.AresonDeathSwap;
 import it.areson.aresondeathswap.utils.Countdown;
 import it.areson.aresondeathswap.utils.PlayerHolder;
-import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class GameHandler {
 
@@ -40,7 +39,7 @@ public class GameHandler {
 
 
         gameCountdown = new Countdown(aresonDeathSwap, randomTeleportTime(), () -> {
-            players.playerRotate();
+            rotatePlayers();
             gameCountdown.resetCountdown(randomTeleportTime());
             gameCountdown.start();
         }, () -> {
@@ -80,4 +79,29 @@ public class GameHandler {
             gameCountdown.interrupt();
         }
     }
+
+    public void rotatePlayers() {
+
+        HashSet<Player> players = aresonDeathSwap.arenasPlayers.get(arenaName);
+        if (players != null) {
+            List<Location> locations = players.stream().map(Player::getLocation).collect(Collectors.toList());
+
+            int lastIndex = locations.size() - 1;
+            Location lastLocation = locations.get(lastIndex);
+
+            for (int i = 0; i < lastIndex; i++) {
+                locations.set(i + 1, locations.get(i));
+            }
+            locations.set(0, lastLocation);
+
+            ArrayList<Player> playersArrayList = new ArrayList<>(players);
+
+            for (int i = 0; i < players.size(); i++) {
+                playersArrayList.get(i).teleport(locations.get(i));
+            }
+        } else {
+            //TODO Inconsistence
+        }
+    }
+
 }
