@@ -1,4 +1,4 @@
-package it.areson.aresondeathswap;
+package it.areson.aresondeathswap.enums;
 
 public enum ArenaStatus {
 

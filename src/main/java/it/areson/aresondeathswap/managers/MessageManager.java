@@ -1,11 +1,11 @@
-package it.areson.aresondeathswap;
+package it.areson.aresondeathswap.managers;
 
+import it.areson.aresondeathswap.AresonDeathSwap;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
 

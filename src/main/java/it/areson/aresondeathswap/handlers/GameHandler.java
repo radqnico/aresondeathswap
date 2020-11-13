@@ -27,7 +27,7 @@ public class GameHandler {
     public void startGame() {
         World world = aresonDeathSwap.getServer().getWorld(arenaName);
         if (world != null) {
-            HashSet<Player> players = aresonDeathSwap.arenasPlayers.get(arenaName);
+            ArrayList<Player> players = aresonDeathSwap.arenasPlayers.get(arenaName);
             if (players != null) {
                 players.forEach(player -> player.teleport(world.getSpawnLocation()));
             } else {
@@ -43,7 +43,7 @@ public class GameHandler {
             gameCountdown.resetCountdown(randomTeleportTime());
             gameCountdown.start();
         }, () -> {
-            HashSet<Player> players = aresonDeathSwap.arenasPlayers.get(arenaName);
+            ArrayList<Player> players = aresonDeathSwap.arenasPlayers.get(arenaName);
             if (players != null) {
                 if (players.size() > 0) {
                     Player winnerPlayer = players.stream().findFirst().get();
@@ -51,7 +51,7 @@ public class GameHandler {
                             aresonDeathSwap.messages.getPlainMessage("victory-message").replaceAll("%player%", winnerPlayer.getName())
                     );
                     aresonDeathSwap.teleportToLobbySpawn(winnerPlayer);
-                    aresonDeathSwap.arenasPlayers.put(arenaName, new HashSet<>());
+                    aresonDeathSwap.arenasPlayers.put(arenaName, new ArrayList<>());
                     aresonDeathSwap.joinableArenas.put(arenaName, true);
                 } else {
                     //TODO Manca player
@@ -81,11 +81,10 @@ public class GameHandler {
     }
 
     public void rotatePlayers() {
+        ArrayList<Player> players = aresonDeathSwap.arenasPlayers.get(arenaName);
 
-        HashSet<Player> players = aresonDeathSwap.arenasPlayers.get(arenaName);
         if (players != null) {
-            ArrayList<Player> playersArrayList = new ArrayList<>(players);
-            List<Location> locations = playersArrayList.stream().map(Player::getLocation).collect(Collectors.toList());
+            List<Location> locations = players.stream().map(Player::getLocation).collect(Collectors.toList());
 
             int lastIndex = locations.size() - 1;
             Location lastLocation = locations.get(lastIndex);
@@ -96,7 +95,7 @@ public class GameHandler {
             locations.set(0, lastLocation);
 
             for (int i = 0; i < players.size(); i++) {
-                playersArrayList.get(i).teleport(locations.get(i));
+                players.get(i).teleport(locations.get(i));
             }
         } else {
             //TODO Inconsistence

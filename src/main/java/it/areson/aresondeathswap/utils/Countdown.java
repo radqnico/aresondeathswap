@@ -4,6 +4,7 @@ import it.areson.aresondeathswap.AresonDeathSwap;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 public class Countdown {
@@ -55,7 +56,7 @@ public class Countdown {
     }
 
     private void sendMessages(String message) {
-        HashSet<Player> players = aresonDeathSwap.arenasPlayers.get(arenaName);
+        ArrayList<Player> players = aresonDeathSwap.arenasPlayers.get(arenaName);
         if (players != null) {
             players.forEach(player -> player.sendMessage(message));
         }

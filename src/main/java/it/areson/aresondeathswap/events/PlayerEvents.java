@@ -43,7 +43,7 @@ public class PlayerEvents implements Listener {
 
         if (firstFreeArena.isPresent()) {
             String arenaName = firstFreeArena.get();
-            HashSet<Player> arenaPlayers = aresonDeathSwap.arenasPlayers.get(arenaName);
+            ArrayList<Player> arenaPlayers = aresonDeathSwap.arenasPlayers.get(arenaName);
 
             if (arenaPlayers != null) {
                 arenaPlayers.add(event.getPlayer());
@@ -56,7 +56,7 @@ public class PlayerEvents implements Listener {
                     if (arenaPlayers.size() >= aresonDeathSwap.MIN_PLAYERS) {
                         if (!countdown.isRunning()) {
                             countdown.start();
-                            //TODO Messaggio
+                            arenaPlayers.forEach(player -> aresonDeathSwap.messages.sendPlainMessage(player, "countdown-game-started"));
                         }
                     }
                 } else {

@@ -1,7 +1,6 @@
 package it.areson.aresondeathswap.commands;
 
 import it.areson.aresondeathswap.AresonDeathSwap;
-import it.areson.aresondeathswap.FileManager;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.command.*;

@@ -4,6 +4,8 @@ import it.areson.aresondeathswap.commands.LoadWorldCommand;
 import it.areson.aresondeathswap.commands.SetArenaCommand;
 import it.areson.aresondeathswap.events.PlayerEvents;
 import it.areson.aresondeathswap.handlers.GameHandler;
+import it.areson.aresondeathswap.managers.FileManager;
+import it.areson.aresondeathswap.managers.MessageManager;
 import it.areson.aresondeathswap.utils.Countdown;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
@@ -23,7 +25,7 @@ public final class AresonDeathSwap extends JavaPlugin {
 
     public HashMap<String, Boolean> joinableArenas;
     public ArrayList<Player> waitingPlayers;
-    public HashMap<String, HashSet<Player>> arenasPlayers;//TODO To arraylist
+    public HashMap<String, ArrayList<Player>> arenasPlayers;
     public HashMap<String, Countdown> arenasCountdowns;
     public HashMap<String, GameHandler> arenasGameHandlers;
     public MessageManager messages;
@@ -78,7 +80,7 @@ public final class AresonDeathSwap extends JavaPlugin {
             arenaSection.getKeys(false).forEach(arenaName -> {
                 if (loadArenaWorld(arenaName)) {
                     joinableArenas.put(arenaName, false);
-                    arenasPlayers.put(arenaName, new HashSet<>());
+                    arenasPlayers.put(arenaName, new ArrayList<>());
 
                     //Countdowns
                     Countdown countdown = new Countdown(this, 20,
@@ -88,7 +90,7 @@ public final class AresonDeathSwap extends JavaPlugin {
                                 new GameHandler(this, arenaName).startGame();
                             },
                             () -> {
-                                HashSet<Player> players = arenasPlayers.get(arenaName);
+                                ArrayList<Player> players = arenasPlayers.get(arenaName);
                                 if (players != null) {
                                     players.forEach(player -> messages.sendPlainMessage(player, "countdown-interrupted"));
                                 }
@@ -148,24 +150,13 @@ public final class AresonDeathSwap extends JavaPlugin {
         return alivePlayers;
     }
 
-    public static void setAlivePlayers(ArrayList<Player> alivePlayers) {
-        AresonDeathSwap.alivePlayers = alivePlayers;
-    }
-
     public static ArrayList<Player> getLobbyPlayers() {
         return lobbyPlayers;
-    }
-
-    public static void setLobbyPlayers(ArrayList<Player> lobbyPlayers) {
-        AresonDeathSwap.lobbyPlayers = lobbyPlayers;
     }
 
     public static ArrayList<Player> getDeadPlayers() {
         return deadPlayers;
     }
 
-    public static void setDeadPlayers(ArrayList<Player> deadPlayers) {
-        AresonDeathSwap.deadPlayers = deadPlayers;
-    }
 
 }

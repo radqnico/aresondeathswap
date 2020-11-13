@@ -1,5 +1,6 @@
-package it.areson.aresondeathswap;
+package it.areson.aresondeathswap.managers;
 
+import it.areson.aresondeathswap.AresonDeathSwap;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
