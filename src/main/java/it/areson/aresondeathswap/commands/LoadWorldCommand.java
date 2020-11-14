@@ -7,7 +7,6 @@ import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,13 +23,13 @@ public class LoadWorldCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] arguments) {
 
-        if(commandSender instanceof Player) {
+        if (commandSender instanceof Player) {
             Player player = (Player) commandSender;
 
-            if(arguments.length > 0) {
+            if (arguments.length > 0) {
                 World loadedWorld = new WorldCreator(arguments[0]).createWorld();
 
-                if(loadedWorld != null) {
+                if (loadedWorld != null) {
                     player.teleport(loadedWorld.getSpawnLocation());
                     player.sendMessage("Mondo caricato");
                 } else {
@@ -48,6 +47,11 @@ public class LoadWorldCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
-        return new ArrayList<>(Collections.singleton("setArena"));
+        List<String> suggestions = new ArrayList<>();
+        if (strings.length < 1) {
+            suggestions.add("loadWorld");
+        }
+
+        return suggestions;
     }
 }

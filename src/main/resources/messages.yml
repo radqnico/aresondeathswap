@@ -1,11 +1,11 @@
 prefix: "&9[Areson] "
 
-countdown-starting-message: "&aIl gioco inizierà tra %seconds%"
+countdown-starting-message: "&aIl gioco inizierà tra %seconds% secondi"
 countdown-interrupted: "&cNon ci sono abbastanza giocatori per iniziare la partita!"
 
-countdown-start-message: "&aNumero minimo di giocatori raggiunto. Il gioco inizierà tra %seconds% secondi."
+countdown-start-message: "&aNumero minimo di giocatori raggiunto. Il gioco inizierà tra %seconds% secondi"
 countdown-game-started: "&aLa partita è iniziata, fai attenzione a non morire!"
-countdown-swap-message: "&aLo swap verrà eseguito tra %seconds% secondi."
+countdown-swap-message: "&aLo swap verrà eseguito tra %seconds% secondi"
 
 victory-message: "&6%player% ha vinto una partita!"
 

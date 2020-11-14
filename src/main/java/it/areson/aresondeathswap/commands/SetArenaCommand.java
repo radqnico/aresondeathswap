@@ -61,6 +61,11 @@ public class SetArenaCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
-        return new ArrayList<>(Collections.singleton("setArena"));
+        List<String> suggestions = new ArrayList<>();
+        if (strings.length < 1) {
+            suggestions.add("setArena");
+        }
+
+        return suggestions;
     }
 }
