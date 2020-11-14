@@ -3,10 +3,8 @@ package it.areson.aresondeathswap;
 import it.areson.aresondeathswap.commands.LoadWorldCommand;
 import it.areson.aresondeathswap.commands.SetArenaCommand;
 import it.areson.aresondeathswap.events.PlayerEvents;
-import it.areson.aresondeathswap.handlers.GameHandler;
 import it.areson.aresondeathswap.managers.FileManager;
 import it.areson.aresondeathswap.managers.MessageManager;
-import it.areson.aresondeathswap.utils.Countdown;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.configuration.ConfigurationSection;
@@ -23,37 +21,27 @@ public final class AresonDeathSwap extends JavaPlugin {
     public final int MAX_SWAP_TIME_SECONDS = 15;
     public final String MAIN_WORLD_NAME = "world";
 
-    public HashMap<String, Boolean> joinableArenas;
+    //    public HashMap<String, Boolean> joinableArenas;
     public ArrayList<Player> waitingPlayers;
-    public HashMap<String, ArrayList<Player>> arenasPlayers;
-    public HashMap<String, Countdown> arenasCountdowns;
-    public HashMap<String, GameHandler> arenasGameHandlers;
+    //    public HashMap<String, ArrayList<Player>> arenasPlayers;
+//    public HashMap<String, Countdown> arenasCountdowns;
+//    public HashMap<String, GameHandler> arenasGameHandlers;
+    public HashMap<String, Arena> arenas;
     public MessageManager messages;
 
     private FileManager dataFile;
 
-
-    private static AresonDeathSwap instance;
-    private static ArrayList<Player> alivePlayers = new ArrayList<>();
-    private static ArrayList<Player> lobbyPlayers = new ArrayList<>();
-    private static ArrayList<Player> deadPlayers = new ArrayList<>();
-
     @Override
     public void onEnable() {
-        joinableArenas = new HashMap<>();
         waitingPlayers = new ArrayList<>();
-        arenasPlayers = new HashMap<>();
-        arenasCountdowns = new HashMap<>();
-        arenasGameHandlers = new HashMap<>();
 
         messages = new MessageManager(this, "messages.yml");
         dataFile = new FileManager(this, "data.yml");
-        loadArenaWorlds(dataFile);
+        loadArenas(dataFile);
         new SetArenaCommand(this, dataFile);
         new LoadWorldCommand(this);
 
         registerEvents();
-        instance = this;
     }
 
     @Override
@@ -73,35 +61,13 @@ public final class AresonDeathSwap extends JavaPlugin {
         }
     }
 
-    private void loadArenaWorlds(FileManager dataFile) {
+    private void loadArenas(FileManager dataFile) {
         ConfigurationSection arenaSection = dataFile.getFileConfiguration().getConfigurationSection(ARENA_PATH);
 
         if (!Objects.isNull(arenaSection)) {
             arenaSection.getKeys(false).forEach(arenaName -> {
                 if (loadArenaWorld(arenaName)) {
-                    joinableArenas.put(arenaName, false);
-                    arenasPlayers.put(arenaName, new ArrayList<>());
-
-                    //Countdowns
-                    Countdown countdown = new Countdown(this, 20,
-                            () -> {
-                                joinableArenas.put(arenaName, false);
-                                //TODO Da salvare su arenasGameHandlers
-                                new GameHandler(this, arenaName).startGame();
-                            },
-                            () -> {
-                                ArrayList<Player> players = arenasPlayers.get(arenaName);
-                                if (players != null) {
-                                    players.forEach(player -> messages.sendPlainMessage(player, "countdown-interrupted"));
-                                }
-                            },
-                            10,
-                            messages.getPlainMessage("countdown-starting-message"),
-                            arenaName,
-                            messages.getPlainMessage("countdown-start-message")
-                    );
-                    arenasCountdowns.put(arenaName, countdown);
-
+                    arenas.put(arenaName, new Arena(this, arenaName));
                     getLogger().info("World " + arenaName + " loaded successfully");
                 } else {
                     getLogger().info("Error while loading world " + arenaName);
@@ -124,8 +90,8 @@ public final class AresonDeathSwap extends JavaPlugin {
         }
     }
 
-    public Optional<String> getFirstFreeArena() {
-        return joinableArenas.entrySet().stream().filter(tuple -> !tuple.getValue()).map(Map.Entry::getKey).findFirst();
+    public Optional<Arena> getFirstFreeArena() {
+        return arenas.values().stream().filter(Arena::isJoinable).findFirst();
     }
 
     public void teleportToLobbySpawn(Player player) {
@@ -141,22 +107,5 @@ public final class AresonDeathSwap extends JavaPlugin {
     private void registerEvents() {
         getServer().getPluginManager().registerEvents(new PlayerEvents(this), this);
     }
-
-    public static AresonDeathSwap getInstance() {
-        return instance;
-    }
-
-    public static ArrayList<Player> getAlivePlayers() {
-        return alivePlayers;
-    }
-
-    public static ArrayList<Player> getLobbyPlayers() {
-        return lobbyPlayers;
-    }
-
-    public static ArrayList<Player> getDeadPlayers() {
-        return deadPlayers;
-    }
-
 
 }

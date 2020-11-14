@@ -1,20 +1,16 @@
 package it.areson.aresondeathswap.events;
 
+import it.areson.aresondeathswap.Arena;
 import it.areson.aresondeathswap.AresonDeathSwap;
-import it.areson.aresondeathswap.handlers.GameHandler;
 import it.areson.aresondeathswap.utils.Countdown;
-import it.areson.aresondeathswap.utils.PlayerHolder;
-import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Optional;
 
 public class PlayerEvents implements Listener {
@@ -25,46 +21,18 @@ public class PlayerEvents implements Listener {
         aresonDeathSwap = plugin;
     }
 
-    private static AresonDeathSwap instance = AresonDeathSwap.getInstance();
     private Countdown preGameCountdown;
-    private GameHandler gameHandler;
-    private PlayerHolder playerHolder = new PlayerHolder(instance);
-
-    private ArrayList<Player> alivePlayers = AresonDeathSwap.getAlivePlayers();
-    private ArrayList<Player> lobbyPlayers = AresonDeathSwap.getLobbyPlayers();
-    private ArrayList<Player> deadPlayers = AresonDeathSwap.getDeadPlayers();
 
     @EventHandler
     public void onPlayerJoinEvent(PlayerJoinEvent event) {
 
         aresonDeathSwap.teleportToLobbySpawn(event.getPlayer());
 
-        Optional<String> firstFreeArena = aresonDeathSwap.getFirstFreeArena();
+        Optional<Arena> firstFreeArena = aresonDeathSwap.getFirstFreeArena();
 
         if (firstFreeArena.isPresent()) {
-            String arenaName = firstFreeArena.get();
-            ArrayList<Player> arenaPlayers = aresonDeathSwap.arenasPlayers.get(arenaName);
-
-            if (arenaPlayers != null) {
-                arenaPlayers.add(event.getPlayer());
-
-
-                //Countdown should start
-                Countdown countdown = aresonDeathSwap.arenasCountdowns.get(arenaName);
-
-                if (countdown != null) {
-                    if (arenaPlayers.size() >= aresonDeathSwap.MIN_PLAYERS) {
-                        if (!countdown.isRunning()) {
-                            countdown.start();
-                            arenaPlayers.forEach(player -> aresonDeathSwap.messages.sendPlainMessage(player, "countdown-game-started"));
-                        }
-                    }
-                } else {
-                    //Inconsistenza
-                }
-            } else {
-                //Arena non trovata
-            }
+            firstFreeArena.get();//TODO add players che deve controllare se far partire countdown pregame
+            arenaPlayers.add(event.getPlayer());
         } else {
             aresonDeathSwap.waitingPlayers.add(event.getPlayer());
         }
@@ -76,11 +44,11 @@ public class PlayerEvents implements Listener {
 
         aresonDeathSwap.waitingPlayers.remove(player);
         aresonDeathSwap.arenasPlayers.forEach((arenaName, arenaPlayers) -> {
-            if(arenaPlayers.contains(player)) {
+            if (arenaPlayers.contains(player)) {
                 arenaPlayers.remove(player);
                 Countdown countdown = aresonDeathSwap.arenasCountdowns.get(arenaName);
-                if(countdown != null) {
-                    if(arenaPlayers.size() < aresonDeathSwap.MIN_PLAYERS) {
+                if (countdown != null) {
+                    if (arenaPlayers.size() < aresonDeathSwap.MIN_PLAYERS) {
                         countdown.interrupt();
                     }
                 } else {
@@ -89,6 +57,7 @@ public class PlayerEvents implements Listener {
             }
 
         });
+
 
 //        if (gameHandler.isRunning()) {
 //            if (instance.getServer().getOnlinePlayers().size() < 2) {
@@ -99,16 +68,16 @@ public class PlayerEvents implements Listener {
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent e) {
-        Player player = e.getEntity().getPlayer();
-        player.setGameMode(GameMode.SPECTATOR);
-        if (alivePlayers.contains(player)) {
-//            playerHolder.deathPlayerMover(player, AresonDeathSwap.getAlivePlayers(), AresonDeathSwap.getDeadPlayers());
-        }
-        if (gameHandler.isRunning()) {
-            if (instance.getServer().getOnlinePlayers().size() < 2) {
-                gameHandler.stop();
-            }
-        }
+//        Player player = e.getEntity().getPlayer();
+//        player.setGameMode(GameMode.SPECTATOR);
+//        if (alivePlayers.contains(player)) {
+////            playerHolder.deathPlayerMover(player, AresonDeathSwap.getAlivePlayers(), AresonDeathSwap.getDeadPlayers());
+//        }
+//        if (gameHandler.isRunning()) {
+//            if (instance.getServer().getOnlinePlayers().size() < 2) {
+//                gameHandler.stop();
+//            }
+//        }
     }
 
 }
