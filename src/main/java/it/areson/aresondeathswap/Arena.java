@@ -1,5 +1,6 @@
 package it.areson.aresondeathswap;
 
+import it.areson.aresondeathswap.enums.ArenaStatus;
 import it.areson.aresondeathswap.utils.Countdown;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -18,13 +19,14 @@ public class Arena {
     private ArrayList<Player> players;
     private Countdown countdownPregame;
     private Countdown countdownGame;
+    private ArenaStatus arenaStatus;
 
     public Arena(AresonDeathSwap aresonDeathSwap, String arenaName) {
         this.aresonDeathSwap = aresonDeathSwap;
         this.arenaName = arenaName;
         this.isJoinable = true;
         this.players = new ArrayList<>();
-
+        this.arenaStatus = ArenaStatus.Waiting;
         //Countdowns
         this.countdownPregame = new Countdown(aresonDeathSwap,
                 30,
@@ -68,17 +70,12 @@ public class Arena {
     public void startGame() {
         World world = aresonDeathSwap.getServer().getWorld(arenaName);
         if (world != null) {
-            ArrayList<Player> players = aresonDeathSwap.arenasPlayers.get(arenaName);
-            if (players != null) {
-                players.forEach(player -> player.teleport(world.getSpawnLocation()));
-            } else {
-                //TODO Incosistenza
-            }
+            players.forEach(player -> player.teleport(world.getSpawnLocation()));
+            countdownGame.start();
+            this.arenaStatus = ArenaStatus.InGame;
         } else {
             //TODO inconsistenza
         }
-
-        gameCountdown.start();
     }
 
     private int randomTeleportTime() {
@@ -86,13 +83,15 @@ public class Arena {
         return random.nextInt(aresonDeathSwap.MAX_SWAP_TIME_SECONDS - aresonDeathSwap.MIN_SWAP_TIME_SECONDS) + aresonDeathSwap.MIN_SWAP_TIME_SECONDS;
     }
 
-    public boolean isRunning() {
-        return gameCountdown.isRunning();
+    public void stopPregame() {
+        if (countdownPregame.isRunning()) {
+            countdownPregame.interrupt();
+        }
     }
 
-    public void stop() {
-        if (isRunning()) {
-            gameCountdown.interrupt();
+    public void stopGame() {
+        if (countdownGame.isRunning()) {
+            countdownGame.interrupt();
         }
     }
 
@@ -120,4 +119,18 @@ public class Arena {
         return isJoinable;
     }
 
+    public void addPlayer(Player player){
+        players.add(player);
+    }
+
+    public void startPregame(){
+        if(!countdownPregame.isRunning()) {
+            countdownPregame.start();
+            this.arenaStatus = ArenaStatus.Starting;
+        }
+    }
+
+    public ArenaStatus getArenaStatus() {
+        return arenaStatus;
+    }
 }
