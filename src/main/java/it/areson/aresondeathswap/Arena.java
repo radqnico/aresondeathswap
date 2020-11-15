@@ -130,6 +130,7 @@ public class Arena {
 
     public void removePlayer(Player player) {
         if (players.contains(player)) {
+            aresonDeathSwap.getLogger().severe("Removing " + player.getName());
             players.remove(player);
 
             switch (arenaStatus) {
@@ -149,6 +150,11 @@ public class Arena {
     }
 
     public void winGame() {
+        aresonDeathSwap.getLogger().severe("Calling winGame");
+        aresonDeathSwap.getLogger().severe("players: " + players.toString());
+        aresonDeathSwap.getLogger().severe("world:" + aresonDeathSwap.getServer().getWorld(arenaName).getPlayers().toString());
+
+
         if (players.size() > 0) {
             Player winnerPlayer = players.stream().findFirst().get();
             aresonDeathSwap.getServer().broadcastMessage(
