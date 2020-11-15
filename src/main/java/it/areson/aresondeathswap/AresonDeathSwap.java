@@ -30,6 +30,7 @@ public final class AresonDeathSwap extends JavaPlugin {
     @Override
     public void onEnable() {
         waitingPlayers = new ArrayList<>();
+        arenas = new HashMap<>();
 
         messages = new MessageManager(this, "messages.yml");
         dataFile = new FileManager(this, "data.yml");
