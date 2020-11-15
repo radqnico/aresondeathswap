@@ -4,6 +4,7 @@ public enum ArenaStatus {
 
     Waiting,
     Starting,
-    InGame
+    InGame,
+    Ending
 
 }

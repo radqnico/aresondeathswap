@@ -11,8 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import static it.areson.aresondeathswap.enums.ArenaStatus.InGame;
-import static it.areson.aresondeathswap.enums.ArenaStatus.Waiting;
+import static it.areson.aresondeathswap.enums.ArenaStatus.*;
 
 public class Arena {
 
@@ -37,6 +36,7 @@ public class Arena {
                     startGame();
                 },
                 () -> players.forEach(player -> aresonDeathSwap.messages.sendPlainMessage(player, "countdown-interrupted")),
+                0,
                 15,
                 aresonDeathSwap.messages.getPlainMessage("countdown-starting-message"),
                 this,
@@ -51,11 +51,7 @@ public class Arena {
                     countdownGame.start();
                 },
                 () -> {
-                    aresonDeathSwap.getLogger().severe("Calling interrupt");
-                    aresonDeathSwap.getLogger().severe("players: " + players.toString());
-                    aresonDeathSwap.getLogger().severe("world:" + aresonDeathSwap.getServer().getWorld(arenaName).getPlayers().toString());
-
-                    //TP remaining player
+                    //TP remaining players
                     World world = aresonDeathSwap.getServer().getWorld(arenaName);
                     if (world != null) {
                         world.getPlayers().forEach(aresonDeathSwap::teleportToLobbySpawn);
@@ -65,7 +61,9 @@ public class Arena {
 
                     aresonDeathSwap.reloadArenaWorld(arenaName);
                     arenaStatus = Waiting;
-                }, 10,
+                },
+                5,
+                10,
                 aresonDeathSwap.messages.getPlainMessage("countdown-swap-message"),
                 this,
                 aresonDeathSwap.messages.getPlainMessage("countdown-prepare-message")
@@ -154,11 +152,6 @@ public class Arena {
     }
 
     public void winGame() {
-        aresonDeathSwap.getLogger().severe("Calling winGame");
-        aresonDeathSwap.getLogger().severe("players: " + players.toString());
-        aresonDeathSwap.getLogger().severe("world:" + aresonDeathSwap.getServer().getWorld(arenaName).getPlayers().toString());
-
-
         if (players.size() > 0) {
             Player winnerPlayer = players.stream().findFirst().get();
             aresonDeathSwap.getServer().broadcastMessage(
@@ -166,6 +159,7 @@ public class Arena {
             );
             aresonDeathSwap.teleportToLobbySpawn(winnerPlayer);
             players.clear();
+            arenaStatus = Ending;
 
             interruptGame();
         } else {

@@ -15,16 +15,18 @@ public class Countdown {
     private boolean isRunning;
     private final Runnable taskEnded;
     private final Runnable taskInterrupted;
+    private final int interruptDelaySeconds;
     private final int timeBeforeShouting;
     private final String shoutingMessage;
     private final Arena arena;
     private final String startingMessage;
 
-    public Countdown(AresonDeathSwap plugin, int countdownTime, Runnable taskEnded, Runnable taskInterrupted, int timeBeforeShouting, String shoutingMessage, Arena arena, String startingMessage) {
+    public Countdown(AresonDeathSwap plugin, int countdownTime, Runnable taskEnded, Runnable taskInterrupted, int interruptDelaySeconds, int timeBeforeShouting, String shoutingMessage, Arena arena, String startingMessage) {
         aresonDeathSwap = plugin;
         this.countdownTime = countdownTime;
         this.taskEnded = taskEnded;
         this.taskInterrupted = taskInterrupted;
+        this.interruptDelaySeconds = interruptDelaySeconds;
         this.timeBeforeShouting = timeBeforeShouting;
         this.shoutingMessage = ChatColor.translateAlternateColorCodes('&', shoutingMessage);
         isRunning = false;
@@ -66,7 +68,7 @@ public class Countdown {
         if (isRunning) {
             isRunning = false;
             aresonDeathSwap.getServer().getScheduler().cancelTask(taskId);
-            aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(aresonDeathSwap, taskInterrupted, 20);
+            aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(aresonDeathSwap, taskInterrupted, interruptDelaySeconds * 20);
         }
     }
 
