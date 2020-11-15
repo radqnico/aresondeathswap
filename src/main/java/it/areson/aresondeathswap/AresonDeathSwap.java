@@ -111,7 +111,6 @@ public final class AresonDeathSwap extends JavaPlugin {
                 arena.addPlayer(player);
                 waitingPlayers.remove(player);
             });
-
         }
     }
 

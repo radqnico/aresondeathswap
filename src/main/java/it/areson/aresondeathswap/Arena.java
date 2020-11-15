@@ -120,7 +120,7 @@ public class Arena {
     }
 
     public boolean isJoinable() {
-        return arenaStatus == Waiting;
+        return arenaStatus == Waiting || arenaStatus == ArenaStatus.Starting;
     }
 
     public void addPlayer(Player player) {

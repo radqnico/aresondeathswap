@@ -10,7 +10,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerEvents implements Listener {
 
-    private AresonDeathSwap aresonDeathSwap;
+    private final AresonDeathSwap aresonDeathSwap;
 
     public PlayerEvents(AresonDeathSwap plugin) {
         aresonDeathSwap = plugin;
@@ -26,7 +26,6 @@ public class PlayerEvents implements Listener {
     @EventHandler
     public void onPlayerQuitEvent(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-
         aresonDeathSwap.waitingPlayers.remove(player);
         aresonDeathSwap.arenas.forEach((arenaName, arena) -> arena.removePlayer(player));
     }
@@ -34,8 +33,8 @@ public class PlayerEvents implements Listener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
-        aresonDeathSwap.arenas.forEach((arenaName, arena) -> arena.removePlayer(player));
         aresonDeathSwap.waitingPlayers.add(player);
+        aresonDeathSwap.arenas.forEach((arenaName, arena) -> arena.removePlayer(player));
     }
 
 }
