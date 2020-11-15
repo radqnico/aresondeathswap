@@ -6,8 +6,10 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 import static it.areson.aresondeathswap.enums.ArenaStatus.InGame;
 import static it.areson.aresondeathswap.enums.ArenaStatus.Waiting;
@@ -59,7 +61,12 @@ public class Arena {
                     } else {
                         aresonDeathSwap.getLogger().severe("Interrupting game countdown with no remaining player");
                     }
-                    aresonDeathSwap.getLogger().severe(Objects.requireNonNull(aresonDeathSwap.getServer().getWorld(arenaName)).getPlayers().toString());
+
+                    //TP remaining player
+                    World world = aresonDeathSwap.getServer().getWorld(arenaName);
+                    if (world != null) {
+                        world.getPlayers().forEach(aresonDeathSwap::teleportToLobbySpawn);
+                    }
 
                     aresonDeathSwap.reloadArenaWorld(arenaName);
                     arenaStatus = Waiting;
