@@ -99,12 +99,17 @@ public class Arena {
     public void rotatePlayers() {
         Collections.shuffle(players);
 
+        List<Location> newLocations = new ArrayList<>();
         for (int i = 0; i < players.size(); i++) {
             if (i == (players.size() - 1)) {
-                players.get(i).teleport(players.get(0));
+                newLocations.add(players.get(0).getLocation().clone());
             } else {
-                players.get(i).teleport(players.get(i + 1));
+                newLocations.add(players.get(i + 1).getLocation().clone());
             }
+        }
+
+        for (int i = 0; i < newLocations.size(); i++) {
+            players.get(i).teleport(newLocations.get(i));
         }
     }
 
