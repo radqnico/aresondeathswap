@@ -46,7 +46,7 @@ public class MessageManager extends FileManager {
         }
     }
 
-    public BaseComponent[] getJsonMessage(Player player, String messageKey) {
+    public BaseComponent[] getJsonMessage(String messageKey) {
         String message = getFileConfiguration().getString(messageKey);
         if (Objects.nonNull(message)) {
             return ComponentSerializer.parse(message);
