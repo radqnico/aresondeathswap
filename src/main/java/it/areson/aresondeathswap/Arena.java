@@ -51,6 +51,10 @@ public class Arena {
                     countdownGame.start();
                 },
                 () -> {
+                    aresonDeathSwap.getLogger().severe("Calling interrupt");
+                    aresonDeathSwap.getLogger().severe("players: " + players.toString());
+                    aresonDeathSwap.getLogger().severe("world:" + aresonDeathSwap.getServer().getWorld(arenaName).getPlayers().toString());
+
                     //TP remaining player
                     World world = aresonDeathSwap.getServer().getWorld(arenaName);
                     if (world != null) {
