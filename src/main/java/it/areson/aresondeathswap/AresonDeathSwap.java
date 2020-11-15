@@ -21,11 +21,7 @@ public final class AresonDeathSwap extends JavaPlugin {
     public final int MAX_SWAP_TIME_SECONDS = 15;
     public final String MAIN_WORLD_NAME = "world";
 
-    //    public HashMap<String, Boolean> joinableArenas;
     public ArrayList<Player> waitingPlayers;
-    //    public HashMap<String, ArrayList<Player>> arenasPlayers;
-//    public HashMap<String, Countdown> arenasCountdowns;
-//    public HashMap<String, GameHandler> arenasGameHandlers;
     public HashMap<String, Arena> arenas;
     public MessageManager messages;
 
