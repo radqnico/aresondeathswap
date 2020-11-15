@@ -26,14 +26,10 @@ public class PlayCommand implements CommandExecutor, TabCompleter {
 
         if (commandSender instanceof Player) {
             Player player = (Player) commandSender;
-            aresonDeathSwap.getLogger().severe("Play command from player");
             if (arguments.length > 0) {
                 String arenaName = arguments[0];
-                aresonDeathSwap.getLogger().severe("Arena specified");
                 if (aresonDeathSwap.arenas.containsKey(arenaName)) {
-                    aresonDeathSwap.getLogger().severe("Arena exists");
                     if (aresonDeathSwap.arenas.get(arenaName).addPlayer(player)) {
-                        aresonDeathSwap.getLogger().severe("Added player");
                         aresonDeathSwap.messages.sendPlainMessage(player, "arena-join");
                     } else {
                         aresonDeathSwap.messages.sendPlainMessage(player, "arena-already-started");

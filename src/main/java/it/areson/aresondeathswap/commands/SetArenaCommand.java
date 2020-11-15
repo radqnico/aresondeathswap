@@ -2,6 +2,7 @@ package it.areson.aresondeathswap.commands;
 
 import it.areson.aresondeathswap.AresonDeathSwap;
 import it.areson.aresondeathswap.managers.FileManager;
+import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -44,6 +45,7 @@ public class SetArenaCommand implements CommandExecutor {
                                 }
                             }
                     );
+                    locationWorld.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
                     aresonDeathSwap.getServer().unloadWorld(worldName, true);
                     aresonDeathSwap.loadArenaByName(worldName);
                 } else {

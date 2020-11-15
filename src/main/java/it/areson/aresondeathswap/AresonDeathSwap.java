@@ -52,8 +52,10 @@ public final class AresonDeathSwap extends JavaPlugin {
 
     public boolean reloadArenaWorld(String worldName) {
         if (getServer().unloadWorld(worldName, false)) {
+            getLogger().info("Correcly unloaded world " + worldName);
             return loadArenaWorld(worldName);
         } else {
+            getLogger().info("Error while unloading world " + worldName);
             return false;
         }
     }
@@ -62,8 +64,10 @@ public final class AresonDeathSwap extends JavaPlugin {
         World world = new WorldCreator(worldName).createWorld();
         if (world != null) {
             world.setAutoSave(false);
+            getLogger().info("Correcly loaded world " + worldName);
             return true;
         } else {
+            getLogger().severe("Error while loading world " + worldName);
             return false;
         }
     }
