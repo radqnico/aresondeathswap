@@ -164,13 +164,10 @@ public class Arena {
             aresonDeathSwap.getServer().broadcastMessage(
                     aresonDeathSwap.messages.getPlainMessage("victory-message").replaceAll("%player%", winnerPlayer.getName())
             );
+            aresonDeathSwap.teleportToLobbySpawn(winnerPlayer);
+            players.clear();
 
-            aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(aresonDeathSwap, () -> {
-                aresonDeathSwap.teleportToLobbySpawn(winnerPlayer);
-                players.clear();
-                interruptGame();
-            }, 20);
-
+            interruptGame();
         } else {
             aresonDeathSwap.getLogger().severe("Winningg game with no remaining players");
         }

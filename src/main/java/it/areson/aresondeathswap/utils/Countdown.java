@@ -66,7 +66,7 @@ public class Countdown {
         if (isRunning) {
             isRunning = false;
             aresonDeathSwap.getServer().getScheduler().cancelTask(taskId);
-            aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(aresonDeathSwap, taskInterrupted, 0);
+            aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(aresonDeathSwap, taskInterrupted, 20);
         }
     }
 
