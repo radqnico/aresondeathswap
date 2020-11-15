@@ -14,7 +14,7 @@ import java.util.Objects;
 
 public class SetArenaCommand implements CommandExecutor, TabCompleter {
 
-    private AresonDeathSwap aresonDeathSwap;
+    private final AresonDeathSwap aresonDeathSwap;
     private final FileManager dataFile;
 
     public SetArenaCommand(AresonDeathSwap plugin, FileManager fileManager) {

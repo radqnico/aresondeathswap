@@ -6,7 +6,7 @@ import org.bukkit.ChatColor;
 
 public class Countdown {
 
-    private AresonDeathSwap aresonDeathSwap;
+    private final AresonDeathSwap aresonDeathSwap;
 
     private int countdownTime;
     private int currentValue;

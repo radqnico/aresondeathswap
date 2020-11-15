@@ -139,6 +139,7 @@ public class Arena {
                     }
                     break;
                 case InGame:
+                    aresonDeathSwap.teleportToLobbySpawn(player);
                     if (players.size() == 1) {
                         countdownGame.interrupt();
                     }

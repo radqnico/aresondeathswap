@@ -2,7 +2,6 @@ package it.areson.aresondeathswap.events;
 
 import it.areson.aresondeathswap.Arena;
 import it.areson.aresondeathswap.AresonDeathSwap;
-import it.areson.aresondeathswap.utils.Countdown;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,13 +9,11 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 public class PlayerEvents implements Listener {
 
     private AresonDeathSwap aresonDeathSwap;
-    private Countdown preGameCountdown;
 
     public PlayerEvents(AresonDeathSwap plugin) {
         aresonDeathSwap = plugin;
@@ -42,23 +39,14 @@ public class PlayerEvents implements Listener {
         Player player = event.getPlayer();
 
         aresonDeathSwap.waitingPlayers.remove(player);
-        aresonDeathSwap.arenas.forEach((arenaName, arena) -> {
-            arena.removePlayer(player);
-        });
+        aresonDeathSwap.arenas.forEach((arenaName, arena) -> arena.removePlayer(player));
     }
 
     @EventHandler
-    public void onPlayerDeath(PlayerDeathEvent e) {
-//        Player player = e.getEntity().getPlayer();
-//        player.setGameMode(GameMode.SPECTATOR);
-//        if (alivePlayers.contains(player)) {
-////            playerHolder.deathPlayerMover(player, AresonDeathSwap.getAlivePlayers(), AresonDeathSwap.getDeadPlayers());
-//        }
-//        if (gameHandler.isRunning()) {
-//            if (instance.getServer().getOnlinePlayers().size() < 2) {
-//                gameHandler.stop();
-//            }
-//        }
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        Player player = event.getEntity();
+        aresonDeathSwap.arenas.forEach((arenaName, arena) -> arena.removePlayer(player));
+        aresonDeathSwap.waitingPlayers.add(player);
     }
 
 }
