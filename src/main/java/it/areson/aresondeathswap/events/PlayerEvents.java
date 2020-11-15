@@ -19,21 +19,17 @@ public class PlayerEvents implements Listener {
     @EventHandler
     public void onPlayerJoinEvent(PlayerJoinEvent event) {
         aresonDeathSwap.teleportToLobbySpawn(event.getPlayer());
-        aresonDeathSwap.waitingPlayers.add(event.getPlayer());
-        aresonDeathSwap.assignPlayersToArenaIfPossible();
     }
 
     @EventHandler
     public void onPlayerQuitEvent(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        aresonDeathSwap.waitingPlayers.remove(player);
         aresonDeathSwap.arenas.forEach((arenaName, arena) -> arena.removePlayer(player));
     }
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
-        aresonDeathSwap.waitingPlayers.add(player);
         aresonDeathSwap.arenas.forEach((arenaName, arena) -> arena.removePlayer(player));
     }
 

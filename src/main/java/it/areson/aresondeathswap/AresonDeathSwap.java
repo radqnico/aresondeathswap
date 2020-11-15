@@ -1,6 +1,7 @@
 package it.areson.aresondeathswap;
 
 import it.areson.aresondeathswap.commands.LoadWorldCommand;
+import it.areson.aresondeathswap.commands.PlayCommand;
 import it.areson.aresondeathswap.commands.SetArenaCommand;
 import it.areson.aresondeathswap.events.PlayerEvents;
 import it.areson.aresondeathswap.managers.FileManager;
@@ -11,20 +12,17 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
-import java.util.Optional;
 
 public final class AresonDeathSwap extends JavaPlugin {
 
-    public final String ARENA_PATH = "arena";
+    public final String ARENA_PATH = "arenas";
     public final int MIN_PLAYERS = 2;
     public final int MIN_SWAP_TIME_SECONDS = 10;
     public final int MAX_SWAP_TIME_SECONDS = 15;
     public final String MAIN_WORLD_NAME = "world";
 
-    public ArrayList<Player> waitingPlayers;
     public HashMap<String, Arena> arenas;
     public MessageManager messages;
 
@@ -32,16 +30,17 @@ public final class AresonDeathSwap extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        waitingPlayers = new ArrayList<>();
         arenas = new HashMap<>();
-
         messages = new MessageManager(this, "messages.yml");
         dataFile = new FileManager(this, "data.yml");
         loadArenas(dataFile);
+
+
         new SetArenaCommand(this, dataFile);
         new LoadWorldCommand(this);
+        new PlayCommand(this);
 
-        registerEvents();
+        getServer().getPluginManager().registerEvents(new PlayerEvents(this), this);
     }
 
     @Override
@@ -51,7 +50,15 @@ public final class AresonDeathSwap extends JavaPlugin {
         unloadArenaWorlds(dataFile);
     }
 
-    public boolean loadArenaWorld(String worldName) {
+    public boolean reloadArenaWorld(String worldName) {
+        if (getServer().unloadWorld(worldName, false)) {
+            return loadArenaWorld(worldName);
+        } else {
+            return false;
+        }
+    }
+
+    private boolean loadArenaWorld(String worldName) {
         World world = new WorldCreator(worldName).createWorld();
         if (world != null) {
             world.setAutoSave(false);
@@ -62,17 +69,29 @@ public final class AresonDeathSwap extends JavaPlugin {
     }
 
     private void loadArenas(FileManager dataFile) {
-        ConfigurationSection arenaSection = dataFile.getFileConfiguration().getConfigurationSection(ARENA_PATH);
+        ConfigurationSection arenasSection = dataFile.getFileConfiguration().getConfigurationSection(ARENA_PATH);
 
-        if (!Objects.isNull(arenaSection)) {
-            arenaSection.getKeys(false).forEach(arenaName -> {
+        if (!Objects.isNull(arenasSection)) {
+            arenasSection.getKeys(false).forEach(this::loadArenaByName);
+        }
+    }
+
+    public void loadArenaByName(String arenaName) {
+        if (!arenas.containsKey(arenaName)) {
+            ConfigurationSection arenaSection = dataFile.getFileConfiguration().getConfigurationSection(ARENA_PATH + "." + arenaName);
+
+            if (!Objects.isNull(arenaSection)) {
                 if (loadArenaWorld(arenaName)) {
                     arenas.put(arenaName, new Arena(this, arenaName));
                     getLogger().info("World " + arenaName + " loaded successfully");
                 } else {
-                    getLogger().info("Error while loading world " + arenaName);
+                    getLogger().severe("Error while loading world " + arenaName);
                 }
-            });
+            } else {
+                getLogger().warning("No arenas section found");
+            }
+        } else {
+            getLogger().warning("Arena already intialized");
         }
     }
 
@@ -90,33 +109,13 @@ public final class AresonDeathSwap extends JavaPlugin {
         }
     }
 
-    public Optional<Arena> getFirstFreeArena() {
-        return arenas.values().stream().filter(Arena::isJoinable).findFirst();
-    }
-
     public void teleportToLobbySpawn(Player player) {
         World world = getServer().getWorld(MAIN_WORLD_NAME);
         if (world != null) {
             player.teleport(world.getSpawnLocation());
         } else {
-            //TODO Main world not found
+            getLogger().severe("Cannot found main world");
         }
-    }
-
-    public void assignPlayersToArenaIfPossible() {
-        Optional<Arena> firstFreeArena = getFirstFreeArena();
-        if (firstFreeArena.isPresent()) {
-            Arena arena = firstFreeArena.get();
-            waitingPlayers.forEach(player -> {
-                arena.addPlayer(player);
-                waitingPlayers.remove(player);
-            });
-        }
-    }
-
-
-    private void registerEvents() {
-        getServer().getPluginManager().registerEvents(new PlayerEvents(this), this);
     }
 
 }

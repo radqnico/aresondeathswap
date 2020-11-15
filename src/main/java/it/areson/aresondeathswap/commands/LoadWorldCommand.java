@@ -48,7 +48,7 @@ public class LoadWorldCommand implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
         List<String> suggestions = new ArrayList<>();
-        if (strings.length < 1) {
+        if (strings.length == 1) {
             suggestions.add("loadWorld");
         }
 

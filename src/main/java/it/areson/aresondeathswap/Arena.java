@@ -58,11 +58,10 @@ public class Arena {
                         );
                         aresonDeathSwap.teleportToLobbySpawn(winnerPlayer);
                         players.clear();
-                        aresonDeathSwap.waitingPlayers.add(winnerPlayer);
-                        aresonDeathSwap.assignPlayersToArenaIfPossible();
                     } else {
-                        //TODO Manca player
+                        aresonDeathSwap.getLogger().severe("Interrupting game countdown with no remaining player");
                     }
+                    aresonDeathSwap.reloadArenaWorld(arenaName);
                     arenaStatus = Waiting;
                 }, 10,
                 aresonDeathSwap.messages.getPlainMessage("countdown-swap-message"),
@@ -78,7 +77,7 @@ public class Arena {
             countdownGame.start();
             this.arenaStatus = ArenaStatus.InGame;
         } else {
-            //TODO inconsistenza
+            aresonDeathSwap.getLogger().severe("Cannot found arena world");
         }
     }
 
@@ -119,15 +118,15 @@ public class Arena {
         return players;
     }
 
-    public boolean isJoinable() {
-        return arenaStatus == Waiting || arenaStatus == ArenaStatus.Starting;
-    }
-
-    public void addPlayer(Player player) {
-        players.add(player);
-        if (players.size() >= aresonDeathSwap.MIN_PLAYERS) {
-            startPregame();
+    public boolean addPlayer(Player player) {
+        if(arenaStatus != InGame) {
+            players.add(player);
+            if (players.size() >= aresonDeathSwap.MIN_PLAYERS) {
+                startPregame();
+            }
+            return true;
         }
+        return false;
     }
 
     public void removePlayer(Player player) {

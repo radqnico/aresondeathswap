@@ -8,7 +8,6 @@ import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -45,7 +44,7 @@ public class SetArenaCommand implements CommandExecutor, TabCompleter {
                             }
                     );
                     aresonDeathSwap.getServer().unloadWorld(worldName, true);
-                    aresonDeathSwap.loadArenaWorld(worldName);
+                    aresonDeathSwap.loadArenaByName(worldName);
                 } else {
                     commandSender.sendMessage("Sei nel mondo principale");
                 }
@@ -62,7 +61,7 @@ public class SetArenaCommand implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
         List<String> suggestions = new ArrayList<>();
-        if (strings.length < 1) {
+        if (strings.length == 1) {
             suggestions.add("setArena");
         }
 

@@ -6,6 +6,8 @@ author: Areson
 
 
 commands:
+  play:
+    usage: "/play"
   setArena:
     usage: "/setArena"
   loadWorld:
