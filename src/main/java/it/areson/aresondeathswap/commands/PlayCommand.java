@@ -37,6 +37,8 @@ public class PlayCommand implements CommandExecutor, TabCompleter {
                 } else {
                     aresonDeathSwap.messages.sendPlainMessage(player, "arena-not-found");
                 }
+            } else {
+                aresonDeathSwap.messages.sendPlainMessage(player, "missing-arena-name");
             }
         } else {
             commandSender.sendMessage("Comando eseguibile solo da player");

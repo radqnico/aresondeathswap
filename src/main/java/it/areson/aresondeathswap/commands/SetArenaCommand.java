@@ -4,14 +4,15 @@ import it.areson.aresondeathswap.AresonDeathSwap;
 import it.areson.aresondeathswap.managers.FileManager;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.command.*;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
-public class SetArenaCommand implements CommandExecutor, TabCompleter {
+public class SetArenaCommand implements CommandExecutor {
 
     private final AresonDeathSwap aresonDeathSwap;
     private final FileManager dataFile;
@@ -58,13 +59,4 @@ public class SetArenaCommand implements CommandExecutor, TabCompleter {
         return true;
     }
 
-    @Override
-    public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
-        List<String> suggestions = new ArrayList<>();
-        if (strings.length == 1) {
-            suggestions.add("setArena");
-        }
-
-        return suggestions;
-    }
 }

@@ -3,14 +3,15 @@ package it.areson.aresondeathswap.commands;
 import it.areson.aresondeathswap.AresonDeathSwap;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
-import org.bukkit.command.*;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
-public class LoadWorldCommand implements CommandExecutor, TabCompleter {
+public class LoadWorldCommand implements CommandExecutor {
 
     public LoadWorldCommand(AresonDeathSwap plugin) {
 
@@ -45,13 +46,4 @@ public class LoadWorldCommand implements CommandExecutor, TabCompleter {
         return true;
     }
 
-    @Override
-    public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
-        List<String> suggestions = new ArrayList<>();
-        if (strings.length == 1) {
-            suggestions.add("loadWorld");
-        }
-
-        return suggestions;
-    }
 }
