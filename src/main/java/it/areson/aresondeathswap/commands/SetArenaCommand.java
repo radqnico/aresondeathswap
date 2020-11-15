@@ -45,7 +45,7 @@ public class SetArenaCommand implements CommandExecutor {
                                 }
                             }
                     );
-//                    locationWorld.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
+                    locationWorld.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
                     aresonDeathSwap.getServer().unloadWorld(worldName, true);
                     aresonDeathSwap.loadArenaByName(worldName);
                 } else {
