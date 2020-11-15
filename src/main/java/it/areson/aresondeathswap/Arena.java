@@ -59,6 +59,8 @@ public class Arena {
                     } else {
                         aresonDeathSwap.getLogger().severe("Interrupting game countdown with no remaining player");
                     }
+                    aresonDeathSwap.getLogger().severe(Objects.requireNonNull(aresonDeathSwap.getServer().getWorld(arenaName)).getPlayers().toString());
+
                     aresonDeathSwap.reloadArenaWorld(arenaName);
                     arenaStatus = Waiting;
                 }, 10,
