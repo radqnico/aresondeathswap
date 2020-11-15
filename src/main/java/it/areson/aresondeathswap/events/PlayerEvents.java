@@ -1,6 +1,5 @@
 package it.areson.aresondeathswap.events;
 
-import it.areson.aresondeathswap.Arena;
 import it.areson.aresondeathswap.AresonDeathSwap;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -8,8 +7,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-
-import java.util.Optional;
 
 public class PlayerEvents implements Listener {
 
@@ -21,7 +18,6 @@ public class PlayerEvents implements Listener {
 
     @EventHandler
     public void onPlayerJoinEvent(PlayerJoinEvent event) {
-
         aresonDeathSwap.teleportToLobbySpawn(event.getPlayer());
         aresonDeathSwap.waitingPlayers.add(event.getPlayer());
         aresonDeathSwap.assignPlayersToArenaIfPossible();

@@ -107,7 +107,11 @@ public final class AresonDeathSwap extends JavaPlugin {
         Optional<Arena> firstFreeArena = getFirstFreeArena();
         if (firstFreeArena.isPresent()) {
             Arena arena = firstFreeArena.get();
-            waitingPlayers.forEach(arena::addPlayer);
+            waitingPlayers.forEach(player -> {
+                arena.addPlayer(player);
+                waitingPlayers.remove(player);
+            });
+
         }
     }
 
