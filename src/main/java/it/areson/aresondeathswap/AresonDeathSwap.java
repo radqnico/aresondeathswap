@@ -11,7 +11,10 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
+import java.util.Optional;
 
 public final class AresonDeathSwap extends JavaPlugin {
 
@@ -97,6 +100,14 @@ public final class AresonDeathSwap extends JavaPlugin {
             player.teleport(world.getSpawnLocation());
         } else {
             //TODO Main world not found
+        }
+    }
+
+    public void assignPlayersToArenaIfPossible() {
+        Optional<Arena> firstFreeArena = getFirstFreeArena();
+        if (firstFreeArena.isPresent()) {
+            Arena arena = firstFreeArena.get();
+            waitingPlayers.forEach(arena::addPlayer);
         }
     }
 

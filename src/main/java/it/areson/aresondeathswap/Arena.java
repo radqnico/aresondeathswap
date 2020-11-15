@@ -58,6 +58,8 @@ public class Arena {
                         );
                         aresonDeathSwap.teleportToLobbySpawn(winnerPlayer);
                         players.clear();
+                        aresonDeathSwap.waitingPlayers.add(winnerPlayer);
+                        aresonDeathSwap.assignPlayersToArenaIfPossible();
                     } else {
                         //TODO Manca player
                     }
@@ -135,13 +137,13 @@ public class Arena {
             switch (arenaStatus) {
                 case Starting:
                     if (players.size() < aresonDeathSwap.MIN_PLAYERS) {
-                        countdownPregame.interrupt();
+                        interruptPregame();
                     }
                     break;
                 case InGame:
                     aresonDeathSwap.teleportToLobbySpawn(player);
                     if (players.size() == 1) {
-                        countdownGame.interrupt();
+                        interruptGame();
                     }
                     break;
             }

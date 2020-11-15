@@ -23,15 +23,8 @@ public class PlayerEvents implements Listener {
     public void onPlayerJoinEvent(PlayerJoinEvent event) {
 
         aresonDeathSwap.teleportToLobbySpawn(event.getPlayer());
-
-        Optional<Arena> firstFreeArena = aresonDeathSwap.getFirstFreeArena();
-
-        if (firstFreeArena.isPresent()) {
-            Arena arena = firstFreeArena.get();
-            arena.addPlayer(event.getPlayer());
-        } else {
-            aresonDeathSwap.waitingPlayers.add(event.getPlayer());
-        }
+        aresonDeathSwap.waitingPlayers.add(event.getPlayer());
+        aresonDeathSwap.assignPlayersToArenaIfPossible();
     }
 
     @EventHandler
