@@ -51,21 +51,12 @@ public class Arena {
                     countdownGame.start();
                 },
                 () -> {
-                    if (players.size() > 0) {
-                        Player winnerPlayer = players.stream().findFirst().get();
-                        aresonDeathSwap.getServer().broadcastMessage(
-                                aresonDeathSwap.messages.getPlainMessage("victory-message").replaceAll("%player%", winnerPlayer.getName())
-                        );
-                        aresonDeathSwap.teleportToLobbySpawn(winnerPlayer);
-                        players.clear();
-                    } else {
-                        aresonDeathSwap.getLogger().severe("Interrupting game countdown with no remaining player");
-                    }
-
                     //TP remaining player
                     World world = aresonDeathSwap.getServer().getWorld(arenaName);
                     if (world != null) {
                         world.getPlayers().forEach(aresonDeathSwap::teleportToLobbySpawn);
+                    } else {
+                        aresonDeathSwap.getLogger().severe("Error while getting the world while teleporting players");
                     }
 
                     aresonDeathSwap.reloadArenaWorld(arenaName);
@@ -150,12 +141,25 @@ public class Arena {
                 case InGame:
                     aresonDeathSwap.teleportToLobbySpawn(player);
                     if (players.size() == 1) {
-                        interruptGame();
+                        winGame();
                     }
                     break;
             }
         }
+    }
 
+    public void winGame() {
+        if (players.size() > 0) {
+            Player winnerPlayer = players.stream().findFirst().get();
+            aresonDeathSwap.getServer().broadcastMessage(
+                    aresonDeathSwap.messages.getPlainMessage("victory-message").replaceAll("%player%", winnerPlayer.getName())
+            );
+            aresonDeathSwap.teleportToLobbySpawn(winnerPlayer);
+            players.clear();
+            interruptGame();
+        } else {
+            aresonDeathSwap.getLogger().severe("Winningg game with no remaining players");
+        }
     }
 
     public void startPregame() {
