@@ -154,7 +154,7 @@ public class Arena {
     public void startPregame() {
         if (!countdownPregame.isRunning()) {
             countdownPregame.start();
-            this.arenaStatus = ArenaStatus.Starting;
+            arenaStatus = ArenaStatus.Starting;
         }
     }
 
