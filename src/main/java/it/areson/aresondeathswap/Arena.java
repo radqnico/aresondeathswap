@@ -11,27 +11,29 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import static it.areson.aresondeathswap.enums.ArenaStatus.InGame;
+import static it.areson.aresondeathswap.enums.ArenaStatus.Waiting;
+
 public class Arena {
 
     private final AresonDeathSwap aresonDeathSwap;
-    private String arenaName;
-    private boolean isJoinable;
+    private final String arenaName;
     private ArrayList<Player> players;
-    private Countdown countdownPregame;
+    private final Countdown countdownPregame;
     private Countdown countdownGame;
     private ArenaStatus arenaStatus;
 
     public Arena(AresonDeathSwap aresonDeathSwap, String arenaName) {
         this.aresonDeathSwap = aresonDeathSwap;
         this.arenaName = arenaName;
-        this.isJoinable = true;
         this.players = new ArrayList<>();
-        this.arenaStatus = ArenaStatus.Waiting;
+        this.arenaStatus = Waiting;
+
         //Countdowns
         this.countdownPregame = new Countdown(aresonDeathSwap,
                 30,
                 () -> {
-                    isJoinable = false;
+                    arenaStatus = InGame;
                     startGame();
                 },
                 () -> players.forEach(player -> aresonDeathSwap.messages.sendPlainMessage(player, "countdown-interrupted")),
@@ -59,7 +61,7 @@ public class Arena {
                     } else {
                         //TODO Manca player
                     }
-                    isJoinable = true;
+                    arenaStatus = Waiting;
                 }, 10,
                 aresonDeathSwap.messages.getPlainMessage("countdown-swap-message"),
                 this,
@@ -83,13 +85,13 @@ public class Arena {
         return random.nextInt(aresonDeathSwap.MAX_SWAP_TIME_SECONDS - aresonDeathSwap.MIN_SWAP_TIME_SECONDS) + aresonDeathSwap.MIN_SWAP_TIME_SECONDS;
     }
 
-    public void stopPregame() {
+    public void interruptPregame() {
         if (countdownPregame.isRunning()) {
             countdownPregame.interrupt();
         }
     }
 
-    public void stopGame() {
+    public void interruptGame() {
         if (countdownGame.isRunning()) {
             countdownGame.interrupt();
         }
@@ -116,15 +118,38 @@ public class Arena {
     }
 
     public boolean isJoinable() {
-        return isJoinable;
+        return arenaStatus == Waiting;
     }
 
-    public void addPlayer(Player player){
+    public void addPlayer(Player player) {
         players.add(player);
+        if (players.size() >= aresonDeathSwap.MIN_PLAYERS) {
+            startPregame();
+        }
     }
 
-    public void startPregame(){
-        if(!countdownPregame.isRunning()) {
+    public void removePlayer(Player player) {
+        if (players.contains(player)) {
+            players.remove(player);
+
+            switch (arenaStatus) {
+                case Starting:
+                    if (players.size() < aresonDeathSwap.MIN_PLAYERS) {
+                        countdownPregame.interrupt();
+                    }
+                    break;
+                case InGame:
+                    if (players.size() == 1) {
+                        countdownGame.interrupt();
+                    }
+                    break;
+            }
+        }
+
+    }
+
+    public void startPregame() {
+        if (!countdownPregame.isRunning()) {
             countdownPregame.start();
             this.arenaStatus = ArenaStatus.Starting;
         }

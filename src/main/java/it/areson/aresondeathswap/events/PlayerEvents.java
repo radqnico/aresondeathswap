@@ -2,7 +2,6 @@ package it.areson.aresondeathswap.events;
 
 import it.areson.aresondeathswap.Arena;
 import it.areson.aresondeathswap.AresonDeathSwap;
-import it.areson.aresondeathswap.enums.ArenaStatus;
 import it.areson.aresondeathswap.utils.Countdown;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -32,10 +31,7 @@ public class PlayerEvents implements Listener {
 
         if (firstFreeArena.isPresent()) {
             Arena arena = firstFreeArena.get();
-            arena.addPlayer(event.getPlayer()); //TODO add players che deve controllare se far partire countdown pregame
-            if (arena.getPlayers().size() >= aresonDeathSwap.MIN_PLAYERS) {
-                arena.startPregame();
-            }
+            arena.addPlayer(event.getPlayer());
         } else {
             aresonDeathSwap.waitingPlayers.add(event.getPlayer());
         }
@@ -47,21 +43,7 @@ public class PlayerEvents implements Listener {
 
         aresonDeathSwap.waitingPlayers.remove(player);
         aresonDeathSwap.arenas.forEach((arenaName, arena) -> {
-            ArrayList<Player> players = arena.getPlayers();
-            if (players.contains(player)) {
-                players.remove(player);
-                if(players.size() < aresonDeathSwap.MIN_PLAYERS) {
-                    switch (arena.getArenaStatus()){
-                        case Starting:
-                            arena.stopPregame();
-                            break;
-                        case InGame:
-                            arena.stopGame();
-                            break;
-                    }
-                }
-            }
-
+            arena.removePlayer(player);
         });
     }
 
