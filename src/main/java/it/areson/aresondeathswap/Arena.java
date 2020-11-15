@@ -6,9 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static it.areson.aresondeathswap.enums.ArenaStatus.InGame;
@@ -99,18 +97,14 @@ public class Arena {
     }
 
     public void rotatePlayers() {
-        List<Location> locations = players.stream().map(Player::getLocation).collect(Collectors.toList());
-
-        int lastIndex = locations.size() - 1;
-        Location lastLocation = locations.get(lastIndex);
-
-        for (int i = 0; i < lastIndex; i++) {
-            locations.set(i + 1, locations.get(i));
-        }
-        locations.set(0, lastLocation);
+        Collections.shuffle(players);
 
         for (int i = 0; i < players.size(); i++) {
-            players.get(i).teleport(locations.get(i));
+            if (i == (players.size() - 1)) {
+                players.get(i).teleport(players.get(0));
+            } else {
+                players.get(i).teleport(players.get(i + 1));
+            }
         }
     }
 
@@ -119,7 +113,7 @@ public class Arena {
     }
 
     public boolean addPlayer(Player player) {
-        if(arenaStatus != InGame) {
+        if (arenaStatus != InGame) {
             players.add(player);
             if (players.size() >= aresonDeathSwap.MIN_PLAYERS) {
                 startPregame();
@@ -157,7 +151,4 @@ public class Arena {
         }
     }
 
-    public ArenaStatus getArenaStatus() {
-        return arenaStatus;
-    }
 }
