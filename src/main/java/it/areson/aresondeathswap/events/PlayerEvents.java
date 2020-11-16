@@ -1,7 +1,6 @@
 package it.areson.aresondeathswap.events;
 
 import it.areson.aresondeathswap.AresonDeathSwap;
-import it.areson.aresondeathswap.managers.SoundManager;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -44,11 +43,11 @@ public class PlayerEvents implements Listener {
     public void onAsyncPlayerChatEvent(AsyncPlayerChatEvent event) {
         World playerWorld = event.getPlayer().getLocation().getWorld();
 
-        if(playerWorld != null) {
+        if (playerWorld != null) {
             ArrayList<Player> players = new ArrayList<>(event.getRecipients());
             players.forEach(player -> {
                 World targetWorld = player.getLocation().getWorld();
-                if(targetWorld != null && !targetWorld.getName().equals(playerWorld.getName())) {
+                if (targetWorld != null && !targetWorld.getName().equals(playerWorld.getName())) {
                     event.getRecipients().remove(player);
                 }
             });
