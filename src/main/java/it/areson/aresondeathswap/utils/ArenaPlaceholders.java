@@ -22,7 +22,7 @@ public class ArenaPlaceholders extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getIdentifier() {
-        return "deathswap" + arenaName.toLowerCase();
+        return "ds-" + arenaName.toLowerCase();
     }
 
     @Override

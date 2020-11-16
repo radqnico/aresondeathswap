@@ -33,7 +33,7 @@ public class Arena {
         this.arenaStatus = Waiting;
 
         placeholders = new ArenaPlaceholders(this.arenaStatus, this.arenaName, this.players);
-
+        placeholders.register();
         //Countdowns
         this.countdownPregame = new Countdown(aresonDeathSwap,
                 aresonDeathSwap.STARTING_TIME,
