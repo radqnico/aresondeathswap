@@ -34,6 +34,7 @@ public class PlayCommand implements CommandExecutor, TabCompleter {
                         if (aresonDeathSwap.arenas.get(arenaName).addPlayer(player)) {
                             aresonDeathSwap.messages.sendPlainMessage(player, "arena-join", StringPair.of("%arena%", arenaName));
                             aresonDeathSwap.sounds.joinArena(player);
+                            aresonDeathSwap.effects.joinedArena(player);
                         } else {
                             aresonDeathSwap.messages.sendPlainMessage(player, "arena-already-started");
                         }

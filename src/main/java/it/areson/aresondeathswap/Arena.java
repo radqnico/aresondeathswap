@@ -117,6 +117,7 @@ public class Arena {
 
         for (int i = 0; i < newLocations.size(); i++) {
             players.get(i).teleport(newLocations.get(i));
+            aresonDeathSwap.sounds.teleport(players.get(i));
         }
     }
 

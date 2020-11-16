@@ -41,6 +41,7 @@ public class PlayerEvents implements Listener {
                 () -> aresonDeathSwap.sounds.loser(player),
                 20
         );
+        aresonDeathSwap.effects.deathStrike(player);
     }
 
     @EventHandler

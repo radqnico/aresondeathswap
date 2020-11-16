@@ -5,6 +5,7 @@ import it.areson.aresondeathswap.commands.PlayCommand;
 import it.areson.aresondeathswap.commands.admin.SetArenaCommand;
 import it.areson.aresondeathswap.commands.admin.TpWorldCommand;
 import it.areson.aresondeathswap.events.PlayerEvents;
+import it.areson.aresondeathswap.managers.EffectManager;
 import it.areson.aresondeathswap.managers.FileManager;
 import it.areson.aresondeathswap.managers.MessageManager;
 import it.areson.aresondeathswap.managers.SoundManager;
@@ -28,6 +29,7 @@ public final class AresonDeathSwap extends JavaPlugin {
     public HashMap<String, Arena> arenas;
     public MessageManager messages;
     public SoundManager sounds;
+    public EffectManager effects;
 
     private FileManager dataFile;
 
@@ -37,6 +39,7 @@ public final class AresonDeathSwap extends JavaPlugin {
 
         arenas = new HashMap<>();
         sounds = new SoundManager();
+        effects = new EffectManager(this);
         messages = new MessageManager(this, "messages.yml");
         dataFile = new FileManager(this, "data.yml");
         loadArenas(dataFile);
