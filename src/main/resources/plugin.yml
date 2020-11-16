@@ -17,3 +17,7 @@ commands:
   tpWorld:
     usage: "/tpWorld"
     permission: aresonDeathSwap.admin
+
+permissions:
+  aresonDeathSwap.admin:
+    default: op
