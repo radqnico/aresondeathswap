@@ -75,13 +75,13 @@ public class SoundManager {
     }
 
     public void loser(Player target) {
-        target.playSound(target.getLocation(), Sound.ITEM_TOTEM_USE, SoundCategory.MASTER, 0.4f, 1f);
+        target.playSound(target.getLocation(), Sound.ENTITY_PLAYER_BURP, SoundCategory.MASTER, 0.4f, 1f);
     }
 
     public void loser(Location target) {
         World world = target.getWorld();
         if (world != null) {
-            world.playSound(target, Sound.ITEM_TOTEM_USE, SoundCategory.MASTER, 0.4f, 1f);
+            world.playSound(target, Sound.ENTITY_PLAYER_BURP, SoundCategory.MASTER, 0.4f, 1f);
         }
     }
 

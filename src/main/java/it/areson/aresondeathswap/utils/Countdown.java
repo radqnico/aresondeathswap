@@ -49,6 +49,7 @@ public class Countdown {
                     if (currentValue <= timeBeforeShouting) {
                         sendMessages(shoutingMessage.replaceAll("%seconds%", currentValue + ""));
                     }
+
                     currentValue--;
                 }
             }, 0, 20);
@@ -56,7 +57,10 @@ public class Countdown {
     }
 
     private void sendMessages(String message) {
-        arena.getPlayers().forEach(player -> player.sendMessage(message));
+        arena.getPlayers().forEach(player -> {
+            player.sendMessage(message);
+            aresonDeathSwap.sounds.tick(player);
+        });
     }
 
     private void end() {

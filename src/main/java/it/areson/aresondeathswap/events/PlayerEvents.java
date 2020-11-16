@@ -35,8 +35,12 @@ public class PlayerEvents implements Listener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
-        aresonDeathSwap.sounds.loser(player);
         aresonDeathSwap.removePlayerFromArenas(player);
+        aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(
+                aresonDeathSwap,
+                () -> aresonDeathSwap.sounds.loser(player),
+                10
+        );
     }
 
     @EventHandler
