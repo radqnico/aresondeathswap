@@ -27,6 +27,22 @@ public class MessageManager extends FileManager {
         }
     }
 
+    public void sendPlainMessageDelayed(Player player, String messageKey, long delayTicks) {
+        aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(
+                aresonDeathSwap,
+                () -> {
+                    String message = getFileConfiguration().getString(messageKey);
+                    if (Objects.nonNull(message)) {
+                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + message));
+                    } else {
+                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + "&cError: '" + messageKey + "' message does not exists!"));
+                    }
+                },
+                delayTicks
+        );
+
+    }
+
     public void sendJsonMessage(Player player, String messageKey) {
         String message = getFileConfiguration().getString(messageKey);
         if (Objects.nonNull(message)) {
@@ -41,6 +57,19 @@ public class MessageManager extends FileManager {
         String message = getFileConfiguration().getString(messageKey);
         if (Objects.nonNull(message)) {
             return ChatColor.translateAlternateColorCodes('&', prefix + message);
+        } else {
+            return ChatColor.translateAlternateColorCodes('&', prefix + "&cError: '" + messageKey + "' message does not exists!");
+        }
+    }
+
+    public String getPlainMessage(String messageKey, boolean prefix) {
+        String message = getFileConfiguration().getString(messageKey);
+        if (Objects.nonNull(message)) {
+            if (prefix) {
+                return ChatColor.translateAlternateColorCodes('&', prefix + message);
+            } else {
+                return ChatColor.translateAlternateColorCodes('&', message);
+            }
         } else {
             return ChatColor.translateAlternateColorCodes('&', prefix + "&cError: '" + messageKey + "' message does not exists!");
         }
