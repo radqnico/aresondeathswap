@@ -19,12 +19,11 @@ import java.util.Objects;
 
 public final class AresonDeathSwap extends JavaPlugin {
 
-    //TODO Permissions per comandi staff
-
     public final String ARENAS_PATH = "arenas";
-    public final int MIN_PLAYERS = 2;
-    public final int MIN_SWAP_TIME_SECONDS = 10;
-    public final int MAX_SWAP_TIME_SECONDS = 15;
+    public final int MIN_PLAYERS = getConfig().getInt("arena-min-players");
+    public final int STARTING_TIME = getConfig().getInt("arena-starting-seconds");
+    public final int MIN_SWAP_TIME_SECONDS = getConfig().getInt("arena-min-swap-seconds");
+    public final int MAX_SWAP_TIME_SECONDS = getConfig().getInt("arena-max-swap-seconds");
     public final String MAIN_WORLD_NAME = "world";
 
     public HashMap<String, Arena> arenas;
@@ -34,6 +33,8 @@ public final class AresonDeathSwap extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        saveDefaultConfig();
+
         arenas = new HashMap<>();
         messages = new MessageManager(this, "messages.yml");
         dataFile = new FileManager(this, "data.yml");

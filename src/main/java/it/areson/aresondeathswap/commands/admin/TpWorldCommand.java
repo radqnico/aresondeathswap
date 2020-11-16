@@ -2,16 +2,16 @@ package it.areson.aresondeathswap.commands.admin;
 
 import it.areson.aresondeathswap.AresonDeathSwap;
 import org.bukkit.World;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-public class TpWorldCommand implements CommandExecutor {
+public class TpWorldCommand implements CommandExecutor, TabCompleter {
 
     private final AresonDeathSwap aresonDeathSwap;
 
@@ -48,5 +48,15 @@ public class TpWorldCommand implements CommandExecutor {
         }
 
         return true;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] arguments) {
+        List<String> suggestions = new ArrayList<>();
+        if (arguments.length == 1) {
+            suggestions.addAll(aresonDeathSwap.getServer().getWorlds().stream().map(World::getName).collect(Collectors.toList()));
+        }
+
+        return suggestions;
     }
 }

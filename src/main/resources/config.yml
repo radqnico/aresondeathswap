@@ -1,0 +1,5 @@
+arena-min-players: 2
+
+arena-starting-seconds: 30
+arena-min-swap-seconds: 60
+arena-max-swap-seconds: 180

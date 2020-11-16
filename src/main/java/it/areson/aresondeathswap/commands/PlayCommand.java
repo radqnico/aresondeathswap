@@ -48,9 +48,9 @@ public class PlayCommand implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
+    public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] arguments) {
         List<String> suggestions = new ArrayList<>();
-        if (strings.length == 1) {
+        if (arguments.length == 1) {
             suggestions.addAll(aresonDeathSwap.arenas.keySet());
         }
 

@@ -30,7 +30,7 @@ public class Arena {
 
         //Countdowns
         this.countdownPregame = new Countdown(aresonDeathSwap,
-                30,
+                aresonDeathSwap.STARTING_TIME,
                 () -> {
                     arenaStatus = InGame;
                     startGame();
@@ -132,7 +132,6 @@ public class Arena {
 
     public void removePlayer(Player player) {
         if (players.contains(player)) {
-            aresonDeathSwap.getLogger().severe("Removing " + player.getName());
             players.remove(player);
 
             switch (arenaStatus) {
