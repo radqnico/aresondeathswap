@@ -35,13 +35,13 @@ public class PlayerEvents implements Listener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
+        player.getWorld().strikeLightningEffect(player.getLocation());
         aresonDeathSwap.removePlayerFromArenas(player);
         aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(
                 aresonDeathSwap,
                 () -> aresonDeathSwap.sounds.loser(player),
                 20
         );
-        aresonDeathSwap.effects.deathStrike(player);
     }
 
     @EventHandler
