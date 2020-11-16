@@ -83,6 +83,16 @@ public final class AresonDeathSwap extends JavaPlugin {
         }
     }
 
+    private boolean unloadArenaWorld(String worldName) {
+        if (getServer().unloadWorld(worldName, false)) {
+            getLogger().info("World " + worldName + " unloaded successfully");
+            return true;
+        } else {
+            getLogger().info("Error while unloading world " + worldName);
+            return false;
+        }
+    }
+
     private void loadArenas(FileManager dataFile) {
         List<String> arenas = dataFile.getFileConfiguration().getStringList(ARENAS_PATH);
         arenas.forEach(this::loadArenaByName);
@@ -108,17 +118,8 @@ public final class AresonDeathSwap extends JavaPlugin {
     }
 
     private void unloadArenaWorlds(FileManager dataFile) {
-        ConfigurationSection arenaSection = dataFile.getFileConfiguration().getConfigurationSection(ARENAS_PATH);
-
-        if (!Objects.isNull(arenaSection)) {
-            arenaSection.getKeys(false).forEach(arenaName -> {
-                if (getServer().unloadWorld(arenaName, false)) {
-                    getLogger().info("World " + arenaName + " unloaded successfully");
-                } else {
-                    getLogger().info("Error while unloading world " + arenaName);
-                }
-            });
-        }
+        List<String> arenas = dataFile.getFileConfiguration().getStringList(ARENAS_PATH);
+        arenas.forEach(this::unloadArenaWorld);
     }
 
     public void teleportToLobbySpawn(Player player) {
@@ -132,7 +133,7 @@ public final class AresonDeathSwap extends JavaPlugin {
 
     public void removePlayerFromArenas(Player player) {
         arenas.forEach((arenaName, arena) -> {
-            if(arena.getPlayers().contains(player)) {
+            if (arena.getPlayers().contains(player)) {
                 arena.removePlayer(player);
             }
         });
