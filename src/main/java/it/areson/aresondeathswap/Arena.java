@@ -155,7 +155,7 @@ public class Arena {
                                 aresonDeathSwap.messages.sendPlainMessageDelayed(
                                         messagePlayer,
                                         "arena-players-remaining",
-                                        20,
+                                        5,
                                         StringPair.of("%number%", players.size() + "")
                                 )
                         );
@@ -168,8 +168,8 @@ public class Arena {
     public void winGame() {
         if (players.size() > 0) {
             Player winnerPlayer = players.stream().findFirst().get();
-            aresonDeathSwap.getServer().broadcastMessage(
-                    aresonDeathSwap.messages.getPlainMessage("victory-message").replaceAll("%player%", winnerPlayer.getName())
+            aresonDeathSwap.getServer().getOnlinePlayers().forEach(player ->
+                    aresonDeathSwap.messages.sendPlainMessageDelayed(player, "victory-message", 5, StringPair.of("%player%", winnerPlayer.getName()))
             );
             aresonDeathSwap.teleportToLobbySpawn(winnerPlayer);
             players.clear();
