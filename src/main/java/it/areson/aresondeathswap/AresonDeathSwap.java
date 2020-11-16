@@ -7,6 +7,7 @@ import it.areson.aresondeathswap.commands.admin.TpWorldCommand;
 import it.areson.aresondeathswap.events.PlayerEvents;
 import it.areson.aresondeathswap.managers.FileManager;
 import it.areson.aresondeathswap.managers.MessageManager;
+import it.areson.aresondeathswap.managers.SoundManager;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.configuration.ConfigurationSection;
@@ -26,6 +27,7 @@ public final class AresonDeathSwap extends JavaPlugin {
 
     public HashMap<String, Arena> arenas;
     public MessageManager messages;
+    public SoundManager sounds;
 
     private FileManager dataFile;
 
@@ -34,6 +36,7 @@ public final class AresonDeathSwap extends JavaPlugin {
         saveDefaultConfig();
 
         arenas = new HashMap<>();
+        sounds = new SoundManager();
         messages = new MessageManager(this, "messages.yml");
         dataFile = new FileManager(this, "data.yml");
         loadArenas(dataFile);

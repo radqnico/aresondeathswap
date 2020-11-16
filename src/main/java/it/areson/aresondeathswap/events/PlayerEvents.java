@@ -1,6 +1,7 @@
 package it.areson.aresondeathswap.events;
 
 import it.areson.aresondeathswap.AresonDeathSwap;
+import it.areson.aresondeathswap.managers.SoundManager;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,6 +24,7 @@ public class PlayerEvents implements Listener {
     @EventHandler
     public void onPlayerJoinEvent(PlayerJoinEvent event) {
         aresonDeathSwap.teleportToLobbySpawn(event.getPlayer());
+        aresonDeathSwap.sounds.joinServer(event.getPlayer().getWorld().getSpawnLocation());
     }
 
     @EventHandler
@@ -34,6 +36,7 @@ public class PlayerEvents implements Listener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
+        aresonDeathSwap.sounds.loser(player);
         aresonDeathSwap.removePlayerFromArenas(player);
     }
 
