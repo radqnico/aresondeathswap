@@ -2,6 +2,7 @@ package it.areson.aresondeathswap;
 
 import it.areson.aresondeathswap.enums.ArenaStatus;
 import it.areson.aresondeathswap.utils.Countdown;
+import it.areson.aresondeathswap.utils.Pair;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -150,7 +151,14 @@ public class Arena {
                     if (players.size() == 1) {
                         winGame();
                     } else {
-                        players.forEach(messagePlayer -> aresonDeathSwap.messages.sendPlainMessageDelayed(messagePlayer, ""));
+                        players.forEach(messagePlayer ->
+                                aresonDeathSwap.messages.sendPlainMessageDelayed(
+                                        messagePlayer,
+                                        "arena-players-remaining",
+                                        20,
+                                        Pair.of("%number%", players.size() + "")
+                                )
+                        );
                     }
                     break;
             }
