@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class ArenaPlaceholders extends PlaceholderExpansion {
 
-    private final ArenaStatus arenaStatus;
+    private ArenaStatus arenaStatus;
     private final String arenaName;
     private final ArrayList<Player> players;
 
@@ -20,9 +20,13 @@ public class ArenaPlaceholders extends PlaceholderExpansion {
         this.players = players;
     }
 
+    public void setArenaStatus(ArenaStatus arenaStatus){
+        this.arenaStatus = arenaStatus;
+    }
+
     @Override
     public @NotNull String getIdentifier() {
-        return "ds-" + arenaName.toLowerCase();
+        return "ds-" + arenaName;
     }
 
     @Override

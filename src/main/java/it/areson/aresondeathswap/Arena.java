@@ -39,6 +39,7 @@ public class Arena {
                 aresonDeathSwap.STARTING_TIME,
                 () -> {
                     arenaStatus = InGame;
+                    placeholders.setArenaStatus(InGame);
                     startGame();
                 },
                 () -> players.forEach(player -> aresonDeathSwap.messages.sendPlainMessage(player, "countdown-interrupted")),
@@ -67,6 +68,7 @@ public class Arena {
 
                     aresonDeathSwap.reloadArenaWorld(arenaName);
                     arenaStatus = Waiting;
+                    placeholders.setArenaStatus(Waiting);
                 },
                 5,
                 10,
@@ -190,7 +192,7 @@ public class Arena {
             aresonDeathSwap.effects.winFirework(winnerPlayer);
             players.clear();
             arenaStatus = Ending;
-
+            placeholders.setArenaStatus(Ending);
             interruptGame();
         } else {
             aresonDeathSwap.getLogger().severe("Winningg game with no remaining players");
@@ -201,6 +203,7 @@ public class Arena {
         if (!countdownPregame.isRunning()) {
             countdownPregame.start();
             arenaStatus = ArenaStatus.Starting;
+            placeholders.setArenaStatus(Starting);
             players.forEach(player -> aresonDeathSwap.sounds.startingGame(player));
         }
     }
