@@ -1,6 +1,6 @@
 package it.areson.aresondeathswap.managers;
 
-import it.areson.aresondeathswap.utils.Pair;
+import it.areson.aresondeathswap.utils.StringPair;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -8,7 +8,7 @@ import java.util.HashMap;
 public class TitlesManager {
 
     private MessageManager messageManager;
-    private HashMap<String, Pair<String, String>> titles;
+    private HashMap<String, StringPair> titles;
 
     public TitlesManager(MessageManager messageManager) {
         this.messageManager = messageManager;
@@ -23,19 +23,19 @@ public class TitlesManager {
         });
     }
 
-    private Pair<String, String> getTitleAndSubtitle(String titleName) {
+    private StringPair getTitleAndSubtitle(String titleName) {
         String title = messageManager.getPlainMessage("title-" + titleName, false);
         String subTitle = messageManager.getPlainMessage("subtitle-" + titleName, false);
-        return Pair.of(title, subTitle);
+        return StringPair.of(title, subTitle);
     }
 
     public void sendShortTitle(Player player, String titleName) {
-        Pair<String, String> title = titles.get(titleName);
+        StringPair title = titles.get(titleName);
         player.sendTitle(title.getLeft(), title.getRight(), 10, 20, 10);
     }
 
     public void sendLongTitle(Player player, String titleName) {
-        Pair<String, String> title = titles.get(titleName);
+        StringPair title = titles.get(titleName);
         player.sendTitle(title.getLeft(), title.getRight(), 20, 60, 20);
     }
 }
