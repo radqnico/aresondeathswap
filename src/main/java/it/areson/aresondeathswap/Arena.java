@@ -74,7 +74,10 @@ public class Arena {
     public void startGame() {
         World world = aresonDeathSwap.getServer().getWorld(arenaName);
         if (world != null) {
-            players.forEach(player -> player.teleport(world.getSpawnLocation()));
+            players.forEach(player -> {
+                player.teleport(world.getSpawnLocation());
+                aresonDeathSwap.sounds.gameStarted(player);
+            });
             countdownGame.start();
             this.arenaStatus = ArenaStatus.InGame;
         } else {
@@ -90,6 +93,7 @@ public class Arena {
     public void interruptPregame() {
         if (countdownPregame.isRunning()) {
             countdownPregame.interrupt();
+            players.forEach(player -> aresonDeathSwap.sounds.startingGameInterrupted(player));
         }
     }
 
@@ -172,6 +176,7 @@ public class Arena {
                     aresonDeathSwap.messages.sendPlainMessageDelayed(player, "victory-message", 5, StringPair.of("%player%", winnerPlayer.getName()))
             );
             aresonDeathSwap.teleportToLobbySpawn(winnerPlayer);
+            aresonDeathSwap.sounds.winner(winnerPlayer);
             players.clear();
             arenaStatus = Ending;
 
@@ -185,6 +190,7 @@ public class Arena {
         if (!countdownPregame.isRunning()) {
             countdownPregame.start();
             arenaStatus = ArenaStatus.Starting;
+            players.forEach(player -> aresonDeathSwap.sounds.startingGame(player));
         }
     }
 
