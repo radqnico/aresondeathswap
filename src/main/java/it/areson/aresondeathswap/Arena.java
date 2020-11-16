@@ -2,7 +2,7 @@ package it.areson.aresondeathswap;
 
 import it.areson.aresondeathswap.enums.ArenaStatus;
 import it.areson.aresondeathswap.utils.Countdown;
-import it.areson.aresondeathswap.utils.Pair;
+import it.areson.aresondeathswap.utils.StringPair;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -156,7 +156,7 @@ public class Arena {
                                         messagePlayer,
                                         "arena-players-remaining",
                                         20,
-                                        Pair.of("%number%", players.size() + "")
+                                        StringPair.of("%number%", players.size() + "")
                                 )
                         );
                     }

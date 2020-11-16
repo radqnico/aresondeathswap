@@ -50,6 +50,7 @@ public class Countdown {
                     sendMessages(shoutingMessage.replaceAll("%seconds%", currentValue + ""));
                 }
                 currentValue--;
+                aresonDeathSwap.getLogger().severe(currentValue + "");
             }, 0, 20);
         }
     }
