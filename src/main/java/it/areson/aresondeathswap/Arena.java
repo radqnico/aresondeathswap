@@ -77,6 +77,7 @@ public class Arena {
             players.forEach(player -> {
                 player.teleport(world.getSpawnLocation());
                 aresonDeathSwap.sounds.gameStarted(player);
+                aresonDeathSwap.titles.sendLongTitle(player, "start");
             });
             countdownGame.start();
             this.arenaStatus = ArenaStatus.InGame;
