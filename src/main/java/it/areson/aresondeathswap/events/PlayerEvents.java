@@ -39,7 +39,7 @@ public class PlayerEvents implements Listener {
         aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(
                 aresonDeathSwap,
                 () -> aresonDeathSwap.sounds.loser(player),
-                10
+                20
         );
     }
 
