@@ -29,10 +29,7 @@ public class EffectManager {
     }
 
     public void deathStrike(Player player) {
-        World world = aresonDeathSwap.getServer().getWorld(aresonDeathSwap.MAIN_WORLD_NAME);
-        if (world != null) {
-            world.strikeLightningEffect(player.getLocation());
-        }
+        player.getWorld().strikeLightningEffect(player.getLocation());
     }
 
     public void joinedArena(Player player) {

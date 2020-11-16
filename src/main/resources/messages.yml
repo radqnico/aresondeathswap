@@ -17,3 +17,20 @@ missing-arena-name: "&cManca il nome dell'arena"
 player-joined-arena: "&6%player% si è unito alla partita"
 arena-players-remaining: "&6%number% giocatori rimanenti"
 already-in-an-arena: "&cStai già partencipando ad una partita!"
+
+# Titles and subtitles must start with "title-<name>" and "subtitle-<name>"
+
+title-join: "&6DeathSwap"
+subtitle-join: "&cVersione BETA"
+
+title-joinarena: ""
+subtitle-joinarena: "&aHai selezionato un'arena. Preparati a cominciare."
+
+title-win: "&6Hai vinto"
+subtitle-win: ""
+
+title-lose: "&cPeccato"
+subtitle-lose: "&cNon mollare, rirpova"
+
+title-swap: ""
+subtitle-swap: "&6Sei stato scambiato"

@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 public class TitlesManager {
 
-    private MessageManager messageManager;
+    private final MessageManager messageManager;
     private HashMap<String, StringPair> titles;
 
     public TitlesManager(MessageManager messageManager) {

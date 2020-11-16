@@ -24,6 +24,8 @@ public class PlayerEvents implements Listener {
     public void onPlayerJoinEvent(PlayerJoinEvent event) {
         aresonDeathSwap.teleportToLobbySpawn(event.getPlayer());
         aresonDeathSwap.sounds.joinServer(event.getPlayer().getWorld().getSpawnLocation());
+        aresonDeathSwap.effects.joinFirework(event.getPlayer());
+        aresonDeathSwap.titles.sendLongTitle(event.getPlayer(), "join");
     }
 
     @EventHandler
@@ -35,11 +37,14 @@ public class PlayerEvents implements Listener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
-        player.getWorld().strikeLightningEffect(player.getLocation());
+        aresonDeathSwap.effects.deathStrike(player);
         aresonDeathSwap.removePlayerFromArenas(player);
         aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(
                 aresonDeathSwap,
-                () -> aresonDeathSwap.sounds.loser(player),
+                () -> {
+                    aresonDeathSwap.sounds.loser(player);
+                    aresonDeathSwap.titles.sendLongTitle(player, "lose");
+                },
                 20
         );
     }
