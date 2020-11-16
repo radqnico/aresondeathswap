@@ -9,7 +9,7 @@ countdown-swap-message: "&aLo swap verrà eseguito tra %seconds% secondi"
 
 victory-message: "&6%player% ha vinto una partita!"
 
-countdown-prepare-message: "&aPreparati al prossimo swap!"
+countdown-prepare-message: "&aPreparati al prossimo swap! Avverrà a caso tra 1 e 3 minuti"
 arena-not-found: "&cArena non trovata"
 arena-already-started: "&cLa partita è già in corso in questa arena"
 arena-join: "&aTi sei unito a questa arena"
