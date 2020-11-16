@@ -1,7 +1,7 @@
 package it.areson.aresondeathswap.managers;
 
 import it.areson.aresondeathswap.AresonDeathSwap;
-import it.areson.aresondeathswap.utils.Pair;
+import it.areson.aresondeathswap.utils.StringPair;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
@@ -44,13 +44,13 @@ public class MessageManager extends FileManager {
         );
     }
 
-    public void sendPlainMessageDelayed(Player player, String messageKey, long delayTicks, Pair<String, String>... substitutions) {
+    public void sendPlainMessageDelayed(Player player, String messageKey, long delayTicks, StringPair... substitutions) {
         aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(
                 aresonDeathSwap,
                 () -> {
                     String message = getFileConfiguration().getString(messageKey);
                     if (Objects.nonNull(message)) {
-                        Arrays.stream(substitutions).forEach(pair -> message.replaceAll(pair.getLeft(), pair.getRight()));
+                        Arrays.stream(substitutions).forEach(stringPair -> message.replaceAll(stringPair.getLeft(), stringPair.getRight()));
                         player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + message));
                     } else {
                         player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + "&cError: '" + messageKey + "' message does not exists!"));
