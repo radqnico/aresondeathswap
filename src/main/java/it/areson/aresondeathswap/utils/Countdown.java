@@ -45,12 +45,12 @@ public class Countdown {
             taskId = aresonDeathSwap.getServer().getScheduler().scheduleSyncRepeatingTask(aresonDeathSwap, () -> {
                 if (currentValue == 0) {
                     end();
+                } else {
+                    if (currentValue <= timeBeforeShouting) {
+                        sendMessages(shoutingMessage.replaceAll("%seconds%", currentValue + ""));
+                    }
+                    currentValue--;
                 }
-                if (currentValue <= timeBeforeShouting) {
-                    sendMessages(shoutingMessage.replaceAll("%seconds%", currentValue + ""));
-                }
-                currentValue--;
-                aresonDeathSwap.getLogger().severe(currentValue + "");
             }, 0, 20);
         }
     }

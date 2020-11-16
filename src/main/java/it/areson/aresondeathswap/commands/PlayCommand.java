@@ -29,11 +29,16 @@ public class PlayCommand implements CommandExecutor, TabCompleter {
             if (arguments.length > 0) {
                 String arenaName = arguments[0];
                 if (aresonDeathSwap.arenas.containsKey(arenaName)) {
-                    if (aresonDeathSwap.arenas.get(arenaName).addPlayer(player)) {
-                        aresonDeathSwap.messages.sendPlainMessage(player, "arena-join");
+                    if(!aresonDeathSwap.playerIsInAnArena(player)) {
+                        if (aresonDeathSwap.arenas.get(arenaName).addPlayer(player)) {
+                            aresonDeathSwap.messages.sendPlainMessage(player, "arena-join");
+                        } else {
+                            aresonDeathSwap.messages.sendPlainMessage(player, "arena-already-started");
+                        }
                     } else {
-                        aresonDeathSwap.messages.sendPlainMessage(player, "arena-already-started");
+                        aresonDeathSwap.messages.sendPlainMessage(player, "already-in-an-arena");
                     }
+
                 } else {
                     aresonDeathSwap.messages.sendPlainMessage(player, "arena-not-found");
                 }

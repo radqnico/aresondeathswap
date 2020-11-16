@@ -13,9 +13,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public final class AresonDeathSwap extends JavaPlugin {
 
@@ -132,6 +130,10 @@ public final class AresonDeathSwap extends JavaPlugin {
                 arena.removePlayer(player);
             }
         });
+    }
+
+    public boolean playerIsInAnArena(Player player) {
+        return arenas.entrySet().stream().anyMatch(arenaEntry -> arenaEntry.getValue().getPlayers().contains(player));
     }
 
 }
