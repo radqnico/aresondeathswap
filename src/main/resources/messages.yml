@@ -1,9 +1,9 @@
 prefix: "&9[Areson] "
 
-countdown-starting-message: "&aIl gioco inizierà tra %seconds% secondi"
+countdown-starting-message: "&6La partita inizierà tra %seconds% secondi"
 countdown-interrupted: "&cNon ci sono abbastanza giocatori per iniziare la partita!"
 
-countdown-start-message: "&aNumero minimo di giocatori raggiunto. Il gioco inizierà tra %seconds% secondi"
+countdown-start-message: "&aNumero minimo di giocatori raggiunto. La partita inizierà tra %seconds% secondi"
 countdown-game-started: "&aLa partita è iniziata, fai attenzione a non morire!"
 countdown-swap-message: "&aLo swap verrà eseguito tra %seconds% secondi"
 
@@ -12,7 +12,7 @@ victory-message: "&6%player% ha vinto una partita!"
 countdown-prepare-message: "&aPreparati al prossimo swap! Avverrà a caso tra 1 e 3 minuti"
 arena-not-found: "&cArena non trovata"
 arena-already-started: "&cLa partita è già in corso in questa arena"
-arena-join: "&aTi sei unito a questa arena"
+arena-join: "&aTi sei unito all'arena '%arena%'"
 missing-arena-name: "&cManca il nome dell'arena"
 player-joined-arena: "&a%player% si è unito alla partita"
 arena-players-remaining: "&a%number% giocatori rimanenti"
