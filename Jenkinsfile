@@ -47,7 +47,7 @@ pipeline {
                                         ]
                                 )
                         ]
-                ),
+                )
                 sshPublisher(
                         failOnError: false,
                         publishers: [
