@@ -2,18 +2,14 @@ package it.areson.aresondeathswap.commands.admin;
 
 import it.areson.aresondeathswap.AresonDeathSwap;
 import org.bukkit.World;
-import org.bukkit.WorldCreator;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Optional;
 
 public class TpWorldCommand implements CommandExecutor {
 
@@ -36,11 +32,11 @@ public class TpWorldCommand implements CommandExecutor {
 
             if (arguments.length > 0) {
                 String worldName = arguments[0];
-                List<String> worldNames = aresonDeathSwap.getServer().getWorlds().find;
+                Optional<World> searchedWorld = aresonDeathSwap.getServer().getWorlds().stream().filter(world -> world.getName().equals(worldName)).findFirst();
 
-                if (worldNames.contains(worldName)) {
-                    player.teleport(loadedWorld.getSpawnLocation());
-                    player.sendMessage("Mondo caricato");
+                if (searchedWorld.isPresent()) {
+                    player.teleport(searchedWorld.get().getSpawnLocation());
+                    player.sendMessage("Teletrasportato");
                 } else {
                     player.sendMessage("Mondo non trovato");
                 }

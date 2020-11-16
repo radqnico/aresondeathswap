@@ -10,7 +10,10 @@ commands:
     usage: "/play"
   setArena:
     usage: "/setArena"
+    permission: aresonDeathSwap.admin
   loadWorld:
     usage: "/loadWorld"
+    permission: aresonDeathSwap.admin
   tpWorld:
     usage: "/tpWorld"
+    permission: aresonDeathSwap.admin

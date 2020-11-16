@@ -10,11 +10,17 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 
 import java.util.Objects;
+import java.util.Optional;
 
 public class LoadWorldCommand implements CommandExecutor {
 
+    private final AresonDeathSwap aresonDeathSwap;
+
+
     public LoadWorldCommand(AresonDeathSwap plugin) {
-        PluginCommand pluginCommand = plugin.getCommand("loadWorld");
+        aresonDeathSwap = plugin;
+
+        PluginCommand pluginCommand = aresonDeathSwap.getCommand("loadWorld");
         if (!Objects.isNull(pluginCommand)) {
             pluginCommand.setExecutor(this);
         }
@@ -26,13 +32,19 @@ public class LoadWorldCommand implements CommandExecutor {
             Player player = (Player) commandSender;
 
             if (arguments.length > 0) {
-                World loadedWorld = new WorldCreator(arguments[0]).createWorld();
+                String worldName = arguments[0];
+                Optional<World> searchedWorld = aresonDeathSwap.getServer().getWorlds().stream().filter(world -> world.getName().equals(worldName)).findFirst();
+                if (!searchedWorld.isPresent()) {
+                    World loadedWorld = new WorldCreator(worldName).createWorld();
 
-                if (loadedWorld != null) {
-                    player.teleport(loadedWorld.getSpawnLocation());
-                    player.sendMessage("Mondo caricato");
+                    if (loadedWorld != null) {
+                        player.teleport(loadedWorld.getSpawnLocation());
+                        player.sendMessage("Mondo caricato");
+                    } else {
+                        player.sendMessage("Errore nel caricamento del mondo");
+                    }
                 } else {
-                    player.sendMessage("Errore nel caricamento del mondo");
+                    player.sendMessage("Il mondo è già caricato");
                 }
             } else {
                 player.sendMessage("Manca il nome del mondo");
