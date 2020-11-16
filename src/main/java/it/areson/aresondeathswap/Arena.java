@@ -121,6 +121,11 @@ public class Arena {
 
     public boolean addPlayer(Player player) {
         if (arenaStatus == Waiting || arenaStatus == Starting) {
+            players.forEach(
+                    targetPlayer -> targetPlayer.sendMessage(
+                            aresonDeathSwap.messages.getPlainMessage("player-joined-arena").replaceAll("%player%", player.getName())
+                    )
+            );
             players.add(player);
             if (players.size() >= aresonDeathSwap.MIN_PLAYERS) {
                 startPregame();
