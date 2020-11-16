@@ -12,6 +12,7 @@ public class TitlesManager {
 
     public TitlesManager(MessageManager messageManager) {
         this.messageManager = messageManager;
+        readAllTitles();
     }
 
     private void readAllTitles() {
