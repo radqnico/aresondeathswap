@@ -49,8 +49,8 @@ public class MessageManager extends FileManager {
                 aresonDeathSwap,
                 () -> {
                     String message = getFileConfiguration().getString(messageKey);
-                    Arrays.stream(substitutions).forEach(pair -> message.replaceAll(pair.getLeft(), pair.getRight()));
                     if (Objects.nonNull(message)) {
+                        Arrays.stream(substitutions).forEach(pair -> message.replaceAll(pair.getLeft(), pair.getRight()));
                         player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + message));
                     } else {
                         player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + "&cError: '" + messageKey + "' message does not exists!"));
