@@ -1,6 +1,7 @@
 package it.areson.aresondeathswap.commands;
 
 import it.areson.aresondeathswap.AresonDeathSwap;
+import it.areson.aresondeathswap.utils.StringPair;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
@@ -31,7 +32,7 @@ public class PlayCommand implements CommandExecutor, TabCompleter {
                 if (aresonDeathSwap.arenas.containsKey(arenaName)) {
                     if(!aresonDeathSwap.playerIsInAnArena(player)) {
                         if (aresonDeathSwap.arenas.get(arenaName).addPlayer(player)) {
-                            aresonDeathSwap.messages.sendPlainMessage(player, "arena-join");
+                            aresonDeathSwap.messages.sendPlainMessage(player, "arena-join", StringPair.of("%arena%", arenaName));
                         } else {
                             aresonDeathSwap.messages.sendPlainMessage(player, "arena-already-started");
                         }
