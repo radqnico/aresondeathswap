@@ -33,6 +33,7 @@ public final class AresonDeathSwap extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
         saveDefaultConfig();
 
         arenas = new HashMap<>();

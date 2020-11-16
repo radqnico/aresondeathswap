@@ -1,6 +1,7 @@
 package it.areson.aresondeathswap;
 
 import it.areson.aresondeathswap.enums.ArenaStatus;
+import it.areson.aresondeathswap.utils.ArenaPlaceholders;
 import it.areson.aresondeathswap.utils.Countdown;
 import it.areson.aresondeathswap.utils.StringPair;
 import org.bukkit.Location;
@@ -23,11 +24,15 @@ public class Arena {
     private Countdown countdownGame;
     private ArenaStatus arenaStatus;
 
+    private ArenaPlaceholders placeholders;
+
     public Arena(AresonDeathSwap aresonDeathSwap, String arenaName) {
         this.aresonDeathSwap = aresonDeathSwap;
         this.arenaName = arenaName;
         this.players = new ArrayList<>();
         this.arenaStatus = Waiting;
+
+        placeholders = new ArenaPlaceholders(this.arenaStatus, this.arenaName, this.players);
 
         //Countdowns
         this.countdownPregame = new Countdown(aresonDeathSwap,
