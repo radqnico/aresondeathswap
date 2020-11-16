@@ -120,7 +120,7 @@ public class Arena {
     }
 
     public boolean addPlayer(Player player) {
-        if (arenaStatus != InGame) {
+        if (arenaStatus == Waiting || arenaStatus == Starting) {
             players.add(player);
             if (players.size() >= aresonDeathSwap.MIN_PLAYERS) {
                 startPregame();

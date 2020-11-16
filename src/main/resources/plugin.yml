@@ -12,3 +12,5 @@ commands:
     usage: "/setArena"
   loadWorld:
     usage: "/loadWorld"
+  tpWorld:
+    usage: "/tpWorld"

@@ -1,4 +1,4 @@
-package it.areson.aresondeathswap.commands;
+package it.areson.aresondeathswap.commands.admin;
 
 import it.areson.aresondeathswap.AresonDeathSwap;
 import it.areson.aresondeathswap.managers.FileManager;
@@ -37,14 +37,17 @@ public class SetArenaCommand implements CommandExecutor {
                 String worldName = locationWorld.getName();
                 if (!worldName.equalsIgnoreCase(aresonDeathSwap.MAIN_WORLD_NAME)) {
                     locationWorld.setSpawnLocation(playerLocation);
-                    dataFile.setArenaLocation(playerLocation);//TODO Remove to array
-                    aresonDeathSwap.getServer().getOnlinePlayers().forEach(
+                    dataFile.addArena(playerLocation.getWorld().getName());
+
+                    //Kick arena players
+                    locationWorld.getPlayers().forEach(
                             player -> {
                                 if (player.getWorld().getName().equalsIgnoreCase(worldName)) {
                                     player.kickPlayer("Mondo trasformato in arena");
                                 }
                             }
                     );
+
                     locationWorld.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
                     aresonDeathSwap.getServer().unloadWorld(worldName, true);
                     aresonDeathSwap.loadArenaByName(worldName);

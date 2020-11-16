@@ -1,4 +1,4 @@
-package it.areson.aresondeathswap.commands;
+package it.areson.aresondeathswap.commands.admin;
 
 import it.areson.aresondeathswap.AresonDeathSwap;
 import org.bukkit.World;
@@ -14,7 +14,6 @@ import java.util.Objects;
 public class LoadWorldCommand implements CommandExecutor {
 
     public LoadWorldCommand(AresonDeathSwap plugin) {
-
         PluginCommand pluginCommand = plugin.getCommand("loadWorld");
         if (!Objects.isNull(pluginCommand)) {
             pluginCommand.setExecutor(this);
@@ -23,7 +22,6 @@ public class LoadWorldCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] arguments) {
-
         if (commandSender instanceof Player) {
             Player player = (Player) commandSender;
 
