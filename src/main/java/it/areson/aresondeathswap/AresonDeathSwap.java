@@ -86,11 +86,11 @@ public final class AresonDeathSwap extends JavaPlugin {
 
     public void loadArenaByName(String arenaName) {
         if (!arenas.containsKey(arenaName)) {
-            ConfigurationSection arenaSection = dataFile.getFileConfiguration().getConfigurationSection(ARENAS_PATH + "." + arenaName);
+            List<String> arenas = dataFile.getFileConfiguration().getStringList(ARENAS_PATH);
 
-            if (!Objects.isNull(arenaSection)) {
+            if (arenas.contains(arenaName)) {
                 if (loadArenaWorld(arenaName)) {
-                    arenas.put(arenaName, new Arena(this, arenaName));
+                    this.arenas.put(arenaName, new Arena(this, arenaName));
                     getLogger().info("World " + arenaName + " loaded successfully");
                 } else {
                     getLogger().severe("Error while loading world " + arenaName);

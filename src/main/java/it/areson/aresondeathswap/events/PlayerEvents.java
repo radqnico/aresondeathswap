@@ -34,7 +34,6 @@ public class PlayerEvents implements Listener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
-        System.out.println(event.getEntity().getName());
         aresonDeathSwap.arenas.forEach((arenaName, arena) -> arena.removePlayer(player));
     }
 
