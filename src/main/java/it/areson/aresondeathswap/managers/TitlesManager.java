@@ -12,6 +12,7 @@ public class TitlesManager {
 
     public TitlesManager(MessageManager messageManager) {
         this.messageManager = messageManager;
+        titles = new HashMap<>();
         readAllTitles();
     }
 
