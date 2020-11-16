@@ -43,7 +43,8 @@ public class SetArenaCommand implements CommandExecutor {
                     locationWorld.getPlayers().forEach(
                             player -> {
                                 if (player.getWorld().getName().equalsIgnoreCase(worldName)) {
-                                    player.kickPlayer("Mondo trasformato in arena");
+                                    aresonDeathSwap.teleportToLobbySpawn(player);
+                                    player.sendMessage("Mondo trasformato in arena");
                                 }
                             }
                     );
