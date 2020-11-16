@@ -3,6 +3,7 @@ package it.areson.aresondeathswap;
 import it.areson.aresondeathswap.commands.admin.LoadWorldCommand;
 import it.areson.aresondeathswap.commands.PlayCommand;
 import it.areson.aresondeathswap.commands.admin.SetArenaCommand;
+import it.areson.aresondeathswap.commands.admin.TpWorldCommand;
 import it.areson.aresondeathswap.events.PlayerEvents;
 import it.areson.aresondeathswap.managers.FileManager;
 import it.areson.aresondeathswap.managers.MessageManager;
@@ -17,6 +18,8 @@ import java.util.List;
 import java.util.Objects;
 
 public final class AresonDeathSwap extends JavaPlugin {
+
+    //TODO Permissions per comandi staff
 
     public final String ARENAS_PATH = "arenas";
     public final int MIN_PLAYERS = 2;
@@ -37,9 +40,11 @@ public final class AresonDeathSwap extends JavaPlugin {
         loadArenas(dataFile);
 
 
+        new PlayCommand(this);
+
         new SetArenaCommand(this, dataFile);
         new LoadWorldCommand(this);
-        new PlayCommand(this);
+        new TpWorldCommand(this);
 
         getServer().getPluginManager().registerEvents(new PlayerEvents(this), this);
     }
