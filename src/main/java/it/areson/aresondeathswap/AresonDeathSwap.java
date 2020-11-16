@@ -126,4 +126,12 @@ public final class AresonDeathSwap extends JavaPlugin {
         }
     }
 
+    public void removePlayerFromArenas(Player player) {
+        arenas.forEach((arenaName, arena) -> {
+            if(arena.getPlayers().contains(player)) {
+                arena.removePlayer(player);
+            }
+        });
+    }
+
 }

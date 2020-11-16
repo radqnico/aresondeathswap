@@ -149,6 +149,8 @@ public class Arena {
                     aresonDeathSwap.teleportToLobbySpawn(player);
                     if (players.size() == 1) {
                         winGame();
+                    } else {
+                        players.forEach(messagePlayer -> aresonDeathSwap.messages.sendPlainMessageDelayed(messagePlayer, ""));
                     }
                     break;
             }
