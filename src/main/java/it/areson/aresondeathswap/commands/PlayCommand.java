@@ -31,14 +31,18 @@ public class PlayCommand implements CommandExecutor, TabCompleter {
                 if (aresonDeathSwap.arenas.containsKey(arenaName)) {
                     if (aresonDeathSwap.arenas.get(arenaName).addPlayer(player)) {
                         aresonDeathSwap.messages.sendPlainMessage(player, "arena-join");
+                        aresonDeathSwap.sounds.joinArena(player);
                     } else {
                         aresonDeathSwap.messages.sendPlainMessage(player, "arena-already-started");
+                        aresonDeathSwap.sounds.cannotJoinArena(player);
                     }
                 } else {
                     aresonDeathSwap.messages.sendPlainMessage(player, "arena-not-found");
+                    aresonDeathSwap.sounds.cannotJoinArena(player);
                 }
             } else {
                 aresonDeathSwap.messages.sendPlainMessage(player, "missing-arena-name");
+                aresonDeathSwap.sounds.cannotJoinArena(player);
             }
         } else {
             commandSender.sendMessage("Comando eseguibile solo da player");

@@ -20,13 +20,24 @@ public class SoundManager {
     }
 
     public void joinArena(Player target) {
-        target.playSound(target.getLocation(), Sound.UI_LOOM_SELECT_PATTERN, SoundCategory.MASTER, 1f, 1f);
+        target.playSound(target.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.MASTER, 1f, 1f);
     }
 
     public void joinArena(Location target) {
         World world = target.getWorld();
         if (world != null) {
-            world.playSound(target, Sound.UI_LOOM_SELECT_PATTERN, SoundCategory.MASTER, 1f, 1f);
+            world.playSound(target, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.MASTER, 1f, 1f);
+        }
+    }
+
+    public void cannotJoinArena(Player target) {
+        target.playSound(target.getLocation(), Sound.ENTITY_VILLAGER_NO, SoundCategory.MASTER, 0.5f, 1f);
+    }
+
+    public void cannotJoinArena(Location target) {
+        World world = target.getWorld();
+        if (world != null) {
+            world.playSound(target, Sound.ENTITY_VILLAGER_NO, SoundCategory.MASTER, 0.5f, 1f);
         }
     }
 
@@ -82,6 +93,17 @@ public class SoundManager {
         World world = target.getWorld();
         if (world != null) {
             world.playSound(target, Sound.UI_TOAST_CHALLENGE_COMPLETE, SoundCategory.MASTER, 0.6f, 1f);
+        }
+    }
+
+    public void tick(Player target) {
+        target.playSound(target.getLocation(), Sound.BLOCK_NOTE_BLOCK_XYLOPHONE, SoundCategory.MASTER, 0.6f, 1f);
+    }
+
+    public void tick(Location target) {
+        World world = target.getWorld();
+        if (world != null) {
+            world.playSound(target, Sound.BLOCK_NOTE_BLOCK_XYLOPHONE, SoundCategory.MASTER, 0.6f, 1f);
         }
     }
 }
