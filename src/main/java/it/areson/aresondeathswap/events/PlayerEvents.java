@@ -24,7 +24,6 @@ public class PlayerEvents implements Listener {
     public void onPlayerJoinEvent(PlayerJoinEvent event) {
         aresonDeathSwap.teleportToLobbySpawn(event.getPlayer());
         aresonDeathSwap.sounds.joinServer(event.getPlayer().getWorld().getSpawnLocation());
-        aresonDeathSwap.effects.joinFirework(event.getPlayer());
         aresonDeathSwap.titles.sendLongTitle(event.getPlayer(), "join");
     }
 

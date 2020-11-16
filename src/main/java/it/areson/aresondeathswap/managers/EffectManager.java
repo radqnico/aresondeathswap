@@ -18,7 +18,7 @@ public class EffectManager {
         this.aresonDeathSwap = aresonDeathSwap;
     }
 
-    public void joinFirework(Player player) {
+    public void winFirework(Player player) {
         FireworkEffect effect = FireworkEffect.builder().trail(false).flicker(false).withColor(Color.RED).withFade(Color.ORANGE).with(FireworkEffect.Type.BALL).build();
         Firework fw = player.getWorld().spawn(player.getLocation(), Firework.class);
         FireworkMeta meta = fw.getFireworkMeta();
