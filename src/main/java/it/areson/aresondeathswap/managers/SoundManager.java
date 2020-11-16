@@ -2,30 +2,86 @@ package it.areson.aresondeathswap.managers;
 
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 public class SoundManager {
 
-    public void join(Player target) {
-        target.playSound(target.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1f, 0.5f);
+    public void joinServer(Player target) {
+        target.playSound(target.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, SoundCategory.MASTER, 1f, 1f);
     }
 
-    public void join(Location target) {
+    public void joinServer(Location target) {
         World world = target.getWorld();
         if (world != null) {
-            world.playSound(target, Sound.ENTITY_ENDERMAN_TELEPORT, 1f, 0.5f);
+            world.playSound(target, Sound.ENTITY_ENDERMAN_TELEPORT, SoundCategory.MASTER, 1f, 1f);
+        }
+    }
+
+    public void joinArena(Player target) {
+        target.playSound(target.getLocation(), Sound.UI_LOOM_SELECT_PATTERN, SoundCategory.MASTER, 1f, 1f);
+    }
+
+    public void joinArena(Location target) {
+        World world = target.getWorld();
+        if (world != null) {
+            world.playSound(target, Sound.UI_LOOM_SELECT_PATTERN, SoundCategory.MASTER, 1f, 1f);
         }
     }
 
     public void startingGame(Player target) {
-        target.playSound(target.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1f, 0.5f);
+        target.playSound(target.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, SoundCategory.MASTER, 1f, 1f);
     }
 
     public void startingGame(Location target) {
         World world = target.getWorld();
         if (world != null) {
-            world.playSound(target, Sound.BLOCK_BEACON_DEACTIVATE, 1f, 0.5f);
+            world.playSound(target, Sound.BLOCK_BEACON_ACTIVATE, SoundCategory.MASTER, 1f, 1f);
+        }
+    }
+
+    public void startingGameInterrupted(Player target) {
+        target.playSound(target.getLocation(), Sound.BLOCK_BEACON_DEACTIVATE, SoundCategory.MASTER, 1f, 1f);
+    }
+
+    public void startingGameInterrupted(Location target) {
+        World world = target.getWorld();
+        if (world != null) {
+            world.playSound(target, Sound.BLOCK_BEACON_DEACTIVATE, SoundCategory.MASTER, 1f, 1f);
+        }
+    }
+
+    public void gameStarted(Player target) {
+        target.playSound(target.getLocation(), Sound.ENTITY_WITHER_SPAWN, SoundCategory.MASTER, 0.4f, 1f);
+    }
+
+    public void gameStarted(Location target) {
+        World world = target.getWorld();
+        if (world != null) {
+            world.playSound(target, Sound.ENTITY_WITHER_SPAWN, SoundCategory.MASTER, 0.4f, 1f);
+        }
+    }
+
+    public void loser(Player target) {
+        target.playSound(target.getLocation(), Sound.ITEM_TOTEM_USE, SoundCategory.MASTER, 0.4f, 1f);
+    }
+
+    public void loser(Location target) {
+        World world = target.getWorld();
+        if (world != null) {
+            world.playSound(target, Sound.ITEM_TOTEM_USE, SoundCategory.MASTER, 0.4f, 1f);
+        }
+    }
+
+    public void winner(Player target) {
+        target.playSound(target.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, SoundCategory.MASTER, 0.6f, 1f);
+    }
+
+    public void winner(Location target) {
+        World world = target.getWorld();
+        if (world != null) {
+            world.playSound(target, Sound.UI_TOAST_CHALLENGE_COMPLETE, SoundCategory.MASTER, 0.6f, 1f);
         }
     }
 }
