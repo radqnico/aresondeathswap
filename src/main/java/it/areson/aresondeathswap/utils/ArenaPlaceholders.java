@@ -43,7 +43,16 @@ public class ArenaPlaceholders extends PlaceholderExpansion {
         }
 
         if(identifier.equals("status")){
-            return arenaStatus.name();
+            switch (arenaStatus){
+                case Waiting:
+                    return "Aperta";
+                case Starting:
+                    return "In avvio";
+                case InGame:
+                    return "In gioco";
+                case Ending:
+                    return "Riavvio";
+            }
         }
 
         return null;
