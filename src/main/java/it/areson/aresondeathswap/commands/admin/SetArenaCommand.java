@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Objects;
 
+@SuppressWarnings("NullableProblems")
 public class SetArenaCommand implements CommandExecutor {
 
     private final AresonDeathSwap aresonDeathSwap;
@@ -40,14 +41,8 @@ public class SetArenaCommand implements CommandExecutor {
                     dataFile.addArena(playerLocation.getWorld().getName());
 
                     //Kick arena players
-                    locationWorld.getPlayers().forEach(
-                            player -> {
-                                if (player.getWorld().getName().equalsIgnoreCase(worldName)) {
-                                    aresonDeathSwap.teleportToLobbySpawn(player);
-                                    player.sendMessage("Mondo trasformato in arena");
-                                }
-                            }
-                    );
+                    aresonDeathSwap.kickPlayersFromWorld(locationWorld.getName());
+                    commandSender.sendMessage("Arena creata");
 
                     locationWorld.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
                     aresonDeathSwap.getServer().unloadWorld(worldName, true);

@@ -8,8 +8,13 @@ depend:  [PlaceholderAPI]
 commands:
   play:
     usage: "/play"
+  leave:
+    usage: "/leave"
   setArena:
     usage: "/setArena"
+    permission: aresonDeathSwap.admin
+  deleteArena:
+    usage: "/deleteArena"
     permission: aresonDeathSwap.admin
   loadWorld:
     usage: "/loadWorld"
