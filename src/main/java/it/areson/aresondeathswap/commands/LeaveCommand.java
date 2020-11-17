@@ -31,7 +31,7 @@ public class LeaveCommand implements CommandExecutor {
                 aresonDeathSwap.removePlayerFromArenas(player);
                 aresonDeathSwap.messages.sendPlainMessage(player, "arena-leaved");
             } else {
-                aresonDeathSwap.messages.sendPlainMessage(player, "missing-arena-name");
+                aresonDeathSwap.messages.sendPlainMessage(player, "no-arena-playing");
                 //TODO Nico: suono?
             }
         } else {
