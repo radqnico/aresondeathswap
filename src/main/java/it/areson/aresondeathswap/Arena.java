@@ -1,5 +1,6 @@
 package it.areson.aresondeathswap;
 
+import it.areson.aresondeathswap.api.PlayerWinEvent;
 import it.areson.aresondeathswap.enums.ArenaStatus;
 import it.areson.aresondeathswap.utils.ArenaPlaceholders;
 import it.areson.aresondeathswap.utils.Countdown;
@@ -81,6 +82,7 @@ public class Arena {
     public void startGame() {
         World world = aresonDeathSwap.getServer().getWorld(arenaName);
         if (world != null) {
+            world.setTime((int) (Math.random() * 24000));
             players.forEach(player -> {
                 player.teleport(world.getSpawnLocation());
                 aresonDeathSwap.sounds.gameStarted(player);
@@ -190,6 +192,7 @@ public class Arena {
             aresonDeathSwap.sounds.winner(winnerPlayer);
             aresonDeathSwap.titles.sendLongTitle(winnerPlayer, "win");
             aresonDeathSwap.effects.winFirework(winnerPlayer);
+            aresonDeathSwap.getServer().getPluginManager().callEvent(new PlayerWinEvent(winnerPlayer));
             players.clear();
             arenaStatus = Ending;
             placeholders.setArenaStatus(Ending);

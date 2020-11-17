@@ -1,4 +1,4 @@
-prefix: "&9[Areson] "
+prefix: "&9[Areson DeathSwap]&r "
 
 countdown-starting-message: "&6La partita inizierà tra %seconds% secondi"
 countdown-interrupted: "&cNon ci sono abbastanza giocatori per iniziare la partita!"
@@ -35,5 +35,5 @@ subtitle-lose: "&cNon mollare, riprova"
 title-swap: ""
 subtitle-swap: "&6Sei stato scambiato"
 
-title-start: "&4Si inizia"
+title-start: "&cSi inizia"
 subtitle-start: "&6Elimina gli altri giocatori"
