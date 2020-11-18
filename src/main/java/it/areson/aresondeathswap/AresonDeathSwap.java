@@ -6,6 +6,7 @@ import it.areson.aresondeathswap.commands.admin.LoadWorldCommand;
 import it.areson.aresondeathswap.commands.PlayCommand;
 import it.areson.aresondeathswap.commands.admin.SetArenaCommand;
 import it.areson.aresondeathswap.commands.admin.TpWorldCommand;
+import it.areson.aresondeathswap.enums.ArenaStatus;
 import it.areson.aresondeathswap.events.PlayerEvents;
 import it.areson.aresondeathswap.managers.*;
 import org.bukkit.World;
@@ -140,6 +141,9 @@ public final class AresonDeathSwap extends JavaPlugin {
     public void removePlayerFromArenas(Player player) {
         arenas.forEach((arenaName, arena) -> {
             if (arena.getPlayers().contains(player)) {
+                if(arena.getArenaStatus().equals(ArenaStatus.InGame)){
+                    eventCall.callPlayerLose(player);
+                }
                 arena.removePlayer(player);
             }
         });

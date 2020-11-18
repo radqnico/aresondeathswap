@@ -33,7 +33,7 @@ public class PlayerEvents implements Listener {
     @EventHandler
     public void onPlayerQuitEvent(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        aresonDeathSwap.arenas.forEach((arenaName, arena) -> arena.removePlayer(player));
+        aresonDeathSwap.removePlayerFromArenas(player);
     }
 
     @EventHandler
@@ -46,7 +46,6 @@ public class PlayerEvents implements Listener {
                 () -> {
                     aresonDeathSwap.sounds.loser(player);
                     aresonDeathSwap.titles.sendLongTitle(player, "lose");
-                    aresonDeathSwap.eventCall.callPlayerLose(player);
                     aresonDeathSwap.eventCall.callPlayerEndGame(player);
                 },
                 20

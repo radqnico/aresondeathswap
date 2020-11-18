@@ -218,4 +218,7 @@ public class Arena {
         }
     }
 
+    public ArenaStatus getArenaStatus() {
+        return arenaStatus;
+    }
 }
