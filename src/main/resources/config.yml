@@ -1,4 +1,4 @@
-arena-min-players: 2
+default-min-players: 2
 
 arena-starting-seconds: 30
 arena-min-swap-seconds: 60

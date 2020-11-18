@@ -1,26 +1,26 @@
 package it.areson.aresondeathswap;
 
 import it.areson.aresondeathswap.commands.LeaveCommand;
-import it.areson.aresondeathswap.commands.admin.DeleteArenaCommand;
-import it.areson.aresondeathswap.commands.admin.LoadWorldCommand;
 import it.areson.aresondeathswap.commands.PlayCommand;
-import it.areson.aresondeathswap.commands.admin.SetArenaCommand;
-import it.areson.aresondeathswap.commands.admin.TpWorldCommand;
+import it.areson.aresondeathswap.commands.admin.*;
 import it.areson.aresondeathswap.enums.ArenaStatus;
 import it.areson.aresondeathswap.events.PlayerEvents;
 import it.areson.aresondeathswap.managers.*;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public final class AresonDeathSwap extends JavaPlugin {
 
     public final String ARENAS_PATH = "arenas";
-    public final int MIN_PLAYERS = getConfig().getInt("arena-min-players");
+    public final int DEFAULT_MIN_PLAYERS = getConfig().getInt("default-min-players");
     public final int STARTING_TIME = getConfig().getInt("arena-starting-seconds");
     public final int MIN_SWAP_TIME_SECONDS = getConfig().getInt("arena-min-swap-seconds");
     public final int MAX_SWAP_TIME_SECONDS = getConfig().getInt("arena-max-swap-seconds");
@@ -53,9 +53,10 @@ public final class AresonDeathSwap extends JavaPlugin {
         new PlayCommand(this);
         new LeaveCommand(this);
 
-        new SetArenaCommand(this, dataFile);
+        new ArenaReadyCommand(this, dataFile);
         new DeleteArenaCommand(this, dataFile);
         new LoadWorldCommand(this);
+        new SetSpawnPointCommand(this, dataFile);
         new TpWorldCommand(this);
 
         getServer().getPluginManager().registerEvents(new PlayerEvents(this), this);
@@ -107,17 +108,33 @@ public final class AresonDeathSwap extends JavaPlugin {
 
     public void loadArenaByName(String arenaName) {
         if (!arenas.containsKey(arenaName)) {
-            List<String> arenas = dataFile.getFileConfiguration().getStringList(ARENAS_PATH);
+            ConfigurationSection arenaSection = dataFile.getFileConfiguration().getConfigurationSection(ARENAS_PATH + "." + arenaName);
 
-            if (arenas.contains(arenaName)) {
-                if (loadArenaWorld(arenaName)) {
-                    this.arenas.put(arenaName, new Arena(this, arenaName));
-                    getLogger().info("World " + arenaName + " loaded successfully");
+            if (arenaSection != null && arenaSection.getKeys(false).contains(arenaName)) {
+                ConfigurationSection spawnLocations = arenaSection.getConfigurationSection("spawnLocations");
+
+                if (spawnLocations != null && !spawnLocations.getKeys(false).isEmpty()) {
+                    int minPlayers = dataFile.getArenaMinPlayers(arenaName);
+
+                    ArrayList<Location> spawnPoints = new ArrayList<>();
+                    spawnLocations.getKeys(false).forEach(spawnNumber -> {
+                        Location location = dataFile.getLocation(ARENAS_PATH + "." + arenaName + ".spawnLocations." + spawnNumber);
+                        if (location != null) {
+                            spawnPoints.add(location);
+                        }
+                    });
+
+                    if (loadArenaWorld(arenaName)) {
+                        arenas.put(arenaName, new Arena(this, arenaName, spawnPoints, minPlayers));
+                        getLogger().info("World " + arenaName + " loaded successfully");
+                    } else {
+                        getLogger().severe("Error while loading world " + arenaName);
+                    }
                 } else {
-                    getLogger().severe("Error while loading world " + arenaName);
+                    getLogger().warning("No spawn point found");
                 }
             } else {
-                getLogger().warning("No arenas section found");
+                getLogger().warning("No arena found");
             }
         } else {
             getLogger().warning("Arena already intialized");
@@ -141,7 +158,7 @@ public final class AresonDeathSwap extends JavaPlugin {
     public void removePlayerFromArenas(Player player) {
         arenas.forEach((arenaName, arena) -> {
             if (arena.getPlayers().contains(player)) {
-                if(arena.getArenaStatus().equals(ArenaStatus.InGame)){
+                if (arena.getArenaStatus().equals(ArenaStatus.InGame)) {
                     eventCall.callPlayerLose(player);
                 }
                 arena.removePlayer(player);

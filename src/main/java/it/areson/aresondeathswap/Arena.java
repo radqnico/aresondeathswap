@@ -1,7 +1,5 @@
 package it.areson.aresondeathswap;
 
-import it.areson.aresondeathswap.api.PlayerStartGameEvent;
-import it.areson.aresondeathswap.api.PlayerWinEvent;
 import it.areson.aresondeathswap.enums.ArenaStatus;
 import it.areson.aresondeathswap.utils.ArenaPlaceholders;
 import it.areson.aresondeathswap.utils.Countdown;
@@ -21,16 +19,22 @@ public class Arena {
 
     private final AresonDeathSwap aresonDeathSwap;
     private final String arenaName;
+    private final ArrayList<Location> spawnPoints;
+    private final int minPlayers;
+
     private ArrayList<Player> players;
     private final Countdown countdownPregame;
     private Countdown countdownGame;
     private ArenaStatus arenaStatus;
 
-    private ArenaPlaceholders placeholders;
+    private final ArenaPlaceholders placeholders;
 
-    public Arena(AresonDeathSwap aresonDeathSwap, String arenaName) {
+    public Arena(AresonDeathSwap aresonDeathSwap, String arenaName, ArrayList<Location> spawnPoints, int minPlayers) {
         this.aresonDeathSwap = aresonDeathSwap;
         this.arenaName = arenaName;
+        this.spawnPoints = spawnPoints;
+        this.minPlayers = minPlayers;
+
         this.players = new ArrayList<>();
         this.arenaStatus = Waiting;
 
@@ -89,7 +93,8 @@ public class Arena {
         if (world != null) {
             world.setTime((int) (Math.random() * 24000));
             players.forEach(player -> {
-                player.teleport(world.getSpawnLocation());
+                Random random = new Random();
+                player.teleport(spawnPoints.get(random.nextInt(spawnPoints.size())));
                 aresonDeathSwap.sounds.gameStarted(player);
                 aresonDeathSwap.titles.sendLongTitle(player, "start");
                 aresonDeathSwap.eventCall.callPlayerStartGame(player);
@@ -151,7 +156,7 @@ public class Arena {
                     )
             );
             players.add(player);
-            if (players.size() >= aresonDeathSwap.MIN_PLAYERS) {
+            if (players.size() >= minPlayers) {
                 startPregame();
             }
             return true;
@@ -165,7 +170,7 @@ public class Arena {
 
             switch (arenaStatus) {
                 case Starting:
-                    if (players.size() < aresonDeathSwap.MIN_PLAYERS) {
+                    if (players.size() < minPlayers) {
                         interruptPregame();
                     }
                     break;
