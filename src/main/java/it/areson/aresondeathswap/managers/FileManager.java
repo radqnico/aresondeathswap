@@ -40,9 +40,16 @@ public class FileManager {
         }
     }
 
-    public void addArena(String worldName) {
+    public void addArena(String arenaName) {
         List<String> arenas = fileConfiguration.getStringList(aresonDeathSwap.ARENAS_PATH);
-        arenas.add(worldName);
+        arenas.add(arenaName);
+        fileConfiguration.set(aresonDeathSwap.ARENAS_PATH, arenas);
+        save();
+    }
+
+    public void removeArena(String arenaName) {
+        List<String> arenas = fileConfiguration.getStringList(aresonDeathSwap.ARENAS_PATH);
+        arenas.remove(arenaName);
         fileConfiguration.set(aresonDeathSwap.ARENAS_PATH, arenas);
         save();
     }

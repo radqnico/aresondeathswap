@@ -1,5 +1,7 @@
 package it.areson.aresondeathswap;
 
+import it.areson.aresondeathswap.commands.LeaveCommand;
+import it.areson.aresondeathswap.commands.admin.DeleteArenaCommand;
 import it.areson.aresondeathswap.commands.admin.LoadWorldCommand;
 import it.areson.aresondeathswap.commands.PlayCommand;
 import it.areson.aresondeathswap.commands.admin.SetArenaCommand;
@@ -48,8 +50,10 @@ public final class AresonDeathSwap extends JavaPlugin {
 
 
         new PlayCommand(this);
+        new LeaveCommand(this);
 
         new SetArenaCommand(this, dataFile);
+        new DeleteArenaCommand(this, dataFile);
         new LoadWorldCommand(this);
         new TpWorldCommand(this);
 
@@ -143,6 +147,15 @@ public final class AresonDeathSwap extends JavaPlugin {
 
     public boolean playerIsInAnArena(Player player) {
         return arenas.entrySet().stream().anyMatch(arenaEntry -> arenaEntry.getValue().getPlayers().contains(player));
+    }
+
+    public void kickPlayersFromWorld(String worldName) {
+        World world = getServer().getWorld(worldName);
+        if (world != null) {
+            world.getPlayers().forEach(this::teleportToLobbySpawn);
+        } else {
+            getLogger().severe("Cannot find world " + worldName);
+        }
     }
 
 }
