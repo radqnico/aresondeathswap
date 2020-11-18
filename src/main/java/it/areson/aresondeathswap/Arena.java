@@ -94,10 +94,6 @@ public class Arena {
             world.setTime((int) (Math.random() * 24000));
             players.forEach(player -> {
                 Random random = new Random();
-                System.out.println(spawnPoints.toString());
-                System.out.println(random.nextInt(spawnPoints.size()));
-                System.out.println(spawnPoints.get(random.nextInt(spawnPoints.size())));
-
                 player.teleport(spawnPoints.get(random.nextInt(spawnPoints.size())));
                 aresonDeathSwap.sounds.gameStarted(player);
                 aresonDeathSwap.titles.sendLongTitle(player, "start");
