@@ -199,6 +199,7 @@ public class Arena {
             aresonDeathSwap.titles.sendLongTitle(winnerPlayer, "win");
             aresonDeathSwap.effects.winFirework(winnerPlayer);
             aresonDeathSwap.eventCall.callPlayerWin(winnerPlayer);
+            aresonDeathSwap.eventCall.callPlayerEndGame(winnerPlayer);
             players.clear();
             arenaStatus = Ending;
             placeholders.setArenaStatus(Ending);
