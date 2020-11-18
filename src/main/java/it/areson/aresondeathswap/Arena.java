@@ -44,7 +44,11 @@ public class Arena {
                     placeholders.setArenaStatus(InGame);
                     startGame();
                 },
-                () -> players.forEach(player -> aresonDeathSwap.messages.sendPlainMessage(player, "countdown-interrupted")),
+                () -> players.forEach(player -> {
+                    aresonDeathSwap.messages.sendPlainMessage(player, "countdown-interrupted");
+                    arenaStatus = Waiting;
+                    placeholders.setArenaStatus(Waiting);
+                }),
                 0,
                 15,
                 aresonDeathSwap.messages.getPlainMessage("countdown-starting-message"),

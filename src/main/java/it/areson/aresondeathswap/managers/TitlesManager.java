@@ -20,7 +20,6 @@ public class TitlesManager {
         this.messageManager.getFileConfiguration().getKeys(false).forEach(key -> {
             if (key.startsWith("title-")) {
                 String titleName = key.replace("title-", "");
-                System.out.println("Title: " + titleName);
                 titles.put(titleName, getTitleAndSubtitle(titleName));
             }
         });
