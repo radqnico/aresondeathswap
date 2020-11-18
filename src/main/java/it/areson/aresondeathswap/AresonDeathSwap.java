@@ -28,6 +28,7 @@ public final class AresonDeathSwap extends JavaPlugin {
     public TitlesManager titles;
     public SoundManager sounds;
     public EffectManager effects;
+    public EventCallManager eventCall;
 
     private FileManager dataFile;
 
@@ -42,6 +43,7 @@ public final class AresonDeathSwap extends JavaPlugin {
         messages = new MessageManager(this, "messages.yml");
         dataFile = new FileManager(this, "data.yml");
         titles = new TitlesManager(messages);
+        eventCall = new EventCallManager(this);
         loadArenas(dataFile);
 
 

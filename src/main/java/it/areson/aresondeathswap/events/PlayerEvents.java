@@ -1,7 +1,9 @@
 package it.areson.aresondeathswap.events;
 
 import it.areson.aresondeathswap.AresonDeathSwap;
+import it.areson.aresondeathswap.api.PlayerEndGameEvent;
 import it.areson.aresondeathswap.api.PlayerLoseEvent;
+import it.areson.aresondeathswap.api.PlayerStartGameEvent;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -44,7 +46,8 @@ public class PlayerEvents implements Listener {
                 () -> {
                     aresonDeathSwap.sounds.loser(player);
                     aresonDeathSwap.titles.sendLongTitle(player, "lose");
-                    aresonDeathSwap.getServer().getPluginManager().callEvent(new PlayerLoseEvent(event.getEntity()));
+                    aresonDeathSwap.eventCall.callPlayerLose(player);
+                    aresonDeathSwap.eventCall.callPlayerEndGame(player);
                 },
                 20
         );
