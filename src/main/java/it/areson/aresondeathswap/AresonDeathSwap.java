@@ -102,8 +102,10 @@ public final class AresonDeathSwap extends JavaPlugin {
     }
 
     private void loadArenas(FileManager dataFile) {
-        List<String> arenas = dataFile.getFileConfiguration().getStringList(ARENAS_PATH);
-        arenas.forEach(this::loadArenaByName);
+        ConfigurationSection arenasSection = dataFile.getFileConfiguration().getConfigurationSection(ARENAS_PATH);
+        if(arenasSection != null) {
+            arenasSection.getKeys(false).forEach(this::loadArenaByName);
+        }
     }
 
     public void loadArenaByName(String arenaName) {
