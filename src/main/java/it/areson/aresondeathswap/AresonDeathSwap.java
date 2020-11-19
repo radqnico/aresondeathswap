@@ -11,6 +11,7 @@ import it.areson.aresondeathswap.events.PlayerEvents;
 import it.areson.aresondeathswap.managers.*;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -67,22 +68,14 @@ public final class AresonDeathSwap extends JavaPlugin {
         unloadArenaWorlds(dataFile);
     }
 
-    public void reloadArenaWorld(String worldName) {
-        World world = getServer().getWorld(worldName);
-        if(world!=null){
-            while(world.getPlayers().size()>0){
-                for (Player player : world.getPlayers()) {
-                    teleportToLobbySpawn(player);
-                }
-            }
-            if (getServer().unloadWorld(worldName, false)) {
-                getLogger().info("Correcly unloaded world " + worldName);
-                loadArenaWorld(worldName);
-            } else {
-                getLogger().info("Error while unloading world " + worldName);
-            }
+    public boolean reloadArenaWorld(String worldName) {
+        if (getServer().unloadWorld(worldName, false)) {
+            getLogger().info("Correcly unloaded world " + worldName);
+            return loadArenaWorld(worldName);
+        } else {
+            getLogger().info("Error while unloading world " + worldName);
+            return false;
         }
-
     }
 
     private boolean loadArenaWorld(String worldName) {
