@@ -37,9 +37,6 @@ public final class AresonDeathSwap extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        for(Enchantment enchantment : Enchantment.values()){
-            System.out.println("AAAAAAAAAAAA: " + enchantment.getKey().toString());
-        }
         saveDefaultConfig();
 
         arenas = new HashMap<>();
