@@ -15,6 +15,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public final class AresonDeathSwap extends JavaPlugin {
 
@@ -23,6 +25,7 @@ public final class AresonDeathSwap extends JavaPlugin {
     public final int STARTING_TIME = getConfig().getInt("arena-starting-seconds");
     public final int MIN_SWAP_TIME_SECONDS = getConfig().getInt("arena-min-swap-seconds");
     public final int MAX_SWAP_TIME_SECONDS = getConfig().getInt("arena-max-swap-seconds");
+    public final int MAX_ROUNDS = getConfig().getInt("arena-max-rounds");
     public final String MAIN_WORLD_NAME = "world";
 
     public HashMap<String, Arena> arenas;
@@ -178,6 +181,10 @@ public final class AresonDeathSwap extends JavaPlugin {
 
     public boolean playerIsInAnArena(Player player) {
         return arenas.entrySet().stream().anyMatch(arenaEntry -> arenaEntry.getValue().getPlayers().contains(player));
+    }
+
+    public Optional<String> getArenaNameFromPlayer(Player player){
+        return arenas.entrySet().stream().filter(entry -> entry.getValue().getPlayers().contains(player)).map(Map.Entry::getKey).findFirst();
     }
 
     public void kickPlayersFromWorld(String worldName) {

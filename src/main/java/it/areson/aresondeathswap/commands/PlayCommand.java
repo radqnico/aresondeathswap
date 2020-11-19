@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @SuppressWarnings("NullableProblems")
 public class PlayCommand implements CommandExecutor, TabCompleter {
@@ -31,10 +32,16 @@ public class PlayCommand implements CommandExecutor, TabCompleter {
             if (arguments.length > 0) {
                 String arenaName = arguments[0];
                 if (aresonDeathSwap.arenas.containsKey(arenaName)) {
-                    if(aresonDeathSwap.playerIsInAnArena(player)) {
-                        aresonDeathSwap.removePlayerFromArenas(player);
+                    Optional<String> arenaNameFromPlayerOptional = aresonDeathSwap.getArenaNameFromPlayer(player);
+                    if (arenaNameFromPlayerOptional.isPresent()) {
+                        String arenaNameFromPlayer = arenaNameFromPlayerOptional.get();
+                        if (!arenaNameFromPlayer.equals(arenaName)) {
+                            aresonDeathSwap.removePlayerFromArenas(player);
+                            joinPlayerInArena(player, arenaName);
+                        }
+                    } else {
+                        joinPlayerInArena(player, arenaName);
                     }
-                    joinPlayerInArena(player, arenaName);
                 } else {
                     aresonDeathSwap.messages.sendPlainMessage(player, "arena-not-found");
                     aresonDeathSwap.sounds.cannotJoinArena(player);
@@ -50,7 +57,7 @@ public class PlayCommand implements CommandExecutor, TabCompleter {
         return true;
     }
 
-    private void joinPlayerInArena(Player player, String arenaName){
+    private void joinPlayerInArena(Player player, String arenaName) {
         if (aresonDeathSwap.arenas.get(arenaName).addPlayer(player)) {
             aresonDeathSwap.messages.sendPlainMessage(player, "arena-join", StringPair.of("%arena%", arenaName));
             aresonDeathSwap.sounds.joinArena(player);

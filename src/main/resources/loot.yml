@@ -1,5 +1,5 @@
 min-objects: 2
-max-objects: 5
+max-objects: 6
 
 # For potion effects IDs: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html
 # For enchants names: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/enchantments/Enchantment.html
@@ -11,6 +11,34 @@ loot:
         probability: 0.9
         name: "&fBistecca"
         amount: 3
+        lore:
+            2: ""
+            1: "&a[Comune]"
+    1a:
+        material: "leather_helmet"
+        probability: 0.9
+        amount: 1
+        lore:
+            2: ""
+            1: "&a[Comune]"
+    1b:
+        material: "leather_chestplate"
+        probability: 0.9
+        amount: 1
+        lore:
+            2: ""
+            1: "&a[Comune]"
+    1c:
+        material: "leather_leggings"
+        probability: 0.9
+        amount: 1
+        lore:
+            2: ""
+            1: "&a[Comune]"
+    1d:
+        material: "leather_boots"
+        probability: 0.9
+        amount: 1
         lore:
             2: ""
             1: "&a[Comune]"
@@ -82,9 +110,9 @@ loot:
             1: "&a[Comune]"
     10:
         material: "redstone"
-        probability: 0.9
+        probability: 0.95
         name: "&fRedstone"
-        amount: 5
+        amount: 20
         lore:
             2: ""
             1: "&a[Comune]"
@@ -437,3 +465,18 @@ loot:
         lore:
             2: ""
             1: "&6[Leggendario]"
+    47:
+        material: "string"
+        probability: 0.8
+        amount: 1
+        lore:
+            2: ""
+            1: "&f[Comune]"
+
+    48:
+        material: "tripwire_hook"
+        probability: 0.8
+        amount: 1
+        lore:
+            2: ""
+            1: "&f[Comune]"

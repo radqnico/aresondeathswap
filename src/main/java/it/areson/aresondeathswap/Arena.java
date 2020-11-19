@@ -7,6 +7,8 @@ import it.areson.aresondeathswap.utils.StringPair;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,11 +30,14 @@ public class Arena {
 
     private ArrayList<Location> spawns;
 
+    private int roundCounter;
+
     public Arena(AresonDeathSwap aresonDeathSwap, String arenaName) {
         this.aresonDeathSwap = aresonDeathSwap;
         this.arenaName = arenaName;
         this.players = new ArrayList<>();
         this.arenaStatus = Waiting;
+        roundCounter = 0;
         spawns = new ArrayList<>();
         placeholders = new ArenaPlaceholders(this.arenaStatus, this.arenaName, this.players);
         placeholders.register();
@@ -62,6 +67,10 @@ public class Arena {
                     rotatePlayers();
                     countdownGame.setTime(randomTeleportTime());
                     countdownGame.start();
+                    roundCounter++;
+                    if(roundCounter>aresonDeathSwap.MAX_ROUNDS){
+                        witherPlayers();
+                    }
                 },
                 () -> {
                     // Unload
@@ -79,6 +88,17 @@ public class Arena {
         );
     }
 
+    private void witherPlayers() {
+        players.forEach(player -> player.addPotionEffect(new PotionEffect(
+                PotionEffectType.WITHER,
+                Integer.MAX_VALUE,
+                2,
+                false,
+                false,
+                false
+        )));
+    }
+
     private Location getRandomLocationAroundSpawn(World world) {
         Location spawnLocation = world.getSpawnLocation();
         Random random = new Random();
@@ -94,12 +114,12 @@ public class Arena {
     //TODO min max dinamici
 
     public void startGame() {
+        roundCounter = 0;
         World world = aresonDeathSwap.getServer().getWorld(arenaName);
         if (world != null) {
             world.setTime((int) (Math.random() * 24000));
             players.forEach(player -> {
                 aresonDeathSwap.getServer().dispatchCommand(aresonDeathSwap.getServer().getConsoleSender(), "execute as " + player.getName() + " run function deathsawpsong:stop");
-                // TODO maybe not random spawn?
                 try {
                     Location removedSpawn = spawns.remove(0);
                     player.teleport(removedSpawn);
