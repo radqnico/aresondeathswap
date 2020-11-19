@@ -95,6 +95,7 @@ public class Arena {
         if (world != null) {
             world.setTime((int) (Math.random() * 24000));
             players.forEach(player -> {
+                aresonDeathSwap.getServer().dispatchCommand(aresonDeathSwap.getServer().getConsoleSender(), "execute as "+player.getName()+" run function deathsawpsong:stop");
                 // TODO maybe not random spawn?
                 try {
                     Location removedSpawn = spawns.remove(0);

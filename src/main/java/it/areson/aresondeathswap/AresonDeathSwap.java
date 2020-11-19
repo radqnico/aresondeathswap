@@ -87,6 +87,7 @@ public final class AresonDeathSwap extends JavaPlugin {
             world.setAutoSave(false);
             world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
             world.setGameRule(GameRule.KEEP_INVENTORY, false);
+            world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
             getLogger().info("Correcly loaded world " + worldName);
             return true;
         } else {
@@ -155,6 +156,7 @@ public final class AresonDeathSwap extends JavaPlugin {
             } else {
                 player.teleport(world.getSpawnLocation());
             }
+            getServer().dispatchCommand(getServer().getConsoleSender(), "execute as "+player.getName()+" run function deathsawpsong:play");
         } else {
             getLogger().severe("Cannot found main world");
         }
