@@ -174,6 +174,7 @@ public class Arena {
                     )
             );
             players.add(player);
+            // Async spawn generation
             aresonDeathSwap.getServer().getScheduler().runTaskAsynchronously(aresonDeathSwap, () -> {
                 World world = aresonDeathSwap.getServer().getWorld(arenaName);
                 if (world != null) {
