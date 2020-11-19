@@ -121,8 +121,8 @@ public class LootConfigReader extends FileManager {
 	public void placeNewChestNear(Player player){
 		Location playerLocation = player.getLocation().clone();
 		Random random = new Random();
-		int dx = (random.nextBoolean() ? 1 : -1) * random.nextInt(2);
-		int dz = (random.nextBoolean() ? 1 : -1) * random.nextInt(2);
+		int dx = (random.nextBoolean() ? 1 : -1) * (2 + random.nextInt(2));
+		int dz = (random.nextBoolean() ? 1 : -1) * (2 + random.nextInt(2));
 		Location addedLocation = playerLocation.add(dx, 0, dz);
 		Block block = addedLocation.getBlock();
 		if(block.getType().equals(Material.AIR)){
