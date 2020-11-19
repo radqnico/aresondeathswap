@@ -71,10 +71,6 @@ public class Arena {
                     } else {
                         aresonDeathSwap.getLogger().severe("Error while getting the world while teleporting players");
                     }
-
-                    aresonDeathSwap.reloadArenaWorld(arenaName);
-                    arenaStatus = Waiting;
-                    placeholders.setArenaStatus(Waiting);
                 },
                 5,
                 10,
@@ -190,20 +186,23 @@ public class Arena {
 
     public void winGame() {
         if (players.size() > 0) {
+            interruptGame();
             Player winnerPlayer = players.stream().findFirst().get();
             aresonDeathSwap.getServer().getOnlinePlayers().forEach(player ->
                     aresonDeathSwap.messages.sendPlainMessageDelayed(player, "victory-message", 5, StringPair.of("%player%", winnerPlayer.getName()))
             );
-            aresonDeathSwap.teleportToLobbySpawn(winnerPlayer);
             aresonDeathSwap.sounds.winner(winnerPlayer);
             aresonDeathSwap.titles.sendLongTitle(winnerPlayer, "win");
             aresonDeathSwap.effects.winFirework(winnerPlayer);
             aresonDeathSwap.eventCall.callPlayerWin(winnerPlayer);
             aresonDeathSwap.eventCall.callPlayerEndGame(winnerPlayer);
             players.clear();
+
             arenaStatus = Ending;
             placeholders.setArenaStatus(Ending);
-            interruptGame();
+            aresonDeathSwap.reloadArenaWorld(arenaName);
+            arenaStatus = Waiting;
+            placeholders.setArenaStatus(Waiting);
         } else {
             aresonDeathSwap.getLogger().severe("Winningg game with no remaining players");
         }
