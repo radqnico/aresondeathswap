@@ -248,6 +248,7 @@ public class Arena {
             players.forEach(player -> {
                 aresonDeathSwap.sounds.startingGame(player);
             });
+            spawns.forEach(location -> location.getChunk().load());
         }
     }
 

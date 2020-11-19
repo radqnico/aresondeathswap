@@ -80,6 +80,7 @@ public class FileManager {
             fileConfiguration.set(path+".yaw", location.getYaw());
             fileConfiguration.set(path+".pitch", location.getPitch());
         }
+        save();
     }
 
 }
