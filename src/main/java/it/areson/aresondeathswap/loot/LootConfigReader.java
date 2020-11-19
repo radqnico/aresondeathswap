@@ -122,9 +122,10 @@ public class LootConfigReader extends FileManager {
         int dz = (random.nextBoolean() ? 1 : -1) * (2 + random.nextInt(2));
         Location addedLocation = playerLocation.add(dx, 0, dz);
 		int highestBlockYAt = player.getWorld().getHighestBlockYAt(addedLocation);
-		addedLocation.setY(highestBlockYAt);
+		addedLocation.setY(highestBlockYAt+1);
         Block block = addedLocation.getBlock();
-		block.setType(Material.CHEST);
+        block.setType(Material.CHEST);
+        lootChests.add(addedLocation);
     }
 
     public boolean isLootChest(Location chestLocation) {
