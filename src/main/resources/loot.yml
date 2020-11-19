@@ -39,7 +39,7 @@ loot:
             1: "&a[Comune]"
         enchants:
             1:
-                name: "dig_speed"
+                name: "efficiency"
                 level: 1
     5:
         material: "gunpowder"
@@ -97,7 +97,7 @@ loot:
             1: "&a[Comune]"
         enchants:
             1:
-                name: "dig_speed"
+                name: "efficiency"
                 level: 1
     12:
         material: "dispencer"
@@ -130,7 +130,7 @@ loot:
             1: "&b[Raro]"
         enchants:
             1:
-                name: "dig_speed"
+                name: "efficiency"
                 level: 1
     16:
         material: "water_bucket"
@@ -148,7 +148,7 @@ loot:
             1: "&b[Raro]"
         enchants:
             1:
-                name: "dig_speed"
+                name: "efficiency"
                 level: 1
     18:
         material: "repeater"
@@ -191,7 +191,7 @@ loot:
             1: "&b[Raro]"
         enchants:
             1:
-                name: "protection_environmental"
+                name: "protection"
                 level: 2
     23:
         material: "chainmail_chestplate"
@@ -202,7 +202,7 @@ loot:
             1: "&b[Raro]"
         enchants:
             1:
-                name: "protection_environmental"
+                name: "protection"
                 level: 2
     24:
         material: "chainmail_leggings"
@@ -213,7 +213,7 @@ loot:
             1: "&b[Raro]"
         enchants:
             1:
-                name: "protection_environmental"
+                name: "protection"
                 level: 2
     25:
         material: "chainmail_boots"
@@ -224,7 +224,7 @@ loot:
             1: "&b[Raro]"
         enchants:
             1:
-                name: "protection_environmental"
+                name: "protection"
                 level: 2
 
     #Epico
@@ -253,7 +253,7 @@ loot:
             1: "&d[Epico]"
         enchants:
             1:
-                name: "dig_speed"
+                name: "efficiency"
                 level: 2
     29:
         material: "flint_and_steel"
@@ -288,7 +288,7 @@ loot:
             1: "&d[Epico]"
         enchants:
             1:
-                name: "protection_environmental"
+                name: "protection"
                 level: 2
     33:
         material: "iron_chestplate"
@@ -299,7 +299,7 @@ loot:
             1: "&d[Epico]"
         enchants:
             1:
-                name: "protection_environmental"
+                name: "protection"
                 level: 2
     34:
         material: "iron_leggings"
@@ -310,7 +310,7 @@ loot:
             1: "&d[Epico]"
         enchants:
             1:
-                name: "protection_environmental"
+                name: "protection"
                 level: 2
     35:
         material: "iron_boots"
@@ -321,10 +321,10 @@ loot:
             1: "&d[Epico]"
         enchants:
             1:
-                name: "protection_environmental"
+                name: "protection"
                 level: 2
             2:
-                name: "protection_fall"
+                name: "feather_falling"
                 level: 2
     36:
         material: "splash_potion"
@@ -397,7 +397,7 @@ loot:
             1: "&6[Leggendario]"
         enchants:
             1:
-                name: "dig_speed"
+                name: "efficiency"
                 level: 3
     43:
         material: "diamond_axe"
@@ -408,7 +408,7 @@ loot:
             1: "&6[Leggendario]"
         enchants:
             1:
-                name: "dig_speed"
+                name: "efficiency"
                 level: 3
     44:
         material: "diamond_shovel"
@@ -419,7 +419,7 @@ loot:
             1: "&6[Leggendario]"
         enchants:
             1:
-                name: "dig_speed"
+                name: "efficiency"
                 level: 3
     45:
         material: "enchanted_golden_apple"
