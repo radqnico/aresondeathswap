@@ -4,13 +4,14 @@ import it.areson.aresondeathswap.enums.ArenaStatus;
 import it.areson.aresondeathswap.utils.ArenaPlaceholders;
 import it.areson.aresondeathswap.utils.Countdown;
 import it.areson.aresondeathswap.utils.StringPair;
-import org.bukkit.Chunk;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 import static it.areson.aresondeathswap.enums.ArenaStatus.*;
 
@@ -78,7 +79,7 @@ public class Arena {
         );
     }
 
-    private Location getRandomLocationAroundSpawn(World world){
+    private Location getRandomLocationAroundSpawn(World world) {
         Location spawnLocation = world.getSpawnLocation();
         Random random = new Random();
         int dx = (random.nextBoolean() ? 1 : -1) * random.nextInt(2000);
@@ -95,17 +96,17 @@ public class Arena {
         if (world != null) {
             world.setTime((int) (Math.random() * 24000));
             players.forEach(player -> {
-                aresonDeathSwap.getServer().dispatchCommand(aresonDeathSwap.getServer().getConsoleSender(), "execute as "+player.getName()+" run function deathsawpsong:stop");
+                aresonDeathSwap.getServer().dispatchCommand(aresonDeathSwap.getServer().getConsoleSender(), "execute as " + player.getName() + " run function deathsawpsong:stop");
                 // TODO maybe not random spawn?
                 try {
                     Location removedSpawn = spawns.remove(0);
                     player.teleport(removedSpawn);
-                    if(Math.random()<0.5){
+                    if (Math.random() < 0.5) {
                         aresonDeathSwap.loot.placeNewChestNear(player);
                         aresonDeathSwap.messages.sendPlainMessage(player, "chest-spawned");
                         aresonDeathSwap.sounds.openChest(player.getLocation());
                     }
-                }catch (IndexOutOfBoundsException e){
+                } catch (IndexOutOfBoundsException e) {
                     player.teleport(getRandomLocationAroundSpawn(world));
                 }
                 aresonDeathSwap.sounds.gameStarted(player);
@@ -162,7 +163,7 @@ public class Arena {
         for (int i = 0; i < newLocations.size(); i++) {
             Player player = players.get(i);
             player.teleport(newLocations.get(i));
-            if(Math.random()<0.5){
+            if (Math.random() < 0.5) {
                 aresonDeathSwap.loot.placeNewChestNear(player);
                 aresonDeathSwap.messages.sendPlainMessage(player, "chest-spawned");
                 aresonDeathSwap.sounds.openChest(player.getLocation());
