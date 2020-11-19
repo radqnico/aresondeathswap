@@ -2,7 +2,6 @@ package it.areson.aresondeathswap.managers;
 
 import it.areson.aresondeathswap.AresonDeathSwap;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -10,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class FileManager {
 
@@ -58,21 +58,16 @@ public class FileManager {
         if (fileConfiguration.getString(path + ".world") == null) {
             return null;
         } else {
-            String worldName = fileConfiguration.getString(path + ".world");
-            if (worldName != null) {
-                World world = aresonDeathSwap.getServer().getWorld(worldName);
-                if (world != null) {
-                    return new Location(
-                            world,
-                            fileConfiguration.getDouble(path + ".x"),
-                            fileConfiguration.getDouble(path + ".y"),
-                            fileConfiguration.getDouble(path + ".z"),
-                            (float) fileConfiguration.getDouble(path + ".yaw"),
-                            (float) fileConfiguration.getDouble(path + ".pitch")
-                    );
-                } else {
-                    return null;
-                }
+            String world = fileConfiguration.getString(path + ".world");
+            if (world != null) {
+                return new Location(
+                        aresonDeathSwap.getServer().getWorld(world),
+                        fileConfiguration.getDouble(path + ".x"),
+                        fileConfiguration.getDouble(path + ".y"),
+                        fileConfiguration.getDouble(path + ".z"),
+                        (float) fileConfiguration.getDouble(path + ".yaw"),
+                        (float) fileConfiguration.getDouble(path + ".pitch")
+                );
             } else {
                 return null;
             }
@@ -113,7 +108,7 @@ public class FileManager {
 
     public int getArenaMinPlayers(String worldName) {
         int minPlayers = fileConfiguration.getInt(aresonDeathSwap.ARENAS_PATH + "." + worldName + ".min-players");
-        if (minPlayers < 2) {
+        if(minPlayers < 2) {
             minPlayers = aresonDeathSwap.DEFAULT_MIN_PLAYERS;
         }
         return minPlayers;
