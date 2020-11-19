@@ -116,20 +116,21 @@ public final class AresonDeathSwap extends JavaPlugin {
                 ConfigurationSection spawnLocations = arenaSection.getConfigurationSection("spawnLocations");
 
                 if (spawnLocations != null && !spawnLocations.getKeys(false).isEmpty()) {
+                    int minPlayers = dataFile.getArenaMinPlayers(arenaName);
+
+                    ArrayList<Location> spawnPoints = new ArrayList<>();
+                    spawnLocations.getKeys(false).forEach(spawnNumber -> {
+                        Location location = dataFile.getLocation(ARENAS_PATH + "." + arenaName + ".spawnLocations." + spawnNumber);
+                        if (location != null) {
+                            spawnPoints.add(location);
+                        }
+                    });
 
                     if (loadArenaWorld(arenaName)) {
-                        int minPlayers = dataFile.getArenaMinPlayers(arenaName);
-
-                        ArrayList<Location> spawnPoints = new ArrayList<>();
-                        spawnLocations.getKeys(false).forEach(spawnNumber -> {
-                            Location location = dataFile.getLocation(ARENAS_PATH + "." + arenaName + ".spawnLocations." + spawnNumber);
-                            if (location != null) {
-                                spawnPoints.add(location);
-                            }
-                        });
-
                         arenas.put(arenaName, new Arena(this, arenaName, spawnPoints, minPlayers));
-                        getLogger().info("Arena " + arenaName + " fully loaded");
+                        getLogger().info("World " + arenaName + " loaded successfully");
+                    } else {
+                        getLogger().severe("Error while loading world " + arenaName);
                     }
                 } else {
                     getLogger().warning("No spawn point found");
