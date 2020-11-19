@@ -128,6 +128,7 @@ public class Arena {
             for (Player player : world.getPlayers()) {
                 aresonDeathSwap.teleportToLobbySpawn(player);
             }
+            spawns.clear();
         } else {
             aresonDeathSwap.getLogger().severe("Error while getting the world while teleporting players");
         }
@@ -184,9 +185,9 @@ public class Arena {
     public void removePlayer(Player player) {
         if (players.contains(player)) {
             players.remove(player);
-            spawns.remove(0);
             switch (arenaStatus) {
                 case Starting:
+                    spawns.remove(0);
                     if (players.size() < aresonDeathSwap.MIN_PLAYERS) {
                         interruptPregame();
                     }
