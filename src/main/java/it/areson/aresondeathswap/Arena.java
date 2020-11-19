@@ -87,7 +87,6 @@ public class Arena {
         Location add = clone.add(dx, 0, dz);
         int highestBlockYAt = world.getHighestBlockYAt(add);
         add.setY(highestBlockYAt);
-        add.getChunk().load();
         return add;
     }
 
@@ -175,12 +174,12 @@ public class Arena {
             );
             players.add(player);
             // Async spawn generation
-            aresonDeathSwap.getServer().getScheduler().runTaskAsynchronously(aresonDeathSwap, () -> {
+            aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(aresonDeathSwap, () -> {
                 World world = aresonDeathSwap.getServer().getWorld(arenaName);
                 if (world != null) {
                     spawns.add(getRandomLocationAroundSpawn(world));
                 }
-            });
+            }, 1);
             if (players.size() >= aresonDeathSwap.MIN_PLAYERS) {
                 startPregame();
             }
