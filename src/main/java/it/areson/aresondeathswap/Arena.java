@@ -1,7 +1,5 @@
 package it.areson.aresondeathswap;
 
-import it.areson.aresondeathswap.api.PlayerStartGameEvent;
-import it.areson.aresondeathswap.api.PlayerWinEvent;
 import it.areson.aresondeathswap.enums.ArenaStatus;
 import it.areson.aresondeathswap.utils.ArenaPlaceholders;
 import it.areson.aresondeathswap.utils.Countdown;
@@ -21,8 +19,8 @@ public class Arena {
 
     private final AresonDeathSwap aresonDeathSwap;
     private final String arenaName;
-    private ArrayList<Player> players;
     private final Countdown countdownPregame;
+    private ArrayList<Player> players;
     private Countdown countdownGame;
     private ArenaStatus arenaStatus;
 
@@ -64,8 +62,11 @@ public class Arena {
                     countdownGame.start();
                 },
                 () -> {
-
-                    aresonDeathSwap.getLogger().info("Game on '"+arenaName+"' interrupted");
+                    // Unload
+                    aresonDeathSwap.reloadArenaWorld(arenaName);
+                    arenaStatus = Waiting;
+                    placeholders.setArenaStatus(Waiting);
+                    aresonDeathSwap.getLogger().info("Game on '" + arenaName + "' interrupted");
                 },
                 5,
                 10,
@@ -107,7 +108,7 @@ public class Arena {
     public void interruptGame() {
         World world = aresonDeathSwap.getServer().getWorld(arenaName);
         if (world != null) {
-            for(Player player : world.getPlayers()){
+            for (Player player : world.getPlayers()) {
                 aresonDeathSwap.teleportToLobbySpawn(player);
             }
         } else {
@@ -205,10 +206,7 @@ public class Arena {
             arenaStatus = Ending;
             placeholders.setArenaStatus(Ending);
 
-            // Unload
-            aresonDeathSwap.reloadArenaWorld(arenaName);
-            arenaStatus = Waiting;
-            placeholders.setArenaStatus(Waiting);
+
         } else {
             aresonDeathSwap.getLogger().severe("Winningg game with no remaining players");
         }

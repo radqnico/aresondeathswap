@@ -9,6 +9,7 @@ import it.areson.aresondeathswap.commands.admin.TpWorldCommand;
 import it.areson.aresondeathswap.enums.ArenaStatus;
 import it.areson.aresondeathswap.events.PlayerEvents;
 import it.areson.aresondeathswap.managers.*;
+import org.bukkit.GameMode;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
@@ -133,6 +134,7 @@ public final class AresonDeathSwap extends JavaPlugin {
 
     public void teleportToLobbySpawn(Player player) {
         World world = getServer().getWorld(MAIN_WORLD_NAME);
+        player.setGameMode(GameMode.SURVIVAL);
         if (world != null) {
             player.teleport(world.getSpawnLocation());
         } else {
