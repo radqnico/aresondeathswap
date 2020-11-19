@@ -80,22 +80,28 @@ public class PlayerEvents implements Listener {
             LootConfigReader lootChest = aresonDeathSwap.loot;
             Location loc = e.getInventory().getLocation();
             if (loc != null) {
-                loc.add(new Vector(0.5, 1, 0.5));
-                // TODO SoundManager.chestOpen(loc);
-                if (e.getInventory().getHolder() instanceof Chest) {
-                    lootChest.newLootChest((Chest) e.getInventory().getHolder());
-                } else {
-                    lootChest.newLootChest((DoubleChest) e.getInventory().getHolder());
-                }
-                World world = loc.getWorld();
-                if (world != null) {
-                    world.spawnParticle(Particle.TOTEM, loc, 30, 0, 0, 0, 0.35, null, true);
-                } else {
-                    aresonDeathSwap.getLogger().warning("Errore nel mondo della Loot Chest.");
+                if(lootChest.isLootChest(loc)) {
+                    loc.add(new Vector(0.5, 1, 0.5));
+                    // TODO SoundManager.chestOpen(loc);
+                    if (e.getInventory().getHolder() instanceof Chest) {
+                        lootChest.newLootChest((Chest) e.getInventory().getHolder());
+                    } else {
+                        lootChest.newLootChest((DoubleChest) e.getInventory().getHolder());
+                    }
+                    aresonDeathSwap.sounds.openChest(loc);
+                    aresonDeathSwap.loot.removeLootChest(loc);
+                    World world = loc.getWorld();
+                    if (world != null) {
+                        world.spawnParticle(Particle.TOTEM, loc, 30, 0, 0, 0, 0.35, null, true);
+                    } else {
+                        aresonDeathSwap.getLogger().warning("Errore nel mondo della Loot Chest.");
+                    }
+                    e.setCancelled(true);
                 }
             } else {
                 aresonDeathSwap.getLogger().warning("Errore nuella location della Loot Chest.");
             }
+
         }
     }
 

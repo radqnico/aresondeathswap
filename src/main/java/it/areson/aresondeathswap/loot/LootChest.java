@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.bukkit.Material;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 
@@ -58,10 +59,10 @@ public class LootChest {
 
 	private void breakChest() {
 		if(isDouble) {
-			left.getBlock().breakNaturally();
-			right.getBlock().breakNaturally();
+			left.getBlock().setType(Material.AIR);
+			right.getBlock().setType(Material.AIR);
 		} else {
-			left.getBlock().breakNaturally();
+			left.getBlock().setType(Material.AIR);
 		}
 	}//breakChest
 

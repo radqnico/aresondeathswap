@@ -157,6 +157,9 @@ public class Arena {
         for (int i = 0; i < newLocations.size(); i++) {
             Player player = players.get(i);
             player.teleport(newLocations.get(i));
+            if(Math.random()<0.5){
+                aresonDeathSwap.loot.placeNewChestNear(player);
+            }
             aresonDeathSwap.sounds.teleport(player);
             aresonDeathSwap.titles.sendShortTitle(player, "swap");
         }

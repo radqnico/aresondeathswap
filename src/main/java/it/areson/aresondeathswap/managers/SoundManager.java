@@ -50,4 +50,11 @@ public class SoundManager {
     public void teleport(Player target) {
         target.playSound(target.getLocation(), Sound.ENTITY_EVOKER_CAST_SPELL, SoundCategory.MASTER, 0.6f, 1f);
     }
+
+    public void openChest(Location target) {
+        World world = target.getWorld();
+        if(world!=null) {
+            world.playSound(target, Sound.BLOCK_BEACON_POWER_SELECT, SoundCategory.MASTER, 0.4f, 2f);
+        }
+    }
 }

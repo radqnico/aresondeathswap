@@ -1,16 +1,22 @@
 package it.areson.aresondeathswap.loot;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 import it.areson.aresondeathswap.AresonDeathSwap;
 import it.areson.aresondeathswap.managers.FileManager;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -21,10 +27,12 @@ public class LootConfigReader extends FileManager {
 	private ArrayList<LootItem> items;
 	private int minItems;
 	private int maxItems;
+	private ArrayList<Location> lootChests;
 
 	public LootConfigReader(AresonDeathSwap instance, String nomeFile) {
 		super(instance, nomeFile);
-		items = new ArrayList<LootItem>();
+		items = new ArrayList<>();
+		lootChests = new ArrayList<>();
 	}//LootConfigReader
 
 	public void readLoot() {
@@ -108,5 +116,26 @@ public class LootConfigReader extends FileManager {
 		for(LootItem i : items)
 			lc.addPossibleItem(i);
 		lc.executeLoot();
+	}
+
+	public void placeNewChestNear(Player player){
+		Location playerLocation = player.getLocation().clone();
+		Random random = new Random();
+		int dx = (random.nextBoolean() ? 1 : -1) * random.nextInt(2);
+		int dz = (random.nextBoolean() ? 1 : -1) * random.nextInt(2);
+		Location addedLocation = playerLocation.add(dx, 0, dz);
+		Block block = addedLocation.getBlock();
+		if(block.getType().equals(Material.AIR)){
+			block.setType(Material.CHEST);
+			lootChests.add(addedLocation);
+		}
+	}
+
+	public boolean isLootChest(Location chestLocation){
+		return lootChests.stream().anyMatch(location -> chestLocation.distance(location) < 1.5);
+	}
+
+	public void removeLootChest(Location chestLocation){
+		lootChests = (ArrayList<Location>) lootChests.stream().filter(location -> chestLocation.distance(location) >= 1.5).collect(Collectors.toList());
 	}
 }
