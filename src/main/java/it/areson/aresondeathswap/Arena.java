@@ -100,6 +100,11 @@ public class Arena {
                 try {
                     Location removedSpawn = spawns.remove(0);
                     player.teleport(removedSpawn);
+                    if(Math.random()<0.5){
+                        aresonDeathSwap.loot.placeNewChestNear(player);
+                        aresonDeathSwap.messages.sendPlainMessage(player, "chest-spawned");
+                        aresonDeathSwap.sounds.openChest(player.getLocation());
+                    }
                 }catch (IndexOutOfBoundsException e){
                     player.teleport(getRandomLocationAroundSpawn(world));
                 }
