@@ -31,22 +31,10 @@ public class PlayCommand implements CommandExecutor, TabCompleter {
             if (arguments.length > 0) {
                 String arenaName = arguments[0];
                 if (aresonDeathSwap.arenas.containsKey(arenaName)) {
-                    if(!aresonDeathSwap.playerIsInAnArena(player)) {
-                        if (aresonDeathSwap.arenas.get(arenaName).addPlayer(player)) {
-                            aresonDeathSwap.messages.sendPlainMessage(player, "arena-join", StringPair.of("%arena%", arenaName));
-                            aresonDeathSwap.sounds.joinArena(player);
-                            aresonDeathSwap.effects.joinedArena(player);
-                            aresonDeathSwap.titles.sendShortTitle(player, "joinarena");
-                        } else {
-                            aresonDeathSwap.messages.sendPlainMessage(player, "arena-already-started");
-                        }
-                    } else {
+                    if(aresonDeathSwap.playerIsInAnArena(player)) {
                         aresonDeathSwap.removePlayerFromArenas(player);
-                        aresonDeathSwap.messages.sendPlainMessage(player, "arena-join", StringPair.of("%arena%", arenaName));
-                        aresonDeathSwap.sounds.joinArena(player);
-                        aresonDeathSwap.effects.joinedArena(player);
-                        aresonDeathSwap.messages.sendPlainMessage(player, "already-in-an-arena");
                     }
+                    joinPlayerInArena(player, arenaName);
                 } else {
                     aresonDeathSwap.messages.sendPlainMessage(player, "arena-not-found");
                     aresonDeathSwap.sounds.cannotJoinArena(player);
@@ -60,6 +48,17 @@ public class PlayCommand implements CommandExecutor, TabCompleter {
         }
 
         return true;
+    }
+
+    private void joinPlayerInArena(Player player, String arenaName){
+        if (aresonDeathSwap.arenas.get(arenaName).addPlayer(player)) {
+            aresonDeathSwap.messages.sendPlainMessage(player, "arena-join", StringPair.of("%arena%", arenaName));
+            aresonDeathSwap.sounds.joinArena(player);
+            aresonDeathSwap.effects.joinedArena(player);
+            aresonDeathSwap.titles.sendShortTitle(player, "joinarena");
+        } else {
+            aresonDeathSwap.messages.sendPlainMessage(player, "arena-already-started");
+        }
     }
 
     @Override
