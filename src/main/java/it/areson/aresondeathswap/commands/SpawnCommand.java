@@ -29,6 +29,9 @@ public class SpawnCommand implements CommandExecutor {
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] arguments) {
         if (commandSender instanceof Player) {
             Player player = (Player) commandSender;
+            if (aresonDeathSwap.playerIsInAnArena(player)) {
+                aresonDeathSwap.removePlayerFromArenas(player);
+            }
             aresonDeathSwap.teleportToLobbySpawn(player);
         } else {
             commandSender.sendMessage("Comando eseguibile solo da player");

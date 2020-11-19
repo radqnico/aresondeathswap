@@ -2,10 +2,8 @@ package it.areson.aresondeathswap;
 
 import it.areson.aresondeathswap.commands.LeaveCommand;
 import it.areson.aresondeathswap.commands.PlayCommand;
-import it.areson.aresondeathswap.commands.admin.DeleteArenaCommand;
-import it.areson.aresondeathswap.commands.admin.LoadWorldCommand;
-import it.areson.aresondeathswap.commands.admin.SetArenaCommand;
-import it.areson.aresondeathswap.commands.admin.TpWorldCommand;
+import it.areson.aresondeathswap.commands.SpawnCommand;
+import it.areson.aresondeathswap.commands.admin.*;
 import it.areson.aresondeathswap.enums.ArenaStatus;
 import it.areson.aresondeathswap.events.PlayerEvents;
 import it.areson.aresondeathswap.managers.*;
@@ -56,6 +54,8 @@ public final class AresonDeathSwap extends JavaPlugin {
         new DeleteArenaCommand(this, dataFile);
         new LoadWorldCommand(this);
         new TpWorldCommand(this);
+        new SetSpawnCommand(this, dataFile);
+        new SpawnCommand(this);
 
         getServer().getPluginManager().registerEvents(new PlayerEvents(this), this);
     }
