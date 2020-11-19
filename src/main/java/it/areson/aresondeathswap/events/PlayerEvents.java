@@ -41,15 +41,15 @@ public class PlayerEvents implements Listener {
         Player player = event.getEntity();
         aresonDeathSwap.effects.deathStrike(player);
         aresonDeathSwap.removePlayerFromArenas(player);
-//        aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(
-//                aresonDeathSwap,
-//                () -> {
-//                    aresonDeathSwap.sounds.loser(player);
-//                    aresonDeathSwap.titles.sendLongTitle(player, "lose");
-//                    aresonDeathSwap.eventCall.callPlayerEndGame(player);
-//                },
-//                20
-//        );
+        aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(
+                aresonDeathSwap,
+                () -> {
+                    aresonDeathSwap.sounds.loser(player);
+                    aresonDeathSwap.titles.sendLongTitle(player, "lose");
+                    aresonDeathSwap.eventCall.callPlayerEndGame(player);
+                },
+                20
+        );
     }
 
     @EventHandler
