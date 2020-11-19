@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 import java.util.Objects;
 import java.util.Optional;
 
-@SuppressWarnings("NullableProblems")
 public class LoadWorldCommand implements CommandExecutor {
 
     private final AresonDeathSwap aresonDeathSwap;
