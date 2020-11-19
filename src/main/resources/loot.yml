@@ -1,0 +1,278 @@
+min-objects: 1
+max-objects: 5
+
+# For potion effects IDs: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html
+# For enchants names: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/enchantments/Enchantment.html
+
+loot:
+    # Comune
+    1:
+        material: "wooden_sword"
+        probability: 0.9
+        name: "&fSpada"
+        lore:
+            2: ""
+            1: "&f&f(comune)"
+    2:
+        material: "leather_helmet"
+        probability: 0.9
+        name: "&fCasco"
+        lore:
+            2: ""
+            1: "&f&f(comune)"
+    3:
+        material: "leather_chestplate"
+        probability: 0.9
+        name: "&fCorazza"
+        lore:
+            2: ""
+            1: "&f&f(comune)"
+    4:
+        material: "leather_leggings"
+        probability: 0.9
+        name: "&fGambali"
+        lore:
+            2: ""
+            1: "&f(comune)"
+    5:
+        material: "leather_boots"
+        probability: 0.9
+        name: "&fStivali"
+        lore:
+            2: ""
+            1: "&f(comune)"
+    6:
+        material: "cookie"
+        probability: 0.9
+        name: "&fBiscotto"
+        lore:
+            2: ""
+            1: "&f(comune)"
+    7:
+        material: "cooked_beef"
+        probability: 0.8
+        name: "&fCarne"
+        lore:
+            2: ""
+            1: "&f(comune)"
+    8:
+        material: "wooden_pickaxe"
+        probability: 0.9
+        name: "&fPiccone"
+        lore:
+            2: ""
+            1: "&f(comune)"
+    9:
+        material: "arrow"
+        probability: 0.9
+        name: "&fFreccia"
+        amount: 10
+        lore:
+            2: ""
+            1: "&f(comune)"
+    # Raro
+    10:
+        material: "stone_sword"
+        probability: 0.5
+        name: "&aSpada"
+        lore:
+            2: ""
+            1: "&a(raro)"
+    11:
+        material: "chainmail_helmet"
+        probability: 0.5
+        name: "&aCasco"
+        lore:
+            2: ""
+            1: "&a(raro)"
+    12:
+        material: "chainmail_chestplate"
+        probability: 0.5
+        name: "&aCorazza"
+        lore:
+            2: ""
+            1: "&a(raro)"
+    13:
+        material: "chainmail_leggings"
+        probability: 0.5
+        name: "&aGambali"
+        lore:
+            2: ""
+            1: "&a(raro)"
+    14:
+        material: "chainmail_boots"
+        probability: 0.5
+        name: "&aStivali"
+        lore:
+            2: ""
+            1: "&a(raro)"
+    15:
+        material: "stone_pickaxe"
+        probability: 0.5
+        name: "&aPiccone"
+        lore:
+            2: ""
+            1: "&a(raro)"
+    16:
+        material: "bow"
+        probability: 0.5
+        name: "&aArco"
+        lore:
+            2: ""
+            1: "&a(raro)"
+    #Epico
+    17:
+        material: "iron_sword"
+        probability: 0.15
+        name: "&dSpada"
+        lore:
+            2: ""
+            1: "&d(epico)"
+    18:
+        material: "iron_helmet"
+        probability: 0.15
+        name: "&dCasco"
+        lore:
+            2: ""
+            1: "&d(epico)"
+    19:
+        material: "iron_chestplate"
+        probability: 0.15
+        name: "&dCorazza"
+        lore:
+            2: ""
+            1: "&d(epico)"
+    20:
+        material: "iron_leggings"
+        probability: 0.15
+        name: "&dGambali"
+        lore:
+            2: ""
+            1: "&d(epico)"
+    21:
+        material: "iron_boots"
+        probability: 0.15
+        name: "&dStivali"
+        lore:
+            2: ""
+            1: "&d(epico)"
+    22:
+        material: "iron_pickaxe"
+        probability: 0.15
+        name: "&dPiccone"
+        lore:
+            2: ""
+            1: "&d(epico)"
+    23:
+        material: "bow"
+        probability: 0.15
+        name: "&dArco"
+        lore:
+            2: ""
+            1: "&d(epico)"
+        enchants:
+            1:
+                name: "power"
+                level: 1
+    24:
+        material: "splash_potion"
+        probability: 0.15
+        name: "&dPozione di danno"
+        lore:
+            1: ""
+            2: "&d(epico)"
+        effect: "HARM"
+        amplifier: 0
+    #25:
+    #    material: "splash_potion"
+    #    probability: 0.15
+    #    name: "&dPozione di danno"
+    #    lore:
+    #        1: ""
+    #        2: "&d(epico)"
+    #    effect: "HARM"
+    #    amplifier: 0
+    # Leggendario
+    26:
+        material: "diamond_sword"
+        probability: 0.05
+        name: "&6Spada"
+        lore:
+            2: ""
+            1: "&6(leggendario)"
+    27:
+        material: "diamond_helmet"
+        probability: 0.05
+        name: "&6Casco"
+        lore:
+            2: ""
+            1: "&6(leggendario)"
+    28:
+        material: "diamond_chestplate"
+        probability: 0.05
+        name: "&6Corazza"
+        lore:
+            2: ""
+            1: "&6(leggendario)"
+    29:
+        material: "diamond_leggings"
+        probability: 0.05
+        name: "&6Gambali"
+        lore:
+            2: ""
+            1: "&6(leggendario)"
+    30:
+        material: "diamond_boots"
+        probability: 0.05
+        name: "&6Stivali"
+        lore:
+            2: ""
+            1: "&6(leggendario)"
+    31:
+        material: "diamond_pickaxe"
+        probability: 0.05
+        name: "&6Piccone"
+        lore:
+            2: ""
+            1: "&6(leggendario)"
+    32a:
+        material: "bow"
+        probability: 0.05
+        name: "&6Arco"
+        lore:
+            2: ""
+            1: "&6(leggendario)"
+        enchants:
+            1:
+                name: "power"
+                level: 3
+    32b:
+        material: "bow"
+        probability: 0.05
+        name: "&6Arco di fuoco"
+        lore:
+            2: ""
+            1: "&6(leggendario)"
+        enchants:
+            1:
+                name: "flame"
+                level: 1
+    33:
+        material: "splash_potion"
+        probability: 0.05
+        name: "&6Pozione di danno"
+        lore:
+            1: ""
+            2: "&6(leggendario)"
+        effect: "HARM"
+        amplifier: 3
+    35:
+        material: "potion"
+        probability: 0.05
+        name: "&6Salute extra"
+        lore:
+            1: ""
+            2: "&6(leggendario)"
+        effect: "HEALTH_BOOST"
+        duration: 400
+        amplifier: 2

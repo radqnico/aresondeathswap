@@ -6,6 +6,7 @@ import it.areson.aresondeathswap.commands.SpawnCommand;
 import it.areson.aresondeathswap.commands.admin.*;
 import it.areson.aresondeathswap.enums.ArenaStatus;
 import it.areson.aresondeathswap.events.PlayerEvents;
+import it.areson.aresondeathswap.loot.LootConfigReader;
 import it.areson.aresondeathswap.managers.*;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -29,6 +30,7 @@ public final class AresonDeathSwap extends JavaPlugin {
     public SoundManager sounds;
     public EffectManager effects;
     public EventCallManager eventCall;
+    public LootConfigReader loot;
 
     private FileManager dataFile;
 
@@ -44,8 +46,8 @@ public final class AresonDeathSwap extends JavaPlugin {
         dataFile = new FileManager(this, "data.yml");
         titles = new TitlesManager(messages);
         eventCall = new EventCallManager(this);
+        loot = new LootConfigReader(this, "loot.yml");
         loadArenas(dataFile);
-
 
         new PlayCommand(this);
         new LeaveCommand(this);
@@ -56,6 +58,8 @@ public final class AresonDeathSwap extends JavaPlugin {
         new TpWorldCommand(this);
         new SetSpawnCommand(this, dataFile);
         new SpawnCommand(this);
+
+        loot.readLoot();
 
         getServer().getPluginManager().registerEvents(new PlayerEvents(this), this);
     }

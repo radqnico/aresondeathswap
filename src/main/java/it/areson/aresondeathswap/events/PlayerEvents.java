@@ -1,18 +1,22 @@
 package it.areson.aresondeathswap.events;
 
 import it.areson.aresondeathswap.AresonDeathSwap;
-import it.areson.aresondeathswap.api.PlayerEndGameEvent;
-import it.areson.aresondeathswap.api.PlayerLoseEvent;
-import it.areson.aresondeathswap.api.PlayerStartGameEvent;
+import it.areson.aresondeathswap.loot.LootConfigReader;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.World;
+import org.bukkit.block.Chest;
+import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 
@@ -67,6 +71,31 @@ public class PlayerEvents implements Listener {
                     event.getRecipients().remove(player);
                 }
             });
+        }
+    }
+
+    @EventHandler
+    public void onInventoryOpenEvent(InventoryOpenEvent e) {
+        if (e.getInventory().getHolder() instanceof Chest || e.getInventory().getHolder() instanceof DoubleChest) {
+            LootConfigReader lootChest = aresonDeathSwap.loot;
+            Location loc = e.getInventory().getLocation();
+            if (loc != null) {
+                loc.add(new Vector(0.5, 1, 0.5));
+                // TODO SoundManager.chestOpen(loc);
+                if (e.getInventory().getHolder() instanceof Chest) {
+                    lootChest.newLootChest((Chest) e.getInventory().getHolder());
+                } else {
+                    lootChest.newLootChest((DoubleChest) e.getInventory().getHolder());
+                }
+                World world = loc.getWorld();
+                if (world != null) {
+                    world.spawnParticle(Particle.TOTEM, loc, 30, 0, 0, 0, 0.35, null, true);
+                } else {
+                    aresonDeathSwap.getLogger().warning("Errore nel mondo della Loot Chest.");
+                }
+            } else {
+                aresonDeathSwap.getLogger().warning("Errore nuella location della Loot Chest.");
+            }
         }
     }
 
