@@ -7,10 +7,7 @@ import java.util.stream.Collectors;
 
 import it.areson.aresondeathswap.AresonDeathSwap;
 import it.areson.aresondeathswap.managers.FileManager;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
@@ -132,10 +129,34 @@ public class LootConfigReader extends FileManager {
 	}
 
 	public boolean isLootChest(Location chestLocation){
-		return lootChests.stream().anyMatch(location -> chestLocation.distance(location) < 1.5);
+		return lootChests.stream().anyMatch(location -> {
+			World locationWorld = location.getWorld();
+			World chestLocationWorld = chestLocation.getWorld();
+			if(locationWorld!=null && chestLocationWorld!=null) {
+				if (chestLocation.getWorld().getName().equals(locationWorld.getName())) {
+					return chestLocation.distance(location) < 1.5;
+				}else{
+					return false;
+				}
+			}else{
+				return false;
+			}
+		});
 	}
 
 	public void removeLootChest(Location chestLocation){
-		lootChests = (ArrayList<Location>) lootChests.stream().filter(location -> chestLocation.distance(location) >= 1.5).collect(Collectors.toList());
+		lootChests = (ArrayList<Location>) lootChests.stream().filter(location -> {
+			World locationWorld = location.getWorld();
+			World chestLocationWorld = chestLocation.getWorld();
+			if(locationWorld!=null && chestLocationWorld!=null) {
+				if (chestLocation.getWorld().getName().equals(locationWorld.getName())) {
+					return chestLocation.distance(location) >= 1.5;
+				}else{
+					return true;
+				}
+			}else{
+				return true;
+			}
+		}).collect(Collectors.toList());
 	}
 }
