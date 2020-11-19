@@ -9,6 +9,7 @@ import it.areson.aresondeathswap.events.PlayerEvents;
 import it.areson.aresondeathswap.loot.LootConfigReader;
 import it.areson.aresondeathswap.managers.*;
 import org.bukkit.*;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -63,6 +64,10 @@ public final class AresonDeathSwap extends JavaPlugin {
         loot.readLoot();
 
         getServer().getPluginManager().registerEvents(new PlayerEvents(this), this);
+
+        for(Enchantment enchantment : Enchantment.values()){
+            System.out.println("AAAAAAAAAAAA: " + enchantment.getKey().toString());
+        }
     }
 
     @Override

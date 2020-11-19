@@ -61,7 +61,6 @@ public class LootConfigReader extends FileManager {
                 ConfigurationSection confEnchants = itemSection.getConfigurationSection("enchants");
                 for (String ench : confEnchants.getKeys(false)) {
                     ConfigurationSection tmpEnch = confEnchants.getConfigurationSection(ench);
-                    System.out.println("Ciaone burlone: " + tmpEnch.getString("name"));
                     Enchantment e = Enchantment.getByKey(NamespacedKey.minecraft(tmpEnch.getString("name")));
                     int level = tmpEnch.getInt("level");
                     meta.addEnchant(e, level, true);
