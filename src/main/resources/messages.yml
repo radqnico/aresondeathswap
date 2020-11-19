@@ -16,7 +16,7 @@ arena-join: "&aTi sei unito all'arena '%arena%'. Scrivi /leave per abbandonare l
 missing-arena-name: "&cManca il nome dell'arena"
 player-joined-arena: "&6%player% si è unito alla partita"
 arena-players-remaining: "&6%number% giocatori rimanenti"
-already-in-an-arena: "&cStai già partencipando ad una partita!"
+already-in-an-arena: "&aHai cambiato arena!"
 no-arena-playing: "&cNon stai partecipando ad alcuna partita"
 arena-leaved: "&aHai abbandonato la partita"
 player-dead: "&cSei morto! Osserva gli altri giocatori o fai /spawn per tornare indietro"
