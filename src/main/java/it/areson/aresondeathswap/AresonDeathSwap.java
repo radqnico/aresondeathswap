@@ -85,6 +85,7 @@ public final class AresonDeathSwap extends JavaPlugin {
         if (world != null) {
             world.setAutoSave(false);
             world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
+            world.setGameRule(GameRule.KEEP_INVENTORY, false);
             getLogger().info("Correcly loaded world " + worldName);
             return true;
         } else {
@@ -137,6 +138,7 @@ public final class AresonDeathSwap extends JavaPlugin {
         player.setHealth(20);
         player.setFoodLevel(20);
         player.setSaturation(100);
+        player.getInventory().clear();
     }
 
     public void teleportToLobbySpawn(Player player) {
