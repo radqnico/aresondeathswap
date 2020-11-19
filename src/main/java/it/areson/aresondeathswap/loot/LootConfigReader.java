@@ -122,7 +122,9 @@ public class LootConfigReader extends FileManager {
         int dz = (random.nextBoolean() ? 1 : -1) * (2 + random.nextInt(2));
         Location addedLocation = playerLocation.add(dx, 0, dz);
         Block block = addedLocation.getBlock();
-        if (block.getType().equals(Material.AIR)) {
+        if (block.getType().equals(Material.AIR)||
+				block.getType().equals(Material.GRASS)||
+				block.getType().equals(Material.TALL_GRASS)) {
             block.setType(Material.CHEST);
             lootChests.add(addedLocation);
         }
