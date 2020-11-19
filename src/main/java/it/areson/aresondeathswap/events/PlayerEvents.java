@@ -5,9 +5,12 @@ import it.areson.aresondeathswap.api.PlayerEndGameEvent;
 import it.areson.aresondeathswap.api.PlayerLoseEvent;
 import it.areson.aresondeathswap.api.PlayerStartGameEvent;
 import org.bukkit.World;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -37,19 +40,25 @@ public class PlayerEvents implements Listener {
     }
 
     @EventHandler
-    public void onPlayerDeath(PlayerDeathEvent event) {
-        Player player = event.getEntity();
-        aresonDeathSwap.effects.deathStrike(player);
-        aresonDeathSwap.removePlayerFromArenas(player);
-        aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(
-                aresonDeathSwap,
-                () -> {
-                    aresonDeathSwap.sounds.loser(player);
-                    aresonDeathSwap.titles.sendLongTitle(player, "lose");
-                    aresonDeathSwap.eventCall.callPlayerEndGame(player);
-                },
-                20
-        );
+    public void onPlayerDamage(EntityDamageEvent event) {
+        if(event.getEntityType().equals(EntityType.PLAYER)) {
+            Player player = (Player)event.getEntity();
+            if(player.getHealth()<1) {
+                player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+                aresonDeathSwap.effects.deathStrike(player);
+                aresonDeathSwap.removePlayerFromArenas(player);
+                aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(
+                        aresonDeathSwap,
+                        () -> {
+                            aresonDeathSwap.sounds.loser(player);
+                            aresonDeathSwap.titles.sendLongTitle(player, "lose");
+                            aresonDeathSwap.eventCall.callPlayerEndGame(player);
+                        },
+                        20
+                );
+                event.setCancelled(true);
+            }
+        }
     }
 
     @EventHandler
