@@ -20,6 +20,8 @@ already-in-an-arena: "&aHai cambiato arena!"
 no-arena-playing: "&cNon stai partecipando ad alcuna partita"
 arena-leaved: "&aHai abbandonato la partita"
 player-dead: "&cSei morto! Osserva gli altri giocatori o fai /spawn per tornare indietro"
+chest-spawned: "&6&lE' apparsa una cassa bonus vicino a te!"
+
 
 # Titles and subtitles must start with "title-<name>" and "subtitle-<name>"
 
