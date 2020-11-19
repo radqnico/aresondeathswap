@@ -383,7 +383,7 @@ loot:
         lore:
             2: ""
             1: "&d[Epico]"
-        effect: " 	FIRE_RESISTANCE"
+        effect: "FIRE_RESISTANCE"
         duration: 400
         amplifier: 1
 
