@@ -4,6 +4,7 @@ import it.areson.aresondeathswap.enums.ArenaStatus;
 import it.areson.aresondeathswap.utils.ArenaPlaceholders;
 import it.areson.aresondeathswap.utils.Countdown;
 import it.areson.aresondeathswap.utils.StringPair;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -84,6 +85,7 @@ public class Arena {
         Location add = clone.add(dx, 0, dz);
         int highestBlockYAt = world.getHighestBlockYAt(add);
         add.setY(highestBlockYAt);
+        add.getChunk().load();
         return add;
     }
 

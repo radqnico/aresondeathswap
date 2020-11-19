@@ -132,9 +132,16 @@ public final class AresonDeathSwap extends JavaPlugin {
         arenas.forEach(this::unloadArenaWorld);
     }
 
+    public void restorePlayerState(Player player){
+        player.setGameMode(GameMode.SURVIVAL);
+        player.setHealth(20);
+        player.setFoodLevel(20);
+        player.setSaturation(100);
+    }
+
     public void teleportToLobbySpawn(Player player) {
         World world = getServer().getWorld(MAIN_WORLD_NAME);
-        player.setGameMode(GameMode.SURVIVAL);
+        restorePlayerState(player);
         if (world != null) {
             player.teleport(world.getSpawnLocation());
         } else {
