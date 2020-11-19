@@ -8,10 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static it.areson.aresondeathswap.enums.ArenaStatus.*;
 
@@ -26,12 +23,14 @@ public class Arena {
 
     private ArenaPlaceholders placeholders;
 
+    private ArrayList<Location> spawns;
+
     public Arena(AresonDeathSwap aresonDeathSwap, String arenaName) {
         this.aresonDeathSwap = aresonDeathSwap;
         this.arenaName = arenaName;
         this.players = new ArrayList<>();
         this.arenaStatus = Waiting;
-
+        spawns = new ArrayList<>();
         placeholders = new ArenaPlaceholders(this.arenaStatus, this.arenaName, this.players);
         placeholders.register();
         //Countdowns
@@ -79,8 +78,8 @@ public class Arena {
     private Location getRandomLocationAroundSpawn(World world){
         Location spawnLocation = world.getSpawnLocation();
         Random random = new Random();
-        int dx = (random.nextBoolean() ? 1 : -1) * random.nextInt(1000);
-        int dz = (random.nextBoolean() ? 1 : -1) * random.nextInt(1000);
+        int dx = (random.nextBoolean() ? 1 : -1) * random.nextInt(500);
+        int dz = (random.nextBoolean() ? 1 : -1) * random.nextInt(500);
         Location clone = spawnLocation.clone();
         Location add = clone.add(dx, 0, dz);
         int highestBlockYAt = world.getHighestBlockYAt(add);
@@ -94,7 +93,12 @@ public class Arena {
             world.setTime((int) (Math.random() * 24000));
             players.forEach(player -> {
                 // TODO maybe not random spawn?
-                player.teleport(getRandomLocationAroundSpawn(world));
+                try {
+                    Location removedSpawn = spawns.remove(0);
+                    player.teleport(removedSpawn);
+                }catch (IndexOutOfBoundsException e){
+                    player.teleport(getRandomLocationAroundSpawn(world));
+                }
                 aresonDeathSwap.sounds.gameStarted(player);
                 aresonDeathSwap.titles.sendLongTitle(player, "start");
                 aresonDeathSwap.eventCall.callPlayerStartGame(player);
@@ -165,6 +169,10 @@ public class Arena {
                     )
             );
             players.add(player);
+            World world = aresonDeathSwap.getServer().getWorld(arenaName);
+            if (world != null) {
+                spawns.add(getRandomLocationAroundSpawn(world));
+            }
             if (players.size() >= aresonDeathSwap.MIN_PLAYERS) {
                 startPregame();
             }
@@ -176,7 +184,7 @@ public class Arena {
     public void removePlayer(Player player) {
         if (players.contains(player)) {
             players.remove(player);
-
+            spawns.remove(0);
             switch (arenaStatus) {
                 case Starting:
                     if (players.size() < aresonDeathSwap.MIN_PLAYERS) {
@@ -230,7 +238,9 @@ public class Arena {
             countdownPregame.start();
             arenaStatus = ArenaStatus.Starting;
             placeholders.setArenaStatus(Starting);
-            players.forEach(player -> aresonDeathSwap.sounds.startingGame(player));
+            players.forEach(player -> {
+                aresonDeathSwap.sounds.startingGame(player);
+            });
         }
     }
 
