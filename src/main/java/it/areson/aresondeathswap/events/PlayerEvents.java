@@ -50,6 +50,7 @@ public class PlayerEvents implements Listener {
                     aresonDeathSwap.sounds.loser(player);
                     aresonDeathSwap.titles.sendLongTitle(player, "lose");
                     aresonDeathSwap.eventCall.callPlayerEndGame(player);
+                    aresonDeathSwap.messages.sendPlainMessage(player, "player-dead");
                 },
                 4
         );

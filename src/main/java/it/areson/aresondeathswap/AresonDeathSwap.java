@@ -1,23 +1,20 @@
 package it.areson.aresondeathswap;
 
 import it.areson.aresondeathswap.commands.LeaveCommand;
+import it.areson.aresondeathswap.commands.PlayCommand;
 import it.areson.aresondeathswap.commands.admin.DeleteArenaCommand;
 import it.areson.aresondeathswap.commands.admin.LoadWorldCommand;
-import it.areson.aresondeathswap.commands.PlayCommand;
 import it.areson.aresondeathswap.commands.admin.SetArenaCommand;
 import it.areson.aresondeathswap.commands.admin.TpWorldCommand;
 import it.areson.aresondeathswap.enums.ArenaStatus;
 import it.areson.aresondeathswap.events.PlayerEvents;
 import it.areson.aresondeathswap.managers.*;
-import org.bukkit.GameMode;
-import org.bukkit.GameRule;
-import org.bukkit.World;
-import org.bukkit.WorldCreator;
-import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
 
 public final class AresonDeathSwap extends JavaPlugin {
 
@@ -133,8 +130,9 @@ public final class AresonDeathSwap extends JavaPlugin {
         arenas.forEach(this::unloadArenaWorld);
     }
 
-    public void restorePlayerState(Player player){
+    public void restorePlayerState(Player player) {
         player.setGameMode(GameMode.SURVIVAL);
+        player.setTotalExperience(0);
         player.setHealth(20);
         player.setFoodLevel(20);
         player.setSaturation(100);
@@ -145,7 +143,12 @@ public final class AresonDeathSwap extends JavaPlugin {
         World world = getServer().getWorld(MAIN_WORLD_NAME);
         restorePlayerState(player);
         if (world != null) {
-            player.teleport(world.getSpawnLocation());
+            Location lobbySpawn = dataFile.getLocation("lobby-spawn");
+            if (lobbySpawn != null) {
+                player.teleport(lobbySpawn);
+            } else {
+                player.teleport(world.getSpawnLocation());
+            }
         } else {
             getLogger().severe("Cannot found main world");
         }
@@ -154,7 +157,7 @@ public final class AresonDeathSwap extends JavaPlugin {
     public void removePlayerFromArenas(Player player) {
         arenas.forEach((arenaName, arena) -> {
             if (arena.getPlayers().contains(player)) {
-                if(arena.getArenaStatus().equals(ArenaStatus.InGame)){
+                if (arena.getArenaStatus().equals(ArenaStatus.InGame)) {
                     eventCall.callPlayerLose(player);
                 }
                 arena.removePlayer(player);

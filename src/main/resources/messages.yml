@@ -19,6 +19,7 @@ arena-players-remaining: "&6%number% giocatori rimanenti"
 already-in-an-arena: "&cStai già partencipando ad una partita!"
 no-arena-playing: "&cNon stai partecipando ad alcuna partita"
 arena-leaved: "&aHai abbandonato la partita"
+player-dead: "&cSei morto! Osserva gli altri giocatori o fai /spawn per tornare indietro"
 
 # Titles and subtitles must start with "title-<name>" and "subtitle-<name>"
 

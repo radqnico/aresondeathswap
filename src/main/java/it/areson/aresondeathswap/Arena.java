@@ -5,6 +5,7 @@ import it.areson.aresondeathswap.utils.ArenaPlaceholders;
 import it.areson.aresondeathswap.utils.Countdown;
 import it.areson.aresondeathswap.utils.StringPair;
 import org.bukkit.Chunk;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -63,6 +64,7 @@ public class Arena {
                 },
                 () -> {
                     // Unload
+
                     aresonDeathSwap.reloadArenaWorld(arenaName);
                     arenaStatus = Waiting;
                     placeholders.setArenaStatus(Waiting);
@@ -172,10 +174,12 @@ public class Arena {
                     )
             );
             players.add(player);
-            World world = aresonDeathSwap.getServer().getWorld(arenaName);
-            if (world != null) {
-                spawns.add(getRandomLocationAroundSpawn(world));
-            }
+            aresonDeathSwap.getServer().getScheduler().runTaskAsynchronously(aresonDeathSwap, () -> {
+                World world = aresonDeathSwap.getServer().getWorld(arenaName);
+                if (world != null) {
+                    spawns.add(getRandomLocationAroundSpawn(world));
+                }
+            });
             if (players.size() >= aresonDeathSwap.MIN_PLAYERS) {
                 startPregame();
             }
@@ -195,7 +199,6 @@ public class Arena {
                     }
                     break;
                 case InGame:
-                    aresonDeathSwap.teleportToLobbySpawn(player);
                     if (players.size() == 1) {
                         winGame();
                     } else {

@@ -10,6 +10,8 @@ commands:
     usage: "/play"
   leave:
     usage: "/leave"
+  spawn:
+    usage: "/spawn"
   setArena:
     usage: "/setArena"
     permission: aresonDeathSwap.admin
@@ -21,6 +23,9 @@ commands:
     permission: aresonDeathSwap.admin
   tpWorld:
     usage: "/tpWorld"
+    permission: aresonDeathSwap.admin
+  setspawn:
+    usage: "/setSpawn"
     permission: aresonDeathSwap.admin
 
 permissions:
