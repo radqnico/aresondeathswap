@@ -107,7 +107,9 @@ public class Arena {
     public void interruptGame() {
         World world = aresonDeathSwap.getServer().getWorld(arenaName);
         if (world != null) {
-            world.getPlayers().forEach(aresonDeathSwap::teleportToLobbySpawn);
+            for(Player player : world.getPlayers()){
+                aresonDeathSwap.teleportToLobbySpawn(player);
+            }
         } else {
             aresonDeathSwap.getLogger().severe("Error while getting the world while teleporting players");
         }
