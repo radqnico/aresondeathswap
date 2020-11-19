@@ -100,7 +100,7 @@ loot:
                 name: "efficiency"
                 level: 1
     12:
-        material: "dispencer"
+        material: "dispenser"
         probability: 0.9
         name: "&fDistributore"
         lore:
