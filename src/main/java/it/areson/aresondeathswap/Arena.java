@@ -174,12 +174,12 @@ public class Arena {
             );
             players.add(player);
             // Async spawn generation
-            aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(aresonDeathSwap, () -> {
+            aresonDeathSwap.getServer().getScheduler().runTaskAsynchronously(aresonDeathSwap, () -> {
                 World world = aresonDeathSwap.getServer().getWorld(arenaName);
                 if (world != null) {
                     spawns.add(getRandomLocationAroundSpawn(world));
                 }
-            }, 1);
+            });
             if (players.size() >= aresonDeathSwap.MIN_PLAYERS) {
                 startPregame();
             }
@@ -199,6 +199,7 @@ public class Arena {
                     }
                     break;
                 case InGame:
+                    aresonDeathSwap.teleportToLobbySpawn(player);
                     if (players.size() == 1) {
                         winGame();
                     } else {

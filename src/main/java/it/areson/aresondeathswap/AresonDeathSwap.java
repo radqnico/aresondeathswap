@@ -133,6 +133,8 @@ public final class AresonDeathSwap extends JavaPlugin {
     public void restorePlayerState(Player player) {
         player.setGameMode(GameMode.SURVIVAL);
         player.setTotalExperience(0);
+        player.setExp(0);
+        player.setLevel(0);
         player.setHealth(20);
         player.setFoodLevel(20);
         player.setSaturation(100);
