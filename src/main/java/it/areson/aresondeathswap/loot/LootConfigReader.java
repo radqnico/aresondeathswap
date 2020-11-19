@@ -38,7 +38,6 @@ public class LootConfigReader extends FileManager {
         ConfigurationSection root = getFileConfiguration().getConfigurationSection("loot");
         for (String id : root.getKeys(false)) {
             ConfigurationSection itemSection = root.getConfigurationSection(id);
-			System.out.println("AAAAAAAAA " + itemSection.getString("material"));
             Material material = Material.matchMaterial(itemSection.getString("material"));
             double probability = itemSection.getDouble("probability");
             int amount = 1;
