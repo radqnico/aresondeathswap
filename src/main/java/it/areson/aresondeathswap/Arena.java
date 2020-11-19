@@ -65,12 +65,7 @@ public class Arena {
                 },
                 () -> {
                     //TP remaining players
-                    World world = aresonDeathSwap.getServer().getWorld(arenaName);
-                    if (world != null) {
-                        world.getPlayers().forEach(aresonDeathSwap::teleportToLobbySpawn);
-                    } else {
-                        aresonDeathSwap.getLogger().severe("Error while getting the world while teleporting players");
-                    }
+                    aresonDeathSwap.getLogger().info("Game on '"+arenaName+"' interrupted");
                 },
                 5,
                 10,
@@ -110,6 +105,13 @@ public class Arena {
     }
 
     public void interruptGame() {
+        World world = aresonDeathSwap.getServer().getWorld(arenaName);
+        if (world != null) {
+            world.getPlayers().forEach(aresonDeathSwap::teleportToLobbySpawn);
+        } else {
+            aresonDeathSwap.getLogger().severe("Error while getting the world while teleporting players");
+        }
+
         if (countdownGame.isRunning()) {
             countdownGame.interrupt();
         }
