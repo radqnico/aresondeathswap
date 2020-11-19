@@ -4,6 +4,7 @@ import it.areson.aresondeathswap.AresonDeathSwap;
 import it.areson.aresondeathswap.api.PlayerEndGameEvent;
 import it.areson.aresondeathswap.api.PlayerLoseEvent;
 import it.areson.aresondeathswap.api.PlayerStartGameEvent;
+import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -40,21 +41,16 @@ public class PlayerEvents implements Listener {
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
         aresonDeathSwap.effects.deathStrike(player);
+        player.setGameMode(GameMode.SPECTATOR);
         aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(
                 aresonDeathSwap,
                 () -> {
                     aresonDeathSwap.removePlayerFromArenas(player);
-                },
-                2
-        );
-        aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(
-                aresonDeathSwap,
-                () -> {
                     aresonDeathSwap.sounds.loser(player);
                     aresonDeathSwap.titles.sendLongTitle(player, "lose");
                     aresonDeathSwap.eventCall.callPlayerEndGame(player);
                 },
-                20
+                5
         );
     }
 

@@ -64,7 +64,7 @@ public class Arena {
                     countdownGame.start();
                 },
                 () -> {
-                    //TP remaining players
+
                     aresonDeathSwap.getLogger().info("Game on '"+arenaName+"' interrupted");
                 },
                 5,
@@ -204,9 +204,11 @@ public class Arena {
 
             arenaStatus = Ending;
             placeholders.setArenaStatus(Ending);
-//            aresonDeathSwap.reloadArenaWorld(arenaName);
-//            arenaStatus = Waiting;
-//            placeholders.setArenaStatus(Waiting);
+
+            // Unload
+            aresonDeathSwap.reloadArenaWorld(arenaName);
+            arenaStatus = Waiting;
+            placeholders.setArenaStatus(Waiting);
         } else {
             aresonDeathSwap.getLogger().severe("Winningg game with no remaining players");
         }
