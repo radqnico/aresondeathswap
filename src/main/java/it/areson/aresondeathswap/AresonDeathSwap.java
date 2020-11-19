@@ -110,7 +110,7 @@ public final class AresonDeathSwap extends JavaPlugin {
         if (!arenas.containsKey(arenaName)) {
             ConfigurationSection arenaSection = dataFile.getFileConfiguration().getConfigurationSection(ARENAS_PATH + "." + arenaName);
 
-            if (arenaSection != null) {
+            if (arenaSection != null && arenaSection.getKeys(false).contains(arenaName)) {
                 ConfigurationSection spawnLocations = arenaSection.getConfigurationSection("spawnLocations");
 
                 if (spawnLocations != null && !spawnLocations.getKeys(false).isEmpty()) {
