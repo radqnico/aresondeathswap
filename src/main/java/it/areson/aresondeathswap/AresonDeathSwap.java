@@ -9,6 +9,7 @@ import it.areson.aresondeathswap.commands.admin.TpWorldCommand;
 import it.areson.aresondeathswap.enums.ArenaStatus;
 import it.areson.aresondeathswap.events.PlayerEvents;
 import it.areson.aresondeathswap.managers.*;
+import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.configuration.ConfigurationSection;
@@ -82,6 +83,7 @@ public final class AresonDeathSwap extends JavaPlugin {
         World world = new WorldCreator(worldName).createWorld();
         if (world != null) {
             world.setAutoSave(false);
+            world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
             getLogger().info("Correcly loaded world " + worldName);
             return true;
         } else {
