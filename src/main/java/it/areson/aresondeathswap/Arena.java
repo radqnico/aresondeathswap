@@ -76,12 +76,25 @@ public class Arena {
         );
     }
 
+    private Location getRandomLocationAroundSpawn(World world){
+        Location spawnLocation = world.getSpawnLocation();
+        Random random = new Random();
+        int dx = (random.nextBoolean() ? 1 : -1) * random.nextInt(1000);
+        int dz = (random.nextBoolean() ? 1 : -1) * random.nextInt(1000);
+        Location clone = spawnLocation.clone();
+        Location add = clone.add(dx, 0, dz);
+        int highestBlockYAt = world.getHighestBlockYAt(add);
+        add.setY(highestBlockYAt);
+        return add;
+    }
+
     public void startGame() {
         World world = aresonDeathSwap.getServer().getWorld(arenaName);
         if (world != null) {
             world.setTime((int) (Math.random() * 24000));
             players.forEach(player -> {
-                player.teleport(world.getSpawnLocation());
+                // TODO maybe not random spawn?
+                player.teleport(getRandomLocationAroundSpawn(world));
                 aresonDeathSwap.sounds.gameStarted(player);
                 aresonDeathSwap.titles.sendLongTitle(player, "start");
                 aresonDeathSwap.eventCall.callPlayerStartGame(player);
