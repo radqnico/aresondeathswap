@@ -134,7 +134,7 @@ public class LootConfigReader extends FileManager {
             World chestLocationWorld = chestLocation.getWorld();
             if (locationWorld != null && chestLocationWorld != null) {
                 if (chestLocation.getWorld().getName().equals(locationWorld.getName())) {
-                    return chestLocation.distance(location) < 1.5;
+                    return chestLocation.toVector().distance(location.toVector()) < 1.5;
                 } else {
                     return false;
                 }
@@ -150,7 +150,7 @@ public class LootConfigReader extends FileManager {
             World chestLocationWorld = chestLocation.getWorld();
             if (locationWorld != null && chestLocationWorld != null) {
                 if (chestLocation.getWorld().getName().equals(locationWorld.getName())) {
-                    return chestLocation.distance(location) >= 1.5;
+                    return chestLocation.toVector().distance(location.toVector()) >= 1.5;
                 } else {
                     return true;
                 }

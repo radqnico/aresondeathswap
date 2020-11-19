@@ -91,6 +91,8 @@ public class Arena {
         return add;
     }
 
+    //TODO min max dinamici
+
     public void startGame() {
         World world = aresonDeathSwap.getServer().getWorld(arenaName);
         if (world != null) {
