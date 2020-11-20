@@ -126,6 +126,7 @@ public class Arena {
                         aresonDeathSwap.titles.sendLongTitle(player, "start");
                         aresonDeathSwap.eventCall.callPlayerStartGame(player);
                     });
+                    player.getInventory().clear();
                 } catch (IndexOutOfBoundsException e) {
                     player.teleportAsync(getRandomLocationAroundSpawn(world));
                 }
