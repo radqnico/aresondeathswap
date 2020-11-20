@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.Optional;
 
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class DelayedRepeatingTask {
 
     private final AresonDeathSwap aresonDeathSwap;
@@ -45,7 +46,7 @@ public class DelayedRepeatingTask {
                             if (currentTimeRemaining < 10) {
                                 countDownMessage.ifPresent(s ->
                                         playersToNotify.parallelStream().forEach(player ->
-                                                player.sendMessage(s.replaceAll("%seconds%", (1 + currentTimeRemaining) + ""))
+                                                player.sendMessage(s.replaceAll("%seconds%", currentTimeRemaining + ""))
                                         )
                                 );
                             }
