@@ -92,7 +92,6 @@ public final class AresonDeathSwap extends JavaPlugin {
         if (world != null) {
             world.setAutoSave(false);
             world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
-            world.setGameRule(GameRule.KEEP_INVENTORY, false);
             world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
             getLogger().info("Correcly loaded world " + worldName);
             return true;
