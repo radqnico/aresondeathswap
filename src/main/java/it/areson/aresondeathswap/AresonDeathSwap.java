@@ -14,6 +14,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.scheduler.BukkitWorker;
 
 import java.util.HashMap;
 import java.util.List;
@@ -72,8 +74,8 @@ public final class AresonDeathSwap extends JavaPlugin {
 
 
         getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
-            getServer().getLogger().warning("ActiveWorkers: " + getServer().getScheduler().getActiveWorkers().toString());
-            getServer().getLogger().warning("PendingTasks: " + getServer().getScheduler().getPendingTasks().toString());
+            getServer().getLogger().warning("ActiveWorkers: " + getServer().getScheduler().getActiveWorkers().stream().map(BukkitWorker::getOwner).toString());
+            getServer().getLogger().warning("PendingTasks: " + getServer().getScheduler().getPendingTasks().stream().map(BukkitTask::getOwner).toString());
         }, 0, 60);
 
 
