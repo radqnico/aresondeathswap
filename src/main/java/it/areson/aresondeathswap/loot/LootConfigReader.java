@@ -82,10 +82,9 @@ public class LootConfigReader extends FileManager {
             }
             if (material.equals(Material.SPLASH_POTION)) {
                 String effect = itemSection.getString("effect");
-                int duration = itemSection.getInt("duration");
                 int amplifier = itemSection.getInt("amplifier");
                 PotionMeta potionMeta = (PotionMeta) meta;
-                PotionEffect e = new PotionEffect(PotionEffectType.getByName(effect.toUpperCase()), duration * 20, amplifier);
+                PotionEffect e = new PotionEffect(PotionEffectType.getByName(effect.toUpperCase()), 20, amplifier);
                 potionMeta.addCustomEffect(e, true);
                 ogg.setItemMeta(potionMeta);
             }
@@ -122,8 +121,8 @@ public class LootConfigReader extends FileManager {
         int dx = (random.nextBoolean() ? 1 : -1) * (2 + random.nextInt(2));
         int dz = (random.nextBoolean() ? 1 : -1) * (2 + random.nextInt(2));
         Location addedLocation = playerLocation.add(dx, 0, dz);
-        int highestBlockYAt = player.getWorld().getHighestBlockYAt(addedLocation);
-        addedLocation.setY(highestBlockYAt + 1);
+		int highestBlockYAt = player.getWorld().getHighestBlockYAt(addedLocation);
+		addedLocation.setY(highestBlockYAt+1);
         Block block = addedLocation.getBlock();
         block.setType(Material.CHEST);
         lootChests.add(addedLocation);
