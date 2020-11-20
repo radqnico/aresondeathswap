@@ -8,25 +8,19 @@ import java.util.Optional;
 
 public class DelayedRepeatingTask {
 
-    private AresonDeathSwap aresonDeathSwap;
+    private final AresonDeathSwap aresonDeathSwap;
+    private final Runnable taskToRepeat;
+    private final Optional<String> countDownMessage;
+    private final List<Player> playersToNotify;
     private int everySeconds;
     private boolean isRunning;
     private int currentTimeRemaining;
-
     private int callerTaskId = 0;
 
-    private Runnable taskToRepeat;
-
-    private boolean isAsync;
-
-    private Optional<String> countDownMessage;
-    private List<Player> playersToNotify;
-
-    public DelayedRepeatingTask(AresonDeathSwap aresonDeathSwap, int everySeconds, Runnable taskToRepeat, Optional<String> countDownMessage, List<Player> playersToNotify, boolean isAsync) {
+    public DelayedRepeatingTask(AresonDeathSwap aresonDeathSwap, int everySeconds, Runnable taskToRepeat, Optional<String> countDownMessage, List<Player> playersToNotify) {
         this.aresonDeathSwap = aresonDeathSwap;
         this.everySeconds = everySeconds;
         this.taskToRepeat = taskToRepeat;
-        this.isAsync = isAsync;
         this.playersToNotify = playersToNotify;
         this.isRunning = false;
         this.countDownMessage = countDownMessage;
@@ -45,10 +39,10 @@ public class DelayedRepeatingTask {
                 () -> {
                     if (isRunning) {
                         if (currentTimeRemaining <= 0) {
-                            callTask(isAsync);
+                            callTask();
                             currentTimeRemaining = everySeconds;
                         } else {
-                            if(currentTimeRemaining<10){
+                            if (currentTimeRemaining < 10) {
                                 countDownMessage.ifPresent(s ->
                                         playersToNotify.parallelStream().forEach(player ->
                                                 player.sendMessage(s.replaceAll("%seconds%", (1 + currentTimeRemaining) + ""))
@@ -64,24 +58,23 @@ public class DelayedRepeatingTask {
         );
     }
 
-    private void stopRepeating() {
+    public void stopRepeating() {
         isRunning = false;
-        aresonDeathSwap.getServer().getScheduler().cancelTask(callerTaskId);
-    }
-
-    private void callTask(boolean isAsync) {
-        if (isAsync) {
-            aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(
-                    aresonDeathSwap,
-                    taskToRepeat,
-                    0
-            );
-        } else {
-            aresonDeathSwap.getServer().getScheduler().runTaskAsynchronously(
-                    aresonDeathSwap,
-                    taskToRepeat
-            );
+        if (callerTaskId != 0) {
+            aresonDeathSwap.getServer().getScheduler().cancelTask(callerTaskId);
+            callerTaskId = 0;
         }
     }
 
+    private void callTask() {
+        aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(
+                aresonDeathSwap,
+                taskToRepeat,
+                0
+        );
+    }
+
+    public boolean isRunning() {
+        return isRunning;
+    }
 }

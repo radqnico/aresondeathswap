@@ -3,6 +3,7 @@ package it.areson.aresondeathswap;
 import it.areson.aresondeathswap.enums.ArenaStatus;
 import it.areson.aresondeathswap.utils.ArenaPlaceholders;
 import it.areson.aresondeathswap.utils.Countdown;
+import it.areson.aresondeathswap.utils.DelayedRepeatingTask;
 import it.areson.aresondeathswap.utils.StringPair;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -10,10 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static it.areson.aresondeathswap.enums.ArenaStatus.*;
 
@@ -23,7 +21,7 @@ public class Arena {
     private final String arenaName;
     private final Countdown countdownPregame;
     private ArrayList<Player> players;
-    private Countdown countdownGame;
+    private DelayedRepeatingTask countdownGame;
     private ArenaStatus arenaStatus;
 
     private ArenaPlaceholders placeholders;
@@ -61,36 +59,26 @@ public class Arena {
                 aresonDeathSwap.messages.getPlainMessage("countdown-start-message")
         );
 
-        this.countdownGame = new Countdown(aresonDeathSwap,
+        this.countdownGame = new DelayedRepeatingTask(
+                aresonDeathSwap,
                 randomTeleportTime(),
                 () -> {
                     rotatePlayers();
-                    countdownGame.setTime(randomTeleportTime());
-                    countdownGame.start();
+                    countdownGame.setEverySeconds(randomTeleportTime());
+                    aresonDeathSwap.getLogger().info("Started new countdownGame in arena " + arenaName);
                     roundCounter++;
-                    if(roundCounter>aresonDeathSwap.MAX_ROUNDS){
+                    if (roundCounter > aresonDeathSwap.MAX_ROUNDS) {
                         witherPlayers();
                     } else {
                         players.forEach(player -> aresonDeathSwap.messages.sendPlainMessage(
                                 player,
                                 "rounds-remaining",
-                                StringPair.of("%remaining%", (aresonDeathSwap.MAX_ROUNDS-roundCounter)+"")
+                                StringPair.of("%remaining%", (aresonDeathSwap.MAX_ROUNDS - roundCounter) + "")
                         ));
                     }
                 },
-                () -> {
-                    // Unload
-
-                    aresonDeathSwap.reloadArenaWorld(arenaName);
-                    arenaStatus = Waiting;
-                    placeholders.setArenaStatus(Waiting);
-                    aresonDeathSwap.getLogger().info("Game on '" + arenaName + "' interrupted");
-                },
-                5,
-                10,
-                aresonDeathSwap.messages.getPlainMessage("countdown-swap-message"),
-                this,
-                aresonDeathSwap.messages.getPlainMessage("countdown-prepare-message")
+                Optional.of(aresonDeathSwap.messages.getPlainMessage("countdown-swap-message")),
+                players
         );
     }
 
@@ -125,21 +113,22 @@ public class Arena {
         if (world != null) {
             world.setTime((int) (Math.random() * 24000));
             players.forEach(player -> {
-                aresonDeathSwap.getServer().dispatchCommand(aresonDeathSwap.getServer().getConsoleSender(), "execute as " + player.getName() + " run function deathsawpsong:stop");
                 try {
                     Location removedSpawn = spawns.remove(0);
-                    player.teleportAsync(removedSpawn);
-                    aresonDeathSwap.loot.placeNewChestNear(player);
-                    aresonDeathSwap.messages.sendPlainMessage(player, "chest-spawned");
-                    aresonDeathSwap.sounds.openChest(player.getLocation());
+                    player.teleportAsync(removedSpawn).whenComplete((input, exception) -> {
+                        aresonDeathSwap.loot.placeNewChestNear(player);
+                        aresonDeathSwap.messages.sendPlainMessage(player, "chest-spawned");
+                        aresonDeathSwap.sounds.openChest(player.getLocation());
+                        aresonDeathSwap.sounds.gameStarted(player);
+                        aresonDeathSwap.titles.sendLongTitle(player, "start");
+                        aresonDeathSwap.eventCall.callPlayerStartGame(player);
+                    });
                 } catch (IndexOutOfBoundsException e) {
                     player.teleportAsync(getRandomLocationAroundSpawn(world));
                 }
-                aresonDeathSwap.sounds.gameStarted(player);
-                aresonDeathSwap.titles.sendLongTitle(player, "start");
-                aresonDeathSwap.eventCall.callPlayerStartGame(player);
+
             });
-            countdownGame.start();
+            countdownGame.startRepeating();
             this.arenaStatus = ArenaStatus.InGame;
         } else {
             aresonDeathSwap.getLogger().severe("Cannot found arena world");
@@ -168,15 +157,12 @@ public class Arena {
         } else {
             aresonDeathSwap.getLogger().severe("Error while getting the world while teleporting players");
         }
-
-        if (countdownGame.isRunning()) {
-            countdownGame.interrupt();
-        }
+        countdownGame.startRepeating();
     }
 
     public void rotatePlayers() {
+        aresonDeathSwap.getLogger().info("Rotating players in arena " + arenaName);
         Collections.shuffle(players);
-
         List<Location> newLocations = new ArrayList<>();
         for (int i = 0; i < players.size(); i++) {
             if (i == (players.size() - 1)) {
@@ -188,14 +174,15 @@ public class Arena {
 
         for (int i = 0; i < newLocations.size(); i++) {
             Player player = players.get(i);
-            player.teleportAsync(newLocations.get(i));
-            if (Math.random() < 0.5) {
-                aresonDeathSwap.loot.placeNewChestNear(player);
-                aresonDeathSwap.messages.sendPlainMessage(player, "chest-spawned");
-                aresonDeathSwap.sounds.openChest(player.getLocation());
-            }
-            aresonDeathSwap.sounds.teleport(player);
-            aresonDeathSwap.titles.sendShortTitle(player, "swap");
+            player.teleportAsync(newLocations.get(i)).whenComplete((input, exception) -> {
+                if (Math.random() < 0.5) {
+                    aresonDeathSwap.loot.placeNewChestNear(player);
+                    aresonDeathSwap.messages.sendPlainMessage(player, "chest-spawned");
+                    aresonDeathSwap.sounds.openChest(player.getLocation());
+                }
+                aresonDeathSwap.sounds.teleport(player);
+                aresonDeathSwap.titles.sendShortTitle(player, "swap");
+            });
         }
     }
 
