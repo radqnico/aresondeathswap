@@ -45,8 +45,10 @@ public class DelayedRepeatingTask {
                         } else {
                             if (currentTimeRemaining < 10) {
                                 countDownMessage.ifPresent(s ->
-                                        playersToNotify.parallelStream().forEach(player ->
-                                                player.sendMessage(s.replaceAll("%seconds%", currentTimeRemaining + ""))
+                                        playersToNotify.parallelStream().forEach(player -> {
+                                                    player.sendMessage(s.replaceAll("%seconds%", currentTimeRemaining + ""));
+                                                    aresonDeathSwap.sounds.tick(player);
+                                                }
                                         )
                                 );
                             }
