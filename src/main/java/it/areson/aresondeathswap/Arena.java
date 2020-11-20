@@ -1,6 +1,5 @@
 package it.areson.aresondeathswap;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import it.areson.aresondeathswap.enums.ArenaStatus;
 import it.areson.aresondeathswap.utils.ArenaPlaceholders;
 import it.areson.aresondeathswap.utils.Countdown;
@@ -67,8 +66,9 @@ public class Arena {
                 randomTeleportTime(),
                 () -> {
                     rotatePlayers();
-                    countdownGame.setEverySeconds(randomTeleportTime());
-                    aresonDeathSwap.getLogger().info("Started new countdownGame in arena " + arenaName);
+                    int swapTime = randomTeleportTime();
+                    countdownGame.setEverySeconds(swapTime);
+                    aresonDeathSwap.getLogger().info("Started new countdownGame in arena " + arenaName + " with " + swapTime + " seconds");
                     roundCounter++;
                     if (roundCounter > aresonDeathSwap.MAX_ROUNDS) {
                         witherPlayers();
@@ -165,6 +165,7 @@ public class Arena {
                 .thenApply(ignored -> teleports.stream().map(CompletableFuture::join).collect(Collectors.toList()));
         listCompletableFuture.whenComplete((booleans, throwable) -> {
             countdownGame.stopRepeating();
+            aresonDeathSwap.loot.removeChestOfWorld(arenaName);
             aresonDeathSwap.reloadArenaWorld(arenaName);
             arenaStatus = Waiting;
             placeholders.setArenaStatus(Waiting);

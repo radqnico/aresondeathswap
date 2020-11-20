@@ -16,6 +16,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -24,7 +25,7 @@ public class LootConfigReader extends FileManager {
     private ArrayList<LootItem> items;
     private int minItems;
     private int maxItems;
-    private ArrayList<Location> lootChests;
+    private List<Location> lootChests;
 
     public LootConfigReader(AresonDeathSwap instance, String nomeFile) {
         super(instance, nomeFile);
@@ -146,7 +147,7 @@ public class LootConfigReader extends FileManager {
     }
 
     public void removeLootChest(Location chestLocation) {
-        lootChests = (ArrayList<Location>) lootChests.stream().filter(location -> {
+        lootChests = lootChests.stream().filter(location -> {
             World locationWorld = location.getWorld();
             World chestLocationWorld = chestLocation.getWorld();
             if (locationWorld != null && chestLocationWorld != null) {
@@ -159,5 +160,9 @@ public class LootConfigReader extends FileManager {
                 return true;
             }
         }).collect(Collectors.toList());
+    }
+
+    public void removeChestOfWorld(String arenaName) {
+        lootChests = lootChests.stream().filter(location -> !location.getWorld().getName().equals(arenaName)).collect(Collectors.toList());
     }
 }

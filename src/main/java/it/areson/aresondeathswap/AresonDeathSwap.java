@@ -148,7 +148,6 @@ public final class AresonDeathSwap extends JavaPlugin {
         player.setLevel(0);
         player.setHealth(20);
         player.setFoodLevel(20);
-        player.setSaturation(15);
         player.getInventory().clear();
         for (PotionEffect potionEffect : player.getActivePotionEffects()) {
             player.removePotionEffect(potionEffect.getType());
