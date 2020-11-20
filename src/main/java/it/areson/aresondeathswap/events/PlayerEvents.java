@@ -33,9 +33,9 @@ public class PlayerEvents implements Listener {
         aresonDeathSwap.teleportToLobbySpawn(event.getPlayer());
         aresonDeathSwap.sounds.joinServer(event.getPlayer().getWorld().getSpawnLocation());
         aresonDeathSwap.titles.sendLongTitle(event.getPlayer(), "join");
-        aresonDeathSwap.restorePlayerState(event.getPlayer());
+//        aresonDeathSwap.restorePlayerState(event.getPlayer());
         for (int i = 0; i < 20; i++) {
-            event.getPlayer().sendMessage("             ");
+            event.getPlayer().sendMessage(" ");
         }
     }
 
