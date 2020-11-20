@@ -75,10 +75,7 @@ public final class AresonDeathSwap extends JavaPlugin {
 
         getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
             getServer().getLogger().warning(
-                    "ActiveWorkers: " + getServer().getScheduler().getActiveWorkers().stream().map(worker -> worker.getOwner().getName().equals(this.getName())).collect(Collectors.toList()).toString()
-            );
-            getServer().getLogger().warning(
-                    "PendingTasks: " + getServer().getScheduler().getPendingTasks().stream().filter(task -> task.getOwner().getName().equals(this.getName())).collect(Collectors.toList()).toString()
+                    "PendingTasks: " + getServer().getScheduler().getPendingTasks().stream().filter(task -> task.getOwner().getName().equals(this.getName())).map(BukkitTask::getTaskId).collect(Collectors.toList()).toString()
             );
         }, 0, 100);
 
