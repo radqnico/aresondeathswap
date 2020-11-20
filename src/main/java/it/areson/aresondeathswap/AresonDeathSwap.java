@@ -9,19 +9,16 @@ import it.areson.aresondeathswap.events.PlayerEvents;
 import it.areson.aresondeathswap.loot.LootConfigReader;
 import it.areson.aresondeathswap.managers.*;
 import org.bukkit.*;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.scheduler.BukkitWorker;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.concurrent.CompletableFuture;
 
 public final class AresonDeathSwap extends JavaPlugin {
 
@@ -158,20 +155,20 @@ public final class AresonDeathSwap extends JavaPlugin {
         }
     }
 
-    public void teleportToLobbySpawn(Player player) {
+    public CompletableFuture<Boolean> teleportToLobbySpawn(Player player) {
         World world = getServer().getWorld(MAIN_WORLD_NAME);
         restorePlayerState(player);
         if (world != null) {
             Location lobbySpawn = dataFile.getLocation("lobby-spawn");
             if (lobbySpawn != null) {
-                player.teleportAsync(lobbySpawn);
+                return player.teleportAsync(lobbySpawn);
             } else {
-                player.teleportAsync(world.getSpawnLocation());
+                return player.teleportAsync(world.getSpawnLocation());
             }
-            getServer().dispatchCommand(getServer().getConsoleSender(), "execute as " + player.getName() + " run function deathsawpsong:play");
         } else {
             getLogger().severe("Cannot found main world");
         }
+        return null;
     }
 
     public void removePlayerFromArenas(Player player) {

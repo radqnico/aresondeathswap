@@ -1,5 +1,6 @@
 package it.areson.aresondeathswap;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import it.areson.aresondeathswap.enums.ArenaStatus;
 import it.areson.aresondeathswap.utils.ArenaPlaceholders;
 import it.areson.aresondeathswap.utils.Countdown;
@@ -12,6 +13,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import static it.areson.aresondeathswap.enums.ArenaStatus.*;
 
@@ -149,15 +152,24 @@ public class Arena {
 
     public void interruptGame() {
         World world = aresonDeathSwap.getServer().getWorld(arenaName);
+        List<CompletableFuture<Boolean>> teleports = new ArrayList<>();
         if (world != null) {
             for (Player player : world.getPlayers()) {
-                aresonDeathSwap.teleportToLobbySpawn(player);
+                teleports.add(aresonDeathSwap.teleportToLobbySpawn(player));
             }
             spawns.clear();
         } else {
             aresonDeathSwap.getLogger().severe("Error while getting the world while teleporting players");
         }
-        countdownGame.startRepeating();
+        CompletableFuture<List<Boolean>> listCompletableFuture = CompletableFuture.allOf(teleports.toArray(new CompletableFuture[0]))
+                .thenApply(ignored -> teleports.stream().map(CompletableFuture::join).collect(Collectors.toList()));
+        listCompletableFuture.whenComplete((booleans, throwable) -> {
+            countdownGame.stopRepeating();
+            aresonDeathSwap.reloadArenaWorld(arenaName);
+            arenaStatus = Waiting;
+            placeholders.setArenaStatus(Waiting);
+            aresonDeathSwap.getLogger().info("Game on '" + arenaName + "' interrupted");
+        });
     }
 
     public void rotatePlayers() {
