@@ -1,26 +1,26 @@
-prefix: "&c&o&lAreson&r "
+prefix: "&9[Areson]&r "
 
-countdown-starting-message: "&7âž¢ La partita inizierÃ  tra &a&l%seconds% secondi"
-countdown-interrupted: "&7âž¢ &cNon ci sono abbastanza giocatori per iniziare la partita!"
+countdown-starting-message: "&6La partita inizierà tra %seconds% secondi"
+countdown-interrupted: "&cNon ci sono abbastanza giocatori per iniziare la partita!"
 
-countdown-start-message: "&7âž¢ Numero minimo di giocatori raggiunto. La partita inizierÃ  tra &a&l%seconds% secondi"
-countdown-game-started: "&7âž¢ &aLa partita Ã¨ iniziata! Fai attenzione a non morire!"
-countdown-swap-message: "&7âž¢ Lo swap verrÃ  eseguito tra &a&l%seconds% secondi"
+countdown-start-message: "&aNumero minimo di giocatori raggiunto. La partita inizierà tra %seconds% secondi"
+countdown-game-started: "&aLa partita è iniziata, fai attenzione a non morire!"
+countdown-swap-message: "&6Lo swap verrà eseguito tra %seconds% secondi"
 
-victory-message: "&7âž¢ &a&l%player% &6ha vinto la partita!"
+victory-message: "&6%player% ha vinto una partita!"
 
-countdown-prepare-message: "&7âž¢ Preparati al prossimo swap! AvverrÃ  a caso tra &a&l1 e 3 minuti&7!"
-arena-not-found: "&7âž¢ &cArena non trovata"
-arena-already-started: "&7âž¢ &cLa partita Ã¨ giÃ  in corso in questa arena"
-arena-join: "&7âž¢ Ti sei unito all'arena &a&l'%arena%'&7. Digita &c&l/leave &7per abbandonare la partita!"
-missing-arena-name: "&7âž¢ &cManca il nome dell'arena"
-player-joined-arena: "&7âž¢ &a&l%player% &7si Ã¨ unito alla partita"
-arena-players-remaining: "&7âž¢ &a&l%number% &7giocatori rimanenti"
-already-in-an-arena: "&7âž¢ &aHai cambiato arena!"
-no-arena-playing: "&7âž¢ &cNon stai partecipando ad alcuna partita"
-arena-leaved: "&7âž¢ &cHai abbandonato la partita!"
-player-dead: "&7âž¢ &cSei morto! Osserva gli altri giocatori o fai /spawn per tornare indietro"
-chest-spawned: "&7âž¢ &aE' apparsa una &a&lcassa bonus &avicino a te!"
+countdown-prepare-message: "&aPreparati al prossimo swap! Avverrà a caso tra 1 e 3 minuti"
+arena-not-found: "&cArena non trovata"
+arena-already-started: "&cLa partita è già in corso in questa arena"
+arena-join: "&aTi sei unito all'arena '%arena%'. Scrivi /leave per abbandonare la partita"
+missing-arena-name: "&cManca il nome dell'arena"
+player-joined-arena: "&6%player% si è unito alla partita"
+arena-players-remaining: "&6%number% giocatori rimanenti"
+already-in-an-arena: "&aHai cambiato arena!"
+no-arena-playing: "&cNon stai partecipando ad alcuna partita"
+arena-leaved: "&aHai abbandonato la partita"
+player-dead: "&cSei morto! Osserva gli altri giocatori o fai /spawn per tornare indietro"
+chest-spawned: "&6&lE' apparsa una cassa bonus vicino a te!"
 
 
 # Titles and subtitles must start with "title-<name>" and "subtitle-<name>"
@@ -29,12 +29,12 @@ title-join: "&6DeathSwap"
 subtitle-join: "&cVersione BETA"
 
 title-joinarena: ""
-subtitle-joinarena: "&7âž¢ &aHai selezionato un'arena. Preparati a cominciare."
+subtitle-joinarena: "&aHai selezionato un'arena. Preparati a cominciare."
 
-title-win: "&6Hai vinto!"
+title-win: "&6Hai vinto"
 subtitle-win: ""
 
-title-lose: "&cSei stato eliminato!"
+title-lose: "&cPeccato"
 subtitle-lose: "&cNon mollare, riprova"
 
 title-swap: ""
@@ -42,5 +42,3 @@ subtitle-swap: "&6Sei stato scambiato"
 
 title-start: "&cSi inizia"
 subtitle-start: "&6Elimina gli altri giocatori"
-
-rounds-remaining: "&7âž¢ Swap  rimanenti prima della finale: %remaining%"
