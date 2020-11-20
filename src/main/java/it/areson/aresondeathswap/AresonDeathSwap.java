@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public final class AresonDeathSwap extends JavaPlugin {
 
@@ -74,9 +75,9 @@ public final class AresonDeathSwap extends JavaPlugin {
 
 
         getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
-            getServer().getLogger().warning("ActiveWorkers: " + getServer().getScheduler().getActiveWorkers().stream().map(BukkitWorker::getOwner).toString());
-            getServer().getLogger().warning("PendingTasks: " + getServer().getScheduler().getPendingTasks().stream().map(BukkitTask::getOwner).toString());
-        }, 0, 60);
+            getServer().getLogger().warning("ActiveWorkers: " + getServer().getScheduler().getActiveWorkers().stream().map(BukkitWorker::getOwner).collect(Collectors.toList()).toString());
+            getServer().getLogger().warning("PendingTasks: " + getServer().getScheduler().getPendingTasks().stream().map(BukkitTask::getOwner).collect(Collectors.toList()).toString());
+        }, 0, 100);
 
 
     }
