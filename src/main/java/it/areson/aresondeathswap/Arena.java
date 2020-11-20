@@ -70,6 +70,14 @@ public class Arena {
                     roundCounter++;
                     if(roundCounter>aresonDeathSwap.MAX_ROUNDS){
                         witherPlayers();
+                    } else {
+                        players.forEach(player -> {
+                            aresonDeathSwap.messages.sendPlainMessage(
+                                    player,
+                                    "rounds-remaining",
+                                    StringPair.of("%remaining%", (aresonDeathSwap.MAX_ROUNDS-roundCounter)+"")
+                            );
+                        });
                     }
                 },
                 () -> {
@@ -102,8 +110,8 @@ public class Arena {
     private Location getRandomLocationAroundSpawn(World world) {
         Location spawnLocation = world.getSpawnLocation();
         Random random = new Random();
-        int dx = (random.nextBoolean() ? 1 : -1) * random.nextInt(2000);
-        int dz = (random.nextBoolean() ? 1 : -1) * random.nextInt(2000);
+        int dx = (random.nextBoolean() ? 1 : -1) * random.nextInt(10000);
+        int dz = (random.nextBoolean() ? 1 : -1) * random.nextInt(10000);
         Location clone = spawnLocation.clone();
         Location add = clone.add(dx, 0, dz);
         int highestBlockYAt = world.getHighestBlockYAt(add);
