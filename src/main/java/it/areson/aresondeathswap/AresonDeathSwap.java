@@ -71,15 +71,6 @@ public final class AresonDeathSwap extends JavaPlugin {
         loot.readLoot();
 
         getServer().getPluginManager().registerEvents(new PlayerEvents(this), this);
-
-
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
-            getServer().getLogger().warning(
-                    "PendingTasks: " + getServer().getScheduler().getPendingTasks().stream().filter(task -> task.getOwner().getName().equals(this.getName())).map(BukkitTask::getTaskId).collect(Collectors.toList()).toString()
-            );
-        }, 0, 100);
-
-
     }
 
     @Override
