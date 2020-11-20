@@ -101,7 +101,7 @@ public class Arena {
         players.forEach(player -> player.addPotionEffect(new PotionEffect(
                 PotionEffectType.WITHER,
                 Integer.MAX_VALUE,
-                2,
+                3,
                 false,
                 false,
                 false

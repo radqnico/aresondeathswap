@@ -12,6 +12,7 @@ import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
 
 import java.util.HashMap;
 import java.util.List;
@@ -148,8 +149,11 @@ public final class AresonDeathSwap extends JavaPlugin {
         player.setLevel(0);
         player.setHealth(20);
         player.setFoodLevel(20);
-        player.setSaturation(100);
+        player.setSaturation(15);
         player.getInventory().clear();
+        for (PotionEffect effect : player.getActivePotionEffects()) {
+            player.removePotionEffect(effect.getType());
+        }
     }
 
     public void teleportToLobbySpawn(Player player) {
