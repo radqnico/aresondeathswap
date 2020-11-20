@@ -70,6 +70,13 @@ public final class AresonDeathSwap extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerEvents(this), this);
 
 
+
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
+            getServer().getLogger().warning("ActiveWorkers: " + getServer().getScheduler().getActiveWorkers().toString());
+            getServer().getLogger().warning("PendingTasks: " + getServer().getScheduler().getPendingTasks().toString());
+        }, 0, 60);
+
+
     }
 
     @Override
