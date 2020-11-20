@@ -73,10 +73,13 @@ public final class AresonDeathSwap extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerEvents(this), this);
 
 
-
         getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
-            getServer().getLogger().warning("ActiveWorkers: " + getServer().getScheduler().getActiveWorkers().stream().map(BukkitWorker::getOwner).collect(Collectors.toList()).toString());
-            getServer().getLogger().warning("PendingTasks: " + getServer().getScheduler().getPendingTasks().stream().map(BukkitTask::getOwner).collect(Collectors.toList()).toString());
+            getServer().getLogger().warning(
+                    "ActiveWorkers: " + getServer().getScheduler().getActiveWorkers().stream().map(worker -> worker.getOwner().getName().equals(this.getName())).collect(Collectors.toList()).toString()
+            );
+            getServer().getLogger().warning(
+                    "PendingTasks: " + getServer().getScheduler().getPendingTasks().stream().filter(task -> task.getOwner().getName().equals(this.getName())).collect(Collectors.toList()).toString()
+            );
         }, 0, 100);
 
 
@@ -162,7 +165,7 @@ public final class AresonDeathSwap extends JavaPlugin {
         player.setFoodLevel(20);
         player.setSaturation(15);
         player.getInventory().clear();
-        for(PotionEffect potionEffect: player.getActivePotionEffects()){
+        for (PotionEffect potionEffect : player.getActivePotionEffects()) {
             player.removePotionEffect(potionEffect.getType());
         }
     }
@@ -177,7 +180,7 @@ public final class AresonDeathSwap extends JavaPlugin {
             } else {
                 player.teleportAsync(world.getSpawnLocation());
             }
-            getServer().dispatchCommand(getServer().getConsoleSender(), "execute as "+player.getName()+" run function deathsawpsong:play");
+            getServer().dispatchCommand(getServer().getConsoleSender(), "execute as " + player.getName() + " run function deathsawpsong:play");
         } else {
             getLogger().severe("Cannot found main world");
         }
@@ -198,7 +201,7 @@ public final class AresonDeathSwap extends JavaPlugin {
         return arenas.entrySet().stream().anyMatch(arenaEntry -> arenaEntry.getValue().getPlayers().contains(player));
     }
 
-    public Optional<String> getArenaNameFromPlayer(Player player){
+    public Optional<String> getArenaNameFromPlayer(Player player) {
         return arenas.entrySet().stream().filter(entry -> entry.getValue().getPlayers().contains(player)).map(Map.Entry::getKey).findFirst();
     }
 
