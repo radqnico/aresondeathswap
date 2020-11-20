@@ -34,6 +34,9 @@ public class PlayerEvents implements Listener {
         aresonDeathSwap.sounds.joinServer(event.getPlayer().getWorld().getSpawnLocation());
         aresonDeathSwap.titles.sendLongTitle(event.getPlayer(), "join");
         aresonDeathSwap.restorePlayerState(event.getPlayer());
+        for (int i = 0; i < 20; i++) {
+            event.getPlayer().sendMessage("             ");
+        }
     }
 
     @EventHandler
@@ -80,7 +83,7 @@ public class PlayerEvents implements Listener {
             LootConfigReader lootChest = aresonDeathSwap.loot;
             Location loc = e.getInventory().getLocation();
             if (loc != null) {
-                if(lootChest.isLootChest(loc)) {
+                if (lootChest.isLootChest(loc)) {
                     loc.add(new Vector(0.5, 1, 0.5));
                     // TODO SoundManager.chestOpen(loc);
                     if (e.getInventory().getHolder() instanceof Chest) {
