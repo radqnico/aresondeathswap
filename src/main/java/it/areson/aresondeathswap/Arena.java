@@ -255,6 +255,9 @@ public class Arena {
     }
 
     public void winGame() {
+        arenaStatus = Ending;
+        placeholders.setArenaStatus(Ending);
+
         if (players.size() > 0) {
             Player winnerPlayer = players.stream().findFirst().get();
             aresonDeathSwap.getServer().getOnlinePlayers().forEach(player ->
@@ -266,14 +269,11 @@ public class Arena {
             aresonDeathSwap.eventCall.callPlayerWin(winnerPlayer);
             aresonDeathSwap.eventCall.callPlayerEndGame(winnerPlayer);
             players.clear();
-
-            arenaStatus = Ending;
-            placeholders.setArenaStatus(Ending);
-
-            interruptGame();
         } else {
-            aresonDeathSwap.getLogger().severe("Winningg game with no remaining players");
+            aresonDeathSwap.getLogger().severe("Winning game with no remaining players");
         }
+
+        interruptGame();
     }
 
     public void startPregame() {
