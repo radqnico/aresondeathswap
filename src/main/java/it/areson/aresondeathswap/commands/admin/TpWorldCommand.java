@@ -11,6 +11,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("NullableProblems")
 public class TpWorldCommand implements CommandExecutor, TabCompleter {
 
     private final AresonDeathSwap aresonDeathSwap;
@@ -35,7 +36,7 @@ public class TpWorldCommand implements CommandExecutor, TabCompleter {
                 Optional<World> searchedWorld = aresonDeathSwap.getServer().getWorlds().stream().filter(world -> world.getName().equals(worldName)).findFirst();
 
                 if (searchedWorld.isPresent()) {
-                    player.teleport(searchedWorld.get().getSpawnLocation());
+                    player.teleportAsync(searchedWorld.get().getSpawnLocation());
                     player.sendMessage("Teletrasportato");
                 } else {
                     player.sendMessage("Mondo non trovato");

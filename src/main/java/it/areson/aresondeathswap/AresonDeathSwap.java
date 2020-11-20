@@ -163,9 +163,9 @@ public final class AresonDeathSwap extends JavaPlugin {
         if (world != null) {
             Location lobbySpawn = dataFile.getLocation("lobby-spawn");
             if (lobbySpawn != null) {
-                player.teleport(lobbySpawn);
+                player.teleportAsync(lobbySpawn);
             } else {
-                player.teleport(world.getSpawnLocation());
+                player.teleportAsync(world.getSpawnLocation());
             }
             getServer().dispatchCommand(getServer().getConsoleSender(), "execute as "+player.getName()+" run function deathsawpsong:play");
         } else {

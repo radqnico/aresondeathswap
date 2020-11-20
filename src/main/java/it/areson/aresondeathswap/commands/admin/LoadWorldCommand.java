@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import java.util.Objects;
 import java.util.Optional;
 
+@SuppressWarnings("NullableProblems")
 public class LoadWorldCommand implements CommandExecutor {
 
     private final AresonDeathSwap aresonDeathSwap;
@@ -38,7 +39,7 @@ public class LoadWorldCommand implements CommandExecutor {
                     World loadedWorld = new WorldCreator(worldName).createWorld();
 
                     if (loadedWorld != null) {
-                        player.teleport(loadedWorld.getSpawnLocation());
+                        player.teleportAsync(loadedWorld.getSpawnLocation());
                         player.sendMessage("Mondo caricato");
                     } else {
                         player.sendMessage("Errore nel caricamento del mondo");

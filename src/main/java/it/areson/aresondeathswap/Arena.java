@@ -71,13 +71,11 @@ public class Arena {
                     if(roundCounter>aresonDeathSwap.MAX_ROUNDS){
                         witherPlayers();
                     } else {
-                        players.forEach(player -> {
-                            aresonDeathSwap.messages.sendPlainMessage(
-                                    player,
-                                    "rounds-remaining",
-                                    StringPair.of("%remaining%", (aresonDeathSwap.MAX_ROUNDS-roundCounter)+"")
-                            );
-                        });
+                        players.forEach(player -> aresonDeathSwap.messages.sendPlainMessage(
+                                player,
+                                "rounds-remaining",
+                                StringPair.of("%remaining%", (aresonDeathSwap.MAX_ROUNDS-roundCounter)+"")
+                        ));
                     }
                 },
                 () -> {
@@ -130,12 +128,12 @@ public class Arena {
                 aresonDeathSwap.getServer().dispatchCommand(aresonDeathSwap.getServer().getConsoleSender(), "execute as " + player.getName() + " run function deathsawpsong:stop");
                 try {
                     Location removedSpawn = spawns.remove(0);
-                    player.teleport(removedSpawn);
+                    player.teleportAsync(removedSpawn);
                     aresonDeathSwap.loot.placeNewChestNear(player);
                     aresonDeathSwap.messages.sendPlainMessage(player, "chest-spawned");
                     aresonDeathSwap.sounds.openChest(player.getLocation());
                 } catch (IndexOutOfBoundsException e) {
-                    player.teleport(getRandomLocationAroundSpawn(world));
+                    player.teleportAsync(getRandomLocationAroundSpawn(world));
                 }
                 aresonDeathSwap.sounds.gameStarted(player);
                 aresonDeathSwap.titles.sendLongTitle(player, "start");
@@ -190,7 +188,7 @@ public class Arena {
 
         for (int i = 0; i < newLocations.size(); i++) {
             Player player = players.get(i);
-            player.teleport(newLocations.get(i));
+            player.teleportAsync(newLocations.get(i));
             if (Math.random() < 0.5) {
                 aresonDeathSwap.loot.placeNewChestNear(player);
                 aresonDeathSwap.messages.sendPlainMessage(player, "chest-spawned");
@@ -285,9 +283,7 @@ public class Arena {
             countdownPregame.start();
             arenaStatus = ArenaStatus.Starting;
             placeholders.setArenaStatus(Starting);
-            players.forEach(player -> {
-                aresonDeathSwap.sounds.startingGame(player);
-            });
+            players.forEach(player -> aresonDeathSwap.sounds.startingGame(player));
             spawns.forEach(location -> location.getChunk().load());
         }
     }
