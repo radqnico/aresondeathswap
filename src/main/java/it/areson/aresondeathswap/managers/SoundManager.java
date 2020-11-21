@@ -57,4 +57,8 @@ public class SoundManager {
             world.playSound(target, Sound.BLOCK_BEACON_POWER_SELECT, SoundCategory.MASTER, 0.4f, 2f);
         }
     }
+
+    public void chestAppear(Player target){
+        target.playSound(target.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.75f);
+    }
 }

@@ -127,7 +127,7 @@ public class Arena {
                 if (Math.random() < 0.5) {
                     aresonDeathSwap.loot.placeNewChestNear(player);
                     aresonDeathSwap.messages.sendPlainMessage(player, "chest-spawned");
-                    aresonDeathSwap.sounds.openChest(player.getLocation());
+                    aresonDeathSwap.sounds.chestAppear(player);
                 }
                 aresonDeathSwap.sounds.teleport(player);
                 aresonDeathSwap.titles.sendShortTitle(player, "swap");
