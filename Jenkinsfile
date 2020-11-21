@@ -30,6 +30,27 @@ pipeline {
             }
         }
 
+        stage("Publish") {
+            steps {
+                sshPublisher(
+                        failOnError: true,
+                        publishers: [
+                                sshPublisherDesc(
+                                        configName: "Areson",
+                                        transfers: [
+                                                sshTransfer(
+                                                        sourceFiles: "**/*.jar",
+                                                        remoteDirectory: "/home/minecraft/deathSwap/plugins/",
+                                                        flatten: true,
+                                                        excludes: "**/*original*.jar"
+                                                )
+                                        ]
+                                )
+                        ]
+                )
+            }
+        }
+
     }
 
     post {
