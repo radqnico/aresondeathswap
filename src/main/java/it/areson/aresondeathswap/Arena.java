@@ -122,8 +122,8 @@ public class Arena {
         }
         //TODO Remove log
         aresonDeathSwap.getLogger().info("Coppie di teletrasporti:");
-        for(int i=0; i<tpTos.size(); i++){
-            aresonDeathSwap.getLogger().info("'"+tpFroms.get(i).getName()+"' -> '"+tpTos.get(i).getName()+"'");
+        for (int i = 0; i < tpTos.size(); i++) {
+            aresonDeathSwap.getLogger().info("'" + tpFroms.get(i).getName() + "' -> '" + tpTos.get(i).getName() + "'");
         }
     }
 
@@ -216,7 +216,6 @@ public class Arena {
             aresonDeathSwap.getLogger().info("Game on '" + arenaName + "' interrupted");
         });
     }
-
 
 
     public ArrayList<Player> getPlayers() {
