@@ -12,6 +12,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import javax.swing.text.html.Option;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -34,6 +37,8 @@ public class Arena {
     private ArrayList<Player> tpFroms;
     private ArrayList<Player> tpTos;
 
+    private Optional<LocalDateTime> lastSwapTime;
+
     private int roundCounter;
 
     public Arena(AresonDeathSwap aresonDeathSwap, String arenaName) {
@@ -41,6 +46,7 @@ public class Arena {
         this.arenaName = arenaName;
         this.players = new ArrayList<>();
         this.arenaStatus = Waiting;
+        lastSwapTime = Optional.empty();
         tpFroms = new ArrayList<>();
         tpTos = new ArrayList<>();
         roundCounter = 0;
@@ -76,6 +82,7 @@ public class Arena {
                     countdownGame.setEverySeconds(swapTime);
                     aresonDeathSwap.getLogger().info("Started new countdownGame in arena " + arenaName + " with " + swapTime + " seconds");
                     roundCounter++;
+                    lastSwapTime = Optional.of(LocalDateTime.now());
                     if (roundCounter > aresonDeathSwap.MAX_ROUNDS) {
                         witherPlayers();
                         placeholders.setRoundsRemainingString("Round finali");
@@ -91,6 +98,10 @@ public class Arena {
                 Optional.of(aresonDeathSwap.messages.getPlainMessage("countdown-swap-message")),
                 players
         );
+    }
+
+    public Optional<LocalDateTime> getLastSwapTime() {
+        return lastSwapTime;
     }
 
     public void rotatePlayers() {
@@ -213,6 +224,7 @@ public class Arena {
             arenaStatus = Waiting;
             placeholders.setArenaStatus(Waiting);
             placeholders.setRoundsRemainingString("Non in gioco");
+            lastSwapTime = Optional.empty();
             aresonDeathSwap.getLogger().info("Game on '" + arenaName + "' interrupted");
         });
     }
@@ -264,13 +276,24 @@ public class Arena {
                         int killerIndex = tpFroms.indexOf(player);
                         players.forEach(messagePlayer -> {
                                     if (killerIndex != -1) {
-                                        aresonDeathSwap.messages.sendPlainMessageDelayed(
-                                                messagePlayer,
-                                                "arena-kill",
-                                                5,
-                                                StringPair.of("%player%", player.getName()),
-                                                StringPair.of("%killer%", tpTos.get(killerIndex).getName())
-                                        );
+                                        if(lastSwapTime.isPresent()) {
+                                            if(Duration.between(lastSwapTime.get(), LocalDateTime.now()).getSeconds()<10) {
+                                                aresonDeathSwap.messages.sendPlainMessageDelayed(
+                                                        messagePlayer,
+                                                        "arena-kill",
+                                                        5,
+                                                        StringPair.of("%player%", player.getName()),
+                                                        StringPair.of("%killer%", tpTos.get(killerIndex).getName())
+                                                );
+                                            }else{
+                                                aresonDeathSwap.messages.sendPlainMessageDelayed(
+                                                        messagePlayer,
+                                                        "arena-kill-solo",
+                                                        5,
+                                                        StringPair.of("%player%", player.getName())
+                                                );
+                                            }
+                                        }
                                     }
                                     aresonDeathSwap.messages.sendPlainMessageDelayed(
                                             messagePlayer,
