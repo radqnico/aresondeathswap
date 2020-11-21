@@ -265,16 +265,17 @@ public class Arena {
             aresonDeathSwap.getServer().getOnlinePlayers().forEach(player ->
                     aresonDeathSwap.messages.sendPlainMessageDelayed(player, "victory-message", 5, StringPair.of("%player%", winnerPlayer.getName()))
             );
-            aresonDeathSwap.sounds.winner(winnerPlayer);
-            aresonDeathSwap.titles.sendLongTitle(winnerPlayer, "win");
-            aresonDeathSwap.effects.winFirework(winnerPlayer);
-            aresonDeathSwap.eventCall.callPlayerWin(winnerPlayer);
-            aresonDeathSwap.eventCall.callPlayerEndGame(winnerPlayer);
+            aresonDeathSwap.teleportToLobbySpawn(winnerPlayer).whenComplete((input, trhowable) -> {
+                aresonDeathSwap.sounds.winner(winnerPlayer);
+                aresonDeathSwap.titles.sendLongTitle(winnerPlayer, "win");
+                aresonDeathSwap.effects.winFirework(winnerPlayer);
+                aresonDeathSwap.eventCall.callPlayerWin(winnerPlayer);
+                aresonDeathSwap.eventCall.callPlayerEndGame(winnerPlayer);
+            });
             players.clear();
         } else {
-            aresonDeathSwap.getLogger().severe("Winning game with no remaining players");
+            aresonDeathSwap.getLogger().severe("Interrupting game with no remaining players");
         }
-
         interruptGame();
     }
 
