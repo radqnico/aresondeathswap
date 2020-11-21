@@ -2,10 +2,7 @@ package it.areson.aresondeathswap.events;
 
 import it.areson.aresondeathswap.AresonDeathSwap;
 import it.areson.aresondeathswap.loot.LootConfigReader;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Player;
@@ -20,6 +17,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+
+import static net.md_5.bungee.api.ChatColor.LIGHT_PURPLE;
 
 public class PlayerEvents implements Listener {
 
@@ -75,6 +74,7 @@ public class PlayerEvents implements Listener {
                     event.getRecipients().remove(player);
                 }
             });
+            event.setMessage(LIGHT_PURPLE + "[" + playerWorld.getName() + "]" + event.getMessage());
         }
     }
 
@@ -111,7 +111,7 @@ public class PlayerEvents implements Listener {
 
     @EventHandler
     public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) {
-        if(event.getDamager() instanceof Player && event.getEntity() instanceof Player) {
+        if (event.getDamager() instanceof Player && event.getEntity() instanceof Player) {
             event.setCancelled(true);
         }
     }

@@ -7,6 +7,7 @@ import it.areson.aresondeathswap.utils.DelayedRepeatingTask;
 import it.areson.aresondeathswap.utils.StringPair;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -175,7 +176,7 @@ public class Arena {
     }
 
     public void rotatePlayers() {
-        aresonDeathSwap.getLogger().info("Rotating players in arena " + arenaName);
+        aresonDeathSwap.getLogger().info("Rotating " + players.size() + " players in arena " + arenaName);
         Collections.shuffle(players);
         List<Location> newLocations = new ArrayList<>();
         for (int i = 0; i < players.size(); i++) {
@@ -242,12 +243,14 @@ public class Arena {
                     if (players.size() == 1) {
                         winGame();
                     } else {
+                        String playersString = players.stream().map(HumanEntity::getName).collect(Collectors.joining(","));
                         players.forEach(messagePlayer ->
                                 aresonDeathSwap.messages.sendPlainMessageDelayed(
                                         messagePlayer,
                                         "arena-players-remaining",
                                         5,
-                                        StringPair.of("%number%", players.size() + "")
+                                        StringPair.of("%number%", players.size() + ""),
+                                        StringPair.of("%players%", playersString)
                                 )
                         );
                     }

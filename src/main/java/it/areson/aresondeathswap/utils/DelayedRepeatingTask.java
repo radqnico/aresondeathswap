@@ -43,7 +43,7 @@ public class DelayedRepeatingTask {
                             callTask();
                             currentTimeRemaining = everySeconds;
                         } else {
-                            if (currentTimeRemaining < 10) {
+                            if (currentTimeRemaining <= 10) {
                                 countDownMessage.ifPresent(s ->
                                         playersToNotify.parallelStream().forEach(player -> {
                                                     player.sendMessage(s.replaceAll("%seconds%", currentTimeRemaining + ""));
