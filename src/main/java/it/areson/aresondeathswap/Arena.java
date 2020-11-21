@@ -85,7 +85,7 @@ public class Arena {
                                 "rounds-remaining",
                                 StringPair.of("%remaining%", (aresonDeathSwap.MAX_ROUNDS - roundCounter) + "")
                         ));
-                        placeholders.setRoundsRemainingString((aresonDeathSwap.MAX_ROUNDS - roundCounter) + "");
+                        placeholders.setRoundsRemainingString(roundCounter + "/" + aresonDeathSwap.MAX_ROUNDS);
                     }
                 },
                 Optional.of(aresonDeathSwap.messages.getPlainMessage("countdown-swap-message")),
@@ -164,7 +164,9 @@ public class Arena {
                         aresonDeathSwap.sounds.openChest(player.getLocation());
                         aresonDeathSwap.sounds.gameStarted(player);
                         aresonDeathSwap.titles.sendLongTitle(player, "start");
+                        placeholders.setRoundsRemainingString(roundCounter + "/" + aresonDeathSwap.MAX_ROUNDS);
                         aresonDeathSwap.eventCall.callPlayerStartGame(player);
+
                     });
                     player.getInventory().clear();
                 } catch (IndexOutOfBoundsException e) {
