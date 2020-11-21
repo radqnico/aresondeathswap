@@ -260,7 +260,7 @@ public class Arena {
                     if (players.size() == 1) {
                         winGame();
                     } else {
-                        String playersString = players.stream().map(HumanEntity::getName).collect(Collectors.joining(","));
+                        String playersString = players.stream().map(HumanEntity::getName).collect(Collectors.joining(", "));
                         players.forEach(messagePlayer ->
                                 aresonDeathSwap.messages.sendPlainMessageDelayed(
                                         messagePlayer,
