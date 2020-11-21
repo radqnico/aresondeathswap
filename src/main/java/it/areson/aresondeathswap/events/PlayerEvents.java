@@ -11,6 +11,7 @@ import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -78,18 +79,18 @@ public class PlayerEvents implements Listener {
     }
 
     @EventHandler
-    public void onInventoryOpenEvent(InventoryOpenEvent e) {
-        if (e.getInventory().getHolder() instanceof Chest || e.getInventory().getHolder() instanceof DoubleChest) {
+    public void onInventoryOpenEvent(InventoryOpenEvent event) {
+        if (event.getInventory().getHolder() instanceof Chest || event.getInventory().getHolder() instanceof DoubleChest) {
             LootConfigReader lootChest = aresonDeathSwap.loot;
-            Location loc = e.getInventory().getLocation();
+            Location loc = event.getInventory().getLocation();
             if (loc != null) {
                 if (lootChest.isLootChest(loc)) {
                     loc.add(new Vector(0.5, 1, 0.5));
                     // TODO SoundManager.chestOpen(loc);
-                    if (e.getInventory().getHolder() instanceof Chest) {
-                        lootChest.newLootChest((Chest) e.getInventory().getHolder());
+                    if (event.getInventory().getHolder() instanceof Chest) {
+                        lootChest.newLootChest((Chest) event.getInventory().getHolder());
                     } else {
-                        lootChest.newLootChest((DoubleChest) e.getInventory().getHolder());
+                        lootChest.newLootChest((DoubleChest) event.getInventory().getHolder());
                     }
                     aresonDeathSwap.sounds.openChest(loc);
                     aresonDeathSwap.loot.removeLootChest(loc);
@@ -99,12 +100,19 @@ public class PlayerEvents implements Listener {
                     } else {
                         aresonDeathSwap.getLogger().warning("Errore nel mondo della Loot Chest.");
                     }
-                    e.setCancelled(true);
+                    event.setCancelled(true);
                 }
             } else {
                 aresonDeathSwap.getLogger().warning("Errore nuella location della Loot Chest.");
             }
 
+        }
+    }
+
+    @EventHandler
+    public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) {
+        if(event.getDamager() instanceof Player && event.getEntity() instanceof Player) {
+            event.setCancelled(true);
         }
     }
 
