@@ -13,15 +13,21 @@ public class ArenaPlaceholders extends PlaceholderExpansion {
     private ArenaStatus arenaStatus;
     private final String arenaName;
     private final ArrayList<Player> players;
+    private String roundsRemainingString;
 
     public ArenaPlaceholders(ArenaStatus arenaStatus, String arenaName, ArrayList<Player> players) {
         this.arenaStatus = arenaStatus;
         this.arenaName = arenaName;
         this.players = players;
+        this.roundsRemainingString = "Non in gioco";
     }
 
     public void setArenaStatus(ArenaStatus arenaStatus){
         this.arenaStatus = arenaStatus;
+    }
+
+    public void setRoundsRemainingString(String roundsRemaining) {
+        this.roundsRemainingString = roundsRemaining;
     }
 
     @Override
@@ -57,6 +63,10 @@ public class ArenaPlaceholders extends PlaceholderExpansion {
                 case Ending:
                     return "Riavvio";
             }
+        }
+
+        if(identifier.equals("rounds")){
+            return roundsRemainingString;
         }
 
         return null;

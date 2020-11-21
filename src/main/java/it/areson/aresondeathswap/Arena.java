@@ -78,12 +78,14 @@ public class Arena {
                     roundCounter++;
                     if (roundCounter > aresonDeathSwap.MAX_ROUNDS) {
                         witherPlayers();
+                        placeholders.setRoundsRemainingString("Round finali");
                     } else {
                         players.forEach(player -> aresonDeathSwap.messages.sendPlainMessage(
                                 player,
                                 "rounds-remaining",
                                 StringPair.of("%remaining%", (aresonDeathSwap.MAX_ROUNDS - roundCounter) + "")
                         ));
+                        placeholders.setRoundsRemainingString((aresonDeathSwap.MAX_ROUNDS - roundCounter) + "");
                     }
                 },
                 Optional.of(aresonDeathSwap.messages.getPlainMessage("countdown-swap-message")),
@@ -208,6 +210,7 @@ public class Arena {
             aresonDeathSwap.reloadArenaWorld(arenaName);
             arenaStatus = Waiting;
             placeholders.setArenaStatus(Waiting);
+            placeholders.setRoundsRemainingString("Non in gioco");
             aresonDeathSwap.getLogger().info("Game on '" + arenaName + "' interrupted");
         });
     }
@@ -258,7 +261,7 @@ public class Arena {
                         String playersString = players.stream().map(HumanEntity::getName).collect(Collectors.joining(", "));
                         int killerIndex = tpFroms.indexOf(player);
                         players.forEach(messagePlayer -> {
-                                    if(killerIndex!=-1) {
+                                    if (killerIndex != -1) {
                                         aresonDeathSwap.messages.sendPlainMessageDelayed(
                                                 messagePlayer,
                                                 "arena-kill",
