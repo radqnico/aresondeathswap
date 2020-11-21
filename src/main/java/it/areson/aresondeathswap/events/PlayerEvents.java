@@ -76,7 +76,6 @@ public class PlayerEvents implements Listener {
                     event.getRecipients().remove(player);
                 }
             });
-            event.setMessage(LIGHT_PURPLE + "[" + playerWorld.getName() + "]" + event.getMessage());
         }
     }
 
