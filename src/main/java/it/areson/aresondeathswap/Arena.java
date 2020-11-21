@@ -30,6 +30,9 @@ public class Arena {
 
     private ArrayList<Location> spawns;
 
+    private ArrayList<Player> tpFroms;
+    private ArrayList<Player> tpTos;
+
     private int roundCounter;
 
     public Arena(AresonDeathSwap aresonDeathSwap, String arenaName) {
@@ -37,6 +40,8 @@ public class Arena {
         this.arenaName = arenaName;
         this.players = new ArrayList<>();
         this.arenaStatus = Waiting;
+        tpFroms = new ArrayList<>();
+        tpTos = new ArrayList<>();
         roundCounter = 0;
         spawns = new ArrayList<>();
         placeholders = new ArenaPlaceholders(this.arenaStatus, this.arenaName, this.players);
@@ -85,6 +90,42 @@ public class Arena {
         );
     }
 
+    public void rotatePlayers() {
+        aresonDeathSwap.getLogger().info("Rotating players in arena " + arenaName);
+        tpFroms.clear();
+        tpTos.clear();
+        Collections.shuffle(players);
+        List<Location> newLocations = new ArrayList<>();
+        for (int i = 0; i < players.size(); i++) {
+            if (i == (players.size() - 1)) {
+                newLocations.add(players.get(0).getLocation().clone());
+                tpTos.add(players.get(0));
+            } else {
+                newLocations.add(players.get(i + 1).getLocation().clone());
+                tpTos.add(players.get(i + 1));
+            }
+        }
+
+        for (int i = 0; i < newLocations.size(); i++) {
+            Player player = players.get(i);
+            tpFroms.add(player);
+            player.teleportAsync(newLocations.get(i)).whenComplete((input, exception) -> {
+                if (Math.random() < 0.5) {
+                    aresonDeathSwap.loot.placeNewChestNear(player);
+                    aresonDeathSwap.messages.sendPlainMessage(player, "chest-spawned");
+                    aresonDeathSwap.sounds.openChest(player.getLocation());
+                }
+                aresonDeathSwap.sounds.teleport(player);
+                aresonDeathSwap.titles.sendShortTitle(player, "swap");
+            });
+        }
+        //TODO Remove log
+        aresonDeathSwap.getLogger().info("Coppie di teletrasporti:");
+        for(int i=0; i<tpTos.size(); i++){
+            aresonDeathSwap.getLogger().info("'"+tpFroms.get(i).getName()+"' -> '"+tpTos.get(i).getName()+"'");
+        }
+    }
+
     private void witherPlayers() {
         players.forEach(player -> player.addPotionEffect(new PotionEffect(
                 PotionEffectType.WITHER,
@@ -118,6 +159,7 @@ public class Arena {
             players.forEach(player -> {
                 try {
                     Location removedSpawn = spawns.remove(0);
+                    aresonDeathSwap.effects.joinedArena(player);
                     player.teleportAsync(removedSpawn).whenComplete((input, exception) -> {
                         aresonDeathSwap.loot.placeNewChestNear(player);
                         aresonDeathSwap.messages.sendPlainMessage(player, "chest-spawned");
@@ -174,31 +216,7 @@ public class Arena {
         });
     }
 
-    public void rotatePlayers() {
-        aresonDeathSwap.getLogger().info("Rotating players in arena " + arenaName);
-        Collections.shuffle(players);
-        List<Location> newLocations = new ArrayList<>();
-        for (int i = 0; i < players.size(); i++) {
-            if (i == (players.size() - 1)) {
-                newLocations.add(players.get(0).getLocation().clone());
-            } else {
-                newLocations.add(players.get(i + 1).getLocation().clone());
-            }
-        }
 
-        for (int i = 0; i < newLocations.size(); i++) {
-            Player player = players.get(i);
-            player.teleportAsync(newLocations.get(i)).whenComplete((input, exception) -> {
-                if (Math.random() < 0.5) {
-                    aresonDeathSwap.loot.placeNewChestNear(player);
-                    aresonDeathSwap.messages.sendPlainMessage(player, "chest-spawned");
-                    aresonDeathSwap.sounds.openChest(player.getLocation());
-                }
-                aresonDeathSwap.sounds.teleport(player);
-                aresonDeathSwap.titles.sendShortTitle(player, "swap");
-            });
-        }
-    }
 
     public ArrayList<Player> getPlayers() {
         return players;
