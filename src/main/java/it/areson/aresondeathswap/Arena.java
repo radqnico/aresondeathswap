@@ -120,11 +120,6 @@ public class Arena {
                 aresonDeathSwap.titles.sendShortTitle(player, "swap");
             });
         }
-        //TODO Remove log
-        aresonDeathSwap.getLogger().info("Coppie di teletrasporti:");
-        for (int i = 0; i < tpTos.size(); i++) {
-            aresonDeathSwap.getLogger().info("'" + tpFroms.get(i).getName() + "' -> '" + tpTos.get(i).getName() + "'");
-        }
     }
 
     private void witherPlayers() {
@@ -261,14 +256,25 @@ public class Arena {
                         winGame();
                     } else {
                         String playersString = players.stream().map(HumanEntity::getName).collect(Collectors.joining(", "));
-                        players.forEach(messagePlayer ->
-                                aresonDeathSwap.messages.sendPlainMessageDelayed(
-                                        messagePlayer,
-                                        "arena-players-remaining",
-                                        5,
-                                        StringPair.of("%number%", players.size() + ""),
-                                        StringPair.of("%players%", playersString)
-                                )
+                        int killerIndex = tpFroms.indexOf(player);
+                        players.forEach(messagePlayer -> {
+                                    if(killerIndex!=-1) {
+                                        aresonDeathSwap.messages.sendPlainMessageDelayed(
+                                                messagePlayer,
+                                                "arena-kill",
+                                                5,
+                                                StringPair.of("%player%", player.getName()),
+                                                StringPair.of("%killer%", tpTos.get(killerIndex).getName())
+                                        );
+                                    }
+                                    aresonDeathSwap.messages.sendPlainMessageDelayed(
+                                            messagePlayer,
+                                            "arena-players-remaining",
+                                            20,
+                                            StringPair.of("%number%", players.size() + ""),
+                                            StringPair.of("%players%", playersString)
+                                    );
+                                }
                         );
                     }
                     break;

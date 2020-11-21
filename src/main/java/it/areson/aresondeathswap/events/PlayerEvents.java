@@ -50,6 +50,7 @@ public class PlayerEvents implements Listener {
         Player player = event.getEntity();
         aresonDeathSwap.effects.deathStrike(player);
         player.setGameMode(GameMode.SPECTATOR);
+        event.setDeathMessage(null);
         aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(
                 aresonDeathSwap,
                 () -> {
@@ -60,6 +61,7 @@ public class PlayerEvents implements Listener {
                 },
                 5
         );
+
     }
 
     @EventHandler
