@@ -12,8 +12,8 @@ import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
-import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,6 +68,16 @@ public final class AresonDeathSwap extends JavaPlugin {
         loot.readLoot();
 
         getServer().getPluginManager().registerEvents(new PlayerEvents(this), this);
+
+        getServer().getScheduler().scheduleSyncRepeatingTask(
+                this,
+                () -> {
+                    getServer().getScheduler().getActiveWorkers().forEach(bukkitWorker -> getLogger().warning("Worker: " + bukkitWorker.getTaskId()));
+                    getServer().getScheduler().getPendingTasks().forEach(pendingTask -> getLogger().warning("Pending: " + pendingTask.getTaskId()));
+                },
+                0,
+                20
+        );
     }
 
     @Override
@@ -99,6 +109,20 @@ public final class AresonDeathSwap extends JavaPlugin {
             getLogger().severe("Error while loading world " + worldName);
             return false;
         }
+    }
+
+    public boolean deleteWorld(File path) {
+        if (path.exists()) {
+            File[] files = path.listFiles();
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    deleteWorld(file);
+                } else {
+                    file.delete();
+                }
+            }
+        }
+        return (path.delete());
     }
 
     private boolean unloadArenaWorld(String worldName) {
