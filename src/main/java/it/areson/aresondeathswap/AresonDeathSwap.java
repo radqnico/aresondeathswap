@@ -69,10 +69,12 @@ public final class AresonDeathSwap extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new PlayerEvents(this), this);
 
+        StringBuilder str = new StringBuilder();
         getServer().getScheduler().scheduleSyncRepeatingTask(
                 this,
                 () -> {
-                    getServer().getScheduler().getActiveWorkers().forEach(bukkitWorker -> getLogger().warning("Worker: " + bukkitWorker.getTaskId()));
+                    getServer().getScheduler().getActiveWorkers().forEach(bukkitWorker -> str.append("Worker: " + bukkitWorker.getTaskId() +", "));
+                    getLogger().warning(str.toString());
                 },
                 0,
                 20
