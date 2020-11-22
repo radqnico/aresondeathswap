@@ -20,21 +20,22 @@ import java.util.stream.Collectors;
 
 import static it.areson.aresondeathswap.enums.ArenaStatus.*;
 
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class Arena {
 
     private final AresonDeathSwap aresonDeathSwap;
     private final String arenaName;
     private final Countdown countdownPregame;
-    private ArrayList<Player> players;
+    private final ArrayList<Player> players;
     private DelayedRepeatingTask countdownGame;
     private ArenaStatus arenaStatus;
 
-    private ArenaPlaceholders placeholders;
+    private final ArenaPlaceholders placeholders;
 
-    private ArrayList<Location> spawns;
+    private final ArrayList<Location> spawns;
 
-    private ArrayList<Player> tpFroms;
-    private ArrayList<Player> tpTos;
+    private final ArrayList<Player> tpFroms;
+    private final ArrayList<Player> tpTos;
 
     private Optional<LocalDateTime> lastSwapTime;
 
@@ -60,11 +61,12 @@ public class Arena {
                     placeholders.setArenaStatus(InGame);
                     startGame();
                 },
-                () -> players.forEach(player -> {
-                    aresonDeathSwap.messages.sendPlainMessage(player, "countdown-interrupted");
+                () -> {
                     arenaStatus = Waiting;
                     placeholders.setArenaStatus(Waiting);
-                }),
+                    ArrayList<Player> copiedPlayers = new ArrayList<>(players);
+                    copiedPlayers.forEach(player -> aresonDeathSwap.messages.sendPlainMessage(player, "countdown-interrupted"));
+                },
                 0,
                 15,
                 aresonDeathSwap.messages.getPlainMessage("countdown-starting-message"),
@@ -86,7 +88,8 @@ public class Arena {
                         witherPlayers();
                         placeholders.setRoundsRemainingString("Round finali");
                     } else {
-                        players.forEach(player -> aresonDeathSwap.messages.sendPlainMessage(
+                        ArrayList<Player> copiedPlayers = new ArrayList<>(players);
+                        copiedPlayers.forEach(player -> aresonDeathSwap.messages.sendPlainMessage(
                                 player,
                                 "rounds-remaining",
                                 StringPair.of("%remaining%", (aresonDeathSwap.MAX_ROUNDS - roundCounter) + "")
@@ -107,20 +110,21 @@ public class Arena {
         aresonDeathSwap.getLogger().info("Rotating " + players.size() + " players in arena " + arenaName);
         tpFroms.clear();
         tpTos.clear();
-        Collections.shuffle(players);
+        ArrayList<Player> copiedPlayers = new ArrayList<>(players);
+        Collections.shuffle(copiedPlayers);
         List<Location> newLocations = new ArrayList<>();
-        for (int i = 0; i < players.size(); i++) {
-            if (i == (players.size() - 1)) {
-                newLocations.add(players.get(0).getLocation().clone());
-                tpTos.add(players.get(0));
+        for (int i = 0; i < copiedPlayers.size(); i++) {
+            if (i == (copiedPlayers.size() - 1)) {
+                newLocations.add(copiedPlayers.get(0).getLocation().clone());
+                tpTos.add(copiedPlayers.get(0));
             } else {
-                newLocations.add(players.get(i + 1).getLocation().clone());
-                tpTos.add(players.get(i + 1));
+                newLocations.add(copiedPlayers.get(i + 1).getLocation().clone());
+                tpTos.add(copiedPlayers.get(i + 1));
             }
         }
 
         for (int i = 0; i < newLocations.size(); i++) {
-            Player player = players.get(i);
+            Player player = copiedPlayers.get(i);
             tpFroms.add(player);
             player.teleportAsync(newLocations.get(i)).whenComplete((input, exception) -> {
                 if (Math.random() < 0.5) {
@@ -135,7 +139,8 @@ public class Arena {
     }
 
     private void witherPlayers() {
-        players.forEach(player -> player.addPotionEffect(new PotionEffect(
+        ArrayList<Player> copiedPlayers = new ArrayList<>(players);
+        copiedPlayers.forEach(player -> player.addPotionEffect(new PotionEffect(
                 PotionEffectType.WITHER,
                 Integer.MAX_VALUE,
                 2,
@@ -164,7 +169,9 @@ public class Arena {
         World world = aresonDeathSwap.getServer().getWorld(arenaName);
         if (world != null) {
             world.setTime((int) (Math.random() * 24000));
-            players.forEach(player -> {
+            ArrayList<Player> copiedPlayers = new ArrayList<>(players);
+
+            copiedPlayers.forEach(player -> {
                 try {
                     Location removedSpawn = spawns.remove(0);
                     aresonDeathSwap.effects.joinedArena(player);
@@ -199,7 +206,8 @@ public class Arena {
     public void interruptPregame() {
         if (countdownPregame.isRunning()) {
             countdownPregame.interrupt();
-            players.forEach(player -> aresonDeathSwap.sounds.startingGameInterrupted(player));
+            ArrayList<Player> copiedPlayers = new ArrayList<>(players);
+            copiedPlayers.forEach(player -> aresonDeathSwap.sounds.startingGameInterrupted(player));
         }
     }
 
@@ -235,7 +243,8 @@ public class Arena {
 
     public boolean addPlayer(Player player) {
         if (arenaStatus == Waiting || arenaStatus == Starting) {
-            players.forEach(
+            ArrayList<Player> copiedPlayers = new ArrayList<>(players);
+            copiedPlayers.forEach(
                     targetPlayer -> targetPlayer.sendMessage(
                             aresonDeathSwap.messages.getPlainMessage("player-joined-arena").replaceAll("%player%", player.getName())
                     )
@@ -285,7 +294,8 @@ public class Arena {
                                 aresonDeathSwap.getLogger().info("Player " + player.getName() + " killed by " + tpTos.get(killerIndex) + " in arena " + arenaName);
                             }
                         }
-                        players.forEach(messagePlayer -> {
+                        ArrayList<Player> copiedPlayers = new ArrayList<>(players);
+                        copiedPlayers.forEach(messagePlayer -> {
                                     if (killerIndex != -1) {
                                         if (lastSwapTime.isPresent()) {
                                             if (Duration.between(lastSwapTime.get(), LocalDateTime.now()).getSeconds() < 10) {
@@ -356,7 +366,8 @@ public class Arena {
             countdownPregame.start();
             arenaStatus = ArenaStatus.Starting;
             placeholders.setArenaStatus(Starting);
-            players.forEach(player -> aresonDeathSwap.sounds.startingGame(player));
+            ArrayList<Player> copiedPlayers = new ArrayList<>(players);
+            copiedPlayers.forEach(player -> aresonDeathSwap.sounds.startingGame(player));
             spawns.forEach(location -> location.getChunk().load());
         }
     }

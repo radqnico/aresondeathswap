@@ -180,7 +180,7 @@ public final class AresonDeathSwap extends JavaPlugin {
         } else {
             getLogger().severe("Cannot found main world");
         }
-        return null;
+        return CompletableFuture.completedFuture(false);
     }
 
     public void removePlayerFromArenas(Player player) {

@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class DelayedRepeatingTask {
@@ -36,6 +37,7 @@ public class DelayedRepeatingTask {
         isRunning = true;
         currentTimeRemaining = everySeconds;
         aresonDeathSwap.getLogger().info("Started repeatingTask taskId " + callerTaskId);
+        aresonDeathSwap.getLogger().warning("Tasks: " + aresonDeathSwap.getServer().getScheduler().getPendingTasks().stream().filter(task -> task.getOwner().equals(aresonDeathSwap)).collect(Collectors.toList()));
         callerTaskId = aresonDeathSwap.getServer().getScheduler().scheduleSyncRepeatingTask(
                 aresonDeathSwap,
                 () -> {
