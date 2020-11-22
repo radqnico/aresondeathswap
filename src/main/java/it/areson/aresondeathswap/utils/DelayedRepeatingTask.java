@@ -35,6 +35,7 @@ public class DelayedRepeatingTask {
     public void startRepeating() {
         isRunning = true;
         currentTimeRemaining = everySeconds;
+        aresonDeathSwap.getLogger().info("Started repeatingTask taskId " + callerTaskId);
         callerTaskId = aresonDeathSwap.getServer().getScheduler().scheduleSyncRepeatingTask(
                 aresonDeathSwap,
                 () -> {
@@ -54,6 +55,8 @@ public class DelayedRepeatingTask {
                             }
                             currentTimeRemaining--;
                         }
+                    } else {
+                        stopRepeating();
                     }
                 },
                 0,
@@ -62,19 +65,20 @@ public class DelayedRepeatingTask {
     }
 
     public void stopRepeating() {
-        isRunning = false;
-        if (callerTaskId != 0) {
+        if (isRunning) {
+            isRunning = false;
             aresonDeathSwap.getServer().getScheduler().cancelTask(callerTaskId);
-            callerTaskId = 0;
+            aresonDeathSwap.getLogger().info("Stopped repeatingTask taskId " + callerTaskId);
         }
     }
 
     private void callTask() {
-        aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(
+        int taskId = aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(
                 aresonDeathSwap,
                 taskToRepeat,
                 0
         );
+        aresonDeathSwap.getLogger().info("Called internal repeatingTask of caller " + callerTaskId + " taskId " + taskId);
     }
 
     public boolean isRunning() {
