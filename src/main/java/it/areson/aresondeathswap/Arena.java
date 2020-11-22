@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import javax.swing.text.html.Option;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -274,10 +273,22 @@ public class Arena {
                     } else {
                         String playersString = players.stream().map(HumanEntity::getName).collect(Collectors.joining(", "));
                         int killerIndex = tpFroms.indexOf(player);
+                        if (killerIndex != -1) {
+                            if (lastSwapTime.isPresent()) {
+                                aresonDeathSwap.messages.sendPlainMessageDelayed(
+                                        player,
+                                        "arena-kill",
+                                        5,
+                                        StringPair.of("%player%", player.getName()),
+                                        StringPair.of("%killer%", tpTos.get(killerIndex).getName())
+                                );
+                                aresonDeathSwap.getLogger().info("Player " + player.getName() + " killed by " + tpTos.get(killerIndex) + " in arena " + arenaName);
+                            }
+                        }
                         players.forEach(messagePlayer -> {
                                     if (killerIndex != -1) {
-                                        if(lastSwapTime.isPresent()) {
-                                            if(Duration.between(lastSwapTime.get(), LocalDateTime.now()).getSeconds()<10) {
+                                        if (lastSwapTime.isPresent()) {
+                                            if (Duration.between(lastSwapTime.get(), LocalDateTime.now()).getSeconds() < 10) {
                                                 aresonDeathSwap.messages.sendPlainMessageDelayed(
                                                         messagePlayer,
                                                         "arena-kill",
@@ -285,7 +296,7 @@ public class Arena {
                                                         StringPair.of("%player%", player.getName()),
                                                         StringPair.of("%killer%", tpTos.get(killerIndex).getName())
                                                 );
-                                            }else{
+                                            } else {
                                                 aresonDeathSwap.messages.sendPlainMessageDelayed(
                                                         messagePlayer,
                                                         "arena-kill-solo",
@@ -293,6 +304,13 @@ public class Arena {
                                                         StringPair.of("%player%", player.getName())
                                                 );
                                             }
+                                        } else {
+                                            aresonDeathSwap.messages.sendPlainMessageDelayed(
+                                                    messagePlayer,
+                                                    "arena-kill-solo",
+                                                    5,
+                                                    StringPair.of("%player%", player.getName())
+                                            );
                                         }
                                     }
                                     aresonDeathSwap.messages.sendPlainMessageDelayed(
