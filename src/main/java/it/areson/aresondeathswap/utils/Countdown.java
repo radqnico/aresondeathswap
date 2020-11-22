@@ -3,6 +3,9 @@ package it.areson.aresondeathswap.utils;
 import it.areson.aresondeathswap.Arena;
 import it.areson.aresondeathswap.AresonDeathSwap;
 import org.bukkit.ChatColor;
+import org.bukkit.scheduler.BukkitTask;
+
+import java.util.stream.Collectors;
 
 public class Countdown {
 
@@ -55,6 +58,7 @@ public class Countdown {
                 }
             }, 0, 20);
             aresonDeathSwap.getLogger().info("Started countdown taskId " + taskId);
+            aresonDeathSwap.getLogger().warning("Tasks: " + aresonDeathSwap.getServer().getScheduler().getPendingTasks().stream().filter(task -> task.getOwner().equals(aresonDeathSwap)).map(BukkitTask::getTaskId).collect(Collectors.toList()));
         }
     }
 
