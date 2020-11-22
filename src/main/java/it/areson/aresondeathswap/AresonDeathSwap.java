@@ -73,7 +73,6 @@ public final class AresonDeathSwap extends JavaPlugin {
                 this,
                 () -> {
                     getServer().getScheduler().getActiveWorkers().forEach(bukkitWorker -> getLogger().warning("Worker: " + bukkitWorker.getTaskId()));
-                    getServer().getScheduler().getPendingTasks().forEach(pendingTask -> getLogger().warning("Pending: " + pendingTask.getTaskId()));
                 },
                 0,
                 20
