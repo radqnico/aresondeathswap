@@ -2,6 +2,7 @@ package it.areson.aresondeathswap.utils;
 
 import it.areson.aresondeathswap.AresonDeathSwap;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,8 +37,6 @@ public class DelayedRepeatingTask {
     public void startRepeating() {
         isRunning = true;
         currentTimeRemaining = everySeconds;
-        aresonDeathSwap.getLogger().info("Started repeatingTask taskId " + callerTaskId);
-        aresonDeathSwap.getLogger().warning("Tasks: " + aresonDeathSwap.getServer().getScheduler().getPendingTasks().stream().filter(task -> task.getOwner().equals(aresonDeathSwap)).collect(Collectors.toList()));
         callerTaskId = aresonDeathSwap.getServer().getScheduler().scheduleSyncRepeatingTask(
                 aresonDeathSwap,
                 () -> {
@@ -64,6 +63,8 @@ public class DelayedRepeatingTask {
                 0,
                 20
         );
+        aresonDeathSwap.getLogger().info("Started repeatingTask taskId " + callerTaskId);
+        aresonDeathSwap.getLogger().warning("Tasks: " + aresonDeathSwap.getServer().getScheduler().getPendingTasks().stream().filter(task -> task.getOwner().equals(aresonDeathSwap)).map(BukkitTask::getTaskId).collect(Collectors.toList()));
     }
 
     public void stopRepeating() {

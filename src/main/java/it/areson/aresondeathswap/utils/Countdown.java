@@ -39,7 +39,6 @@ public class Countdown {
             isRunning = true;
             currentValue = countdownTime;
             sendMessages(startingMessage.replaceAll("%seconds%", countdownTime + ""));
-            aresonDeathSwap.getLogger().info("Started countdown taskId " + taskId);
             taskId = aresonDeathSwap.getServer().getScheduler().scheduleSyncRepeatingTask(aresonDeathSwap, () -> {
                 if (isRunning) {
                     if (currentValue <= 0) {
@@ -55,6 +54,7 @@ public class Countdown {
                     aresonDeathSwap.getServer().getScheduler().cancelTask(taskId);
                 }
             }, 0, 20);
+            aresonDeathSwap.getLogger().info("Started countdown taskId " + taskId);
         }
     }
 
