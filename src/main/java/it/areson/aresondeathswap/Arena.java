@@ -175,15 +175,19 @@ public class Arena {
                 try {
                     Location removedSpawn = spawns.remove(0);
                     aresonDeathSwap.effects.joinedArena(player);
-                    player.teleportAsync(removedSpawn).whenComplete((input, exception) -> {
-                        aresonDeathSwap.loot.placeNewChestNear(player);
-                        aresonDeathSwap.messages.sendPlainMessage(player, "chest-spawned");
-                        aresonDeathSwap.sounds.openChest(player.getLocation());
-                        aresonDeathSwap.sounds.gameStarted(player);
-                        aresonDeathSwap.titles.sendLongTitle(player, "start");
-                        placeholders.setRoundsRemainingString(roundCounter + "/" + aresonDeathSwap.MAX_ROUNDS);
-                        aresonDeathSwap.eventCall.callPlayerStartGame(player);
-
+                    player.teleportAsync(removedSpawn).whenComplete((result, exception) -> {
+                        if(result) {
+                            aresonDeathSwap.loot.placeNewChestNear(player);
+                            aresonDeathSwap.messages.sendPlainMessage(player, "chest-spawned");
+                            aresonDeathSwap.sounds.openChest(player.getLocation());
+                            aresonDeathSwap.sounds.gameStarted(player);
+                            aresonDeathSwap.titles.sendLongTitle(player, "start");
+                            placeholders.setRoundsRemainingString(roundCounter + "/" + aresonDeathSwap.MAX_ROUNDS);
+                            aresonDeathSwap.eventCall.callPlayerStartGame(player);
+                        } else {
+                            aresonDeathSwap.messages.sendPlainMessage(player, "teleport-fail");
+                            aresonDeathSwap.removePlayerFromArenas(player);
+                        }
                     });
                     player.getInventory().clear();
                 } catch (IndexOutOfBoundsException e) {
