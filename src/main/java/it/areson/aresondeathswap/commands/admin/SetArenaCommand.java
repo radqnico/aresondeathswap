@@ -5,6 +5,7 @@ import it.areson.aresondeathswap.managers.FileManager;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -37,7 +38,10 @@ public class SetArenaCommand implements CommandExecutor {
             if (locationWorld != null) {
                 String worldName = locationWorld.getName();
                 if (!worldName.equalsIgnoreCase(aresonDeathSwap.MAIN_WORLD_NAME)) {
-                    locationWorld.setSpawnLocation(playerLocation);
+
+                    Block highestBlock = locationWorld.getHighestBlockAt(playerLocation.getBlockX(), playerLocation.getBlockZ());
+                    locationWorld.setSpawnLocation(highestBlock.getLocation());
+
                     dataFile.addArena(playerLocation.getWorld().getName());
 
                     //Kick arena players
