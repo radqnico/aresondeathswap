@@ -39,10 +39,13 @@ public class SetArenaCommand implements CommandExecutor {
                 String worldName = locationWorld.getName();
                 if (!worldName.equalsIgnoreCase(aresonDeathSwap.MAIN_WORLD_NAME)) {
 
-                    Block highestBlock = locationWorld.getHighestBlockAt(playerLocation.getBlockX(), playerLocation.getBlockZ());
+                    Block highestBlock = locationWorld.getHighestBlockAt(0, 0);
                     locationWorld.setSpawnLocation(highestBlock.getLocation());
 
-                    dataFile.addArena(playerLocation.getWorld().getName());
+                    dataFile.addArena(locationWorld.getName());
+
+                    locationWorld.getWorldBorder().setCenter(0,0);
+                    locationWorld.getWorldBorder().setSize(3500);
 
                     //Kick arena players
                     aresonDeathSwap.kickPlayersFromWorld(locationWorld.getName());
