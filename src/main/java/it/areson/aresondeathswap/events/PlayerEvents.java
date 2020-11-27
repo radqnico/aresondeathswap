@@ -56,6 +56,7 @@ public class PlayerEvents implements Listener {
 
         aresonDeathSwap.teleportToLobbySpawn(player).whenComplete((result, error) -> {
             System.out.println("Result " + result);
+            System.out.println("Error " + error);
             aresonDeathSwap.sounds.loser(player);
             aresonDeathSwap.titles.sendLongTitle(player, "lose");
         });
