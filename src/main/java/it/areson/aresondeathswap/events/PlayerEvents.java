@@ -14,9 +14,11 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import static net.md_5.bungee.api.ChatColor.LIGHT_PURPLE;
@@ -59,6 +61,12 @@ public class PlayerEvents implements Listener {
         aresonDeathSwap.removePlayerFromArenas(player);
 
         event.setDeathMessage(null);
+    }
+
+    @EventHandler
+    public void onPlayerRespawnEvent(PlayerRespawnEvent event) {
+        Optional<Location> lobbyLocation = aresonDeathSwap.getLobbyLocation();
+        lobbyLocation.ifPresent(event::setRespawnLocation);
     }
 
     @EventHandler

@@ -9,6 +9,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 public class FileManager {
 
@@ -54,19 +55,24 @@ public class FileManager {
         save();
     }
 
-    public Location getLocation(String path) {
+    public Optional<Location> getLocation(String path) {
         String worldName = fileConfiguration.getString(path + ".world");
         if (worldName != null) {
-            return new Location(
-                    aresonDeathSwap.getServer().getWorld(worldName),
-                    fileConfiguration.getDouble(path + ".x"),
-                    fileConfiguration.getDouble(path + ".y"),
-                    fileConfiguration.getDouble(path + ".z"),
-                    (float) fileConfiguration.getDouble(path + ".yaw"),
-                    (float) fileConfiguration.getDouble(path + ".pitch")
-            );
+            World world = aresonDeathSwap.getServer().getWorld(worldName);
+            if(world != null) {
+                return Optional.of(new Location(
+                        world,
+                        fileConfiguration.getDouble(path + ".x"),
+                        fileConfiguration.getDouble(path + ".y"),
+                        fileConfiguration.getDouble(path + ".z"),
+                        (float) fileConfiguration.getDouble(path + ".yaw"),
+                        (float) fileConfiguration.getDouble(path + ".pitch")
+                ));
+            } else {
+                return Optional.empty();
+            }
         } else {
-            return null;
+            return Optional.empty();
         }
     }
 
