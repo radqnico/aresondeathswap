@@ -52,7 +52,6 @@ public class PlayerEvents implements Listener {
     public void onPlayerDeathEvent(PlayerDeathEvent event) {
         Player player = event.getEntity();
         aresonDeathSwap.effects.deathStrike(player);
-        player.setGameMode(GameMode.SPECTATOR);
 
         event.setDeathMessage(null);
     }
