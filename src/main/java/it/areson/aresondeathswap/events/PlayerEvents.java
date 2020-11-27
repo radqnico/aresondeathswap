@@ -70,7 +70,7 @@ public class PlayerEvents implements Listener {
         }, 5);
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onAsyncPlayerChatEvent(AsyncPlayerChatEvent event) {
         event.setFormat("[prefix] " + event.getFormat());
 //        World playerWorld = event.getPlayer().getLocation().getWorld();
