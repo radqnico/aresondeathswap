@@ -188,6 +188,7 @@ public final class AresonDeathSwap extends JavaPlugin {
             if (arena.getPlayers().contains(player)) {
                 if (arena.getArenaStatus().equals(ArenaStatus.InGame)) {
                     eventCall.callPlayerLose(player);
+                    eventCall.callPlayerEndGame(player);
                 }
                 arena.removePlayer(player);
             }

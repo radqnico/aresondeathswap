@@ -17,6 +17,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
 
 import static net.md_5.bungee.api.ChatColor.LIGHT_PURPLE;
 
@@ -46,22 +47,18 @@ public class PlayerEvents implements Listener {
     }
 
     @EventHandler
-    public void onPlayerDeath(PlayerDeathEvent event) {
+    public void onPlayerDeathEvent(PlayerDeathEvent event) {
         Player player = event.getEntity();
         aresonDeathSwap.effects.deathStrike(player);
         player.setGameMode(GameMode.SPECTATOR);
-        event.setDeathMessage(null);
-        aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(
-                aresonDeathSwap,
-                () -> {
-                    aresonDeathSwap.removePlayerFromArenas(player);
-                    aresonDeathSwap.sounds.loser(player);
-                    aresonDeathSwap.titles.sendLongTitle(player, "lose");
-                    aresonDeathSwap.eventCall.callPlayerEndGame(player);
-                },
-                100
-        );
 
+        aresonDeathSwap.teleportToLobbySpawn(player).whenComplete((result, error) -> {
+            aresonDeathSwap.sounds.loser(player);
+            aresonDeathSwap.titles.sendLongTitle(player, "lose");
+        });
+        aresonDeathSwap.removePlayerFromArenas(player);
+
+        event.setDeathMessage(null);
     }
 
     @EventHandler

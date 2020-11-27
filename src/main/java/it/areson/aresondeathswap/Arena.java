@@ -110,23 +110,26 @@ public class Arena {
         aresonDeathSwap.getLogger().info("Rotating " + players.size() + " players in arena " + arenaName);
         tpFroms.clear();
         tpTos.clear();
+        ArrayList<Location> playerLocation = new ArrayList<>();
+        HashMap<Player, Location> playerDestination = new HashMap<>();
+
         ArrayList<Player> copiedPlayers = new ArrayList<>(players);
         Collections.shuffle(copiedPlayers);
-        List<Location> newLocations = new ArrayList<>();
+        copiedPlayers.forEach(player -> playerLocation.add(player.getLocation().clone()));
+
         for (int i = 0; i < copiedPlayers.size(); i++) {
             if (i == (copiedPlayers.size() - 1)) {
-                newLocations.add(copiedPlayers.get(0).getLocation().clone());
+                playerDestination.put(copiedPlayers.get(i), playerLocation.get(0));
                 tpTos.add(copiedPlayers.get(0));
             } else {
-                newLocations.add(copiedPlayers.get(i + 1).getLocation().clone());
+                playerDestination.put(copiedPlayers.get(i), playerLocation.get(i + 1));
                 tpTos.add(copiedPlayers.get(i + 1));
             }
         }
 
-        for (int i = 0; i < newLocations.size(); i++) {
-            Player player = copiedPlayers.get(i);
+        playerDestination.forEach((player, destination) -> {
             tpFroms.add(player);
-            player.teleportAsync(newLocations.get(i)).whenComplete((input, exception) -> {
+            player.teleportAsync(destination).whenComplete((input, exception) -> {
                 if (Math.random() < 0.5) {
                     aresonDeathSwap.loot.placeNewChestNear(player);
                     aresonDeathSwap.messages.sendPlainMessage(player, "chest-spawned");
@@ -135,7 +138,7 @@ public class Arena {
                 aresonDeathSwap.sounds.teleport(player);
                 aresonDeathSwap.titles.sendShortTitle(player, "swap");
             });
-        }
+        });
     }
 
     private void witherPlayers() {
@@ -176,7 +179,7 @@ public class Arena {
                     Location removedSpawn = spawns.remove(0);
                     aresonDeathSwap.effects.joinedArena(player);
                     player.teleportAsync(removedSpawn).whenComplete((result, exception) -> {
-                        if(result) {
+                        if (result) {
                             aresonDeathSwap.loot.placeNewChestNear(player);
                             aresonDeathSwap.messages.sendPlainMessage(player, "chest-spawned");
                             aresonDeathSwap.sounds.openChest(player.getLocation());
