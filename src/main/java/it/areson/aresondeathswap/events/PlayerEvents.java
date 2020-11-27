@@ -70,21 +70,8 @@ public class PlayerEvents implements Listener {
         }, 5);
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
     public void onAsyncPlayerChatEvent(AsyncPlayerChatEvent event) {
-        event.setFormat("[prefix] " + event.getFormat());
-//        World playerWorld = event.getPlayer().getLocation().getWorld();
-//
-//        if (playerWorld != null) {
-////            ArrayList<Player> players = new ArrayList<>(event.getRecipients());
-////            players.forEach(player -> {
-////                World targetWorld = player.getLocation().getWorld();
-////                if (targetWorld != null && !targetWorld.getName().equals(playerWorld.getName())) {
-////                    event.getRecipients().remove(player);
-////                }
-////            });
-//            event.setFormat("Ciao" + event.getFormat());
-//        }
+
     }
 
     @EventHandler

@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public final class AresonDeathSwap extends JavaPlugin {
 
     public final String ARENAS_PATH = "arenas";
@@ -161,7 +162,7 @@ public final class AresonDeathSwap extends JavaPlugin {
         player.setLevel(0);
         player.setHealth(20);
         player.setFoodLevel(20);
-        player.setSaturation(50);
+        player.setSaturation(10);
         player.getInventory().clear();
         for (PotionEffect potionEffect : player.getActivePotionEffects()) {
             player.removePotionEffect(potionEffect.getType());
