@@ -7,6 +7,7 @@ import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -69,7 +70,7 @@ public class PlayerEvents implements Listener {
         }, 5);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onAsyncPlayerChatEvent(AsyncPlayerChatEvent event) {
         event.setFormat("[prefix] " + event.getFormat());
 //        World playerWorld = event.getPlayer().getLocation().getWorld();
