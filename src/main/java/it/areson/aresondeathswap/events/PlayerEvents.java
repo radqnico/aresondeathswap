@@ -55,18 +55,15 @@ public class PlayerEvents implements Listener {
         player.setGameMode(GameMode.SPECTATOR);
 
         aresonDeathSwap.teleportToLobbySpawn(player).whenComplete((result, error) -> {
+            System.out.println("Result " + result);
             aresonDeathSwap.sounds.loser(player);
             aresonDeathSwap.titles.sendLongTitle(player, "lose");
         });
-        aresonDeathSwap.removePlayerFromArenas(player);
+
+        aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(aresonDeathSwap, () -> aresonDeathSwap.removePlayerFromArenas(player), 100);
+
 
         event.setDeathMessage(null);
-    }
-
-    @EventHandler
-    public void onPlayerRespawnEvent(PlayerRespawnEvent event) {
-        Optional<Location> lobbyLocation = aresonDeathSwap.getLobbyLocation();
-        lobbyLocation.ifPresent(event::setRespawnLocation);
     }
 
     @EventHandler
@@ -74,14 +71,13 @@ public class PlayerEvents implements Listener {
         World playerWorld = event.getPlayer().getLocation().getWorld();
 
         if (playerWorld != null) {
-//            ArrayList<Player> players = new ArrayList<>(event.getRecipients());
-//            players.forEach(player -> {
-//                World targetWorld = player.getLocation().getWorld();
-//                if (targetWorld != null && !targetWorld.getName().equals(playerWorld.getName())) {
-//                    event.getRecipients().remove(player);
-//                }
-//            });
-            event.setFormat("Ciao" + event.getFormat());
+            ArrayList<Player> players = new ArrayList<>(event.getRecipients());
+            players.forEach(player -> {
+                World targetWorld = player.getLocation().getWorld();
+                if (targetWorld != null && !targetWorld.getName().equals(playerWorld.getName())) {
+                    event.getRecipients().remove(player);
+                }
+            });
         }
     }
 
