@@ -54,17 +54,18 @@ public class PlayerEvents implements Listener {
         aresonDeathSwap.effects.deathStrike(player);
         player.setGameMode(GameMode.SPECTATOR);
 
-        aresonDeathSwap.teleportToLobbySpawn(player).whenComplete((result, error) -> {
-            System.out.println("Result " + result);
-            System.out.println("Error " + error);
-            aresonDeathSwap.sounds.loser(player);
-            aresonDeathSwap.titles.sendLongTitle(player, "lose");
-        });
-
-        aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(aresonDeathSwap, () -> aresonDeathSwap.removePlayerFromArenas(player), 100);
-
-
         event.setDeathMessage(null);
+    }
+
+    @EventHandler
+    public void onPlayerRespawnEvent(PlayerRespawnEvent event) {
+        Optional<Location> lobbyLocation = aresonDeathSwap.getLobbyLocation();
+        lobbyLocation.ifPresent(event::setRespawnLocation);
+
+
+        aresonDeathSwap.removePlayerFromArenas(event.getPlayer());
+        aresonDeathSwap.sounds.loser(event.getPlayer());
+        aresonDeathSwap.titles.sendLongTitle(event.getPlayer(), "lose");
     }
 
     @EventHandler
@@ -72,13 +73,14 @@ public class PlayerEvents implements Listener {
         World playerWorld = event.getPlayer().getLocation().getWorld();
 
         if (playerWorld != null) {
-            ArrayList<Player> players = new ArrayList<>(event.getRecipients());
-            players.forEach(player -> {
-                World targetWorld = player.getLocation().getWorld();
-                if (targetWorld != null && !targetWorld.getName().equals(playerWorld.getName())) {
-                    event.getRecipients().remove(player);
-                }
-            });
+//            ArrayList<Player> players = new ArrayList<>(event.getRecipients());
+//            players.forEach(player -> {
+//                World targetWorld = player.getLocation().getWorld();
+//                if (targetWorld != null && !targetWorld.getName().equals(playerWorld.getName())) {
+//                    event.getRecipients().remove(player);
+//                }
+//            });
+            event.setFormat("Ciao" + event.getFormat());
         }
     }
 
