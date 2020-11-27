@@ -58,7 +58,7 @@ public class Countdown {
                 }
             }, 0, 20);
             aresonDeathSwap.getLogger().info("Started countdown taskId " + taskId);
-            aresonDeathSwap.getLogger().warning("Tasks: " + aresonDeathSwap.getServer().getScheduler().getPendingTasks().stream().filter(task -> task.getOwner().equals(aresonDeathSwap)).map(BukkitTask::getTaskId).collect(Collectors.toList()));
+            aresonDeathSwap.getLogger().info("Tasks: " + aresonDeathSwap.getServer().getScheduler().getPendingTasks().stream().filter(task -> task.getOwner().equals(aresonDeathSwap)).map(BukkitTask::getTaskId).collect(Collectors.toList()));
         }
     }
 
