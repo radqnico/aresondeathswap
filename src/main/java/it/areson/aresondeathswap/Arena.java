@@ -249,7 +249,7 @@ public class Arena {
                     }
                 }, 10 * 20);
 
-                aresonDeathSwap.getLogger().info("World " + arenaName + "unloaded. Tasked the load");
+                aresonDeathSwap.getLogger().info("World " + arenaName + " unloaded. Tasked the load");
             } else {
                 aresonDeathSwap.getLogger().severe("Error while unloading world " + arenaName);
             }
