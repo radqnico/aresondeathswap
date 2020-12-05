@@ -56,7 +56,7 @@ pipeline {
     post {
         always {
             discordSend(
-                    webhookURL: "https://discordapp.com/api/webhooks/771495644971401246/k7Q2O_kEUI4MQqoLVLRCk5IBmUNTFGmtT1UfQdW798cmH48qkc2VAUyYWQwAs4OFiC9E",
+                    webhookURL: "https://discord.com/api/webhooks/783409831167918130/D_W9B6Dg0lOPC4r9JNFF2xNfPnUqQkpsVfERDZoFam3LNRbvmWmon9JJ7mxHyG4oqP5g",
                     result: currentBuild.currentResult,
                     title: currentBuild.fullDisplayName,
                     description: getChangeString(),
