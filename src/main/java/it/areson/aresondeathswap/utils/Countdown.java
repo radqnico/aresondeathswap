@@ -91,6 +91,7 @@ public class Countdown {
         aresonDeathSwap.getLogger().info("Ending countdown taskId " + taskMain.getTaskId());
         taskMain.cancel();
         aresonDeathSwap.getServer().getScheduler().cancelTask(taskMain.getTaskId());
+        initTask();
         taskEnded.runTask(aresonDeathSwap);
     }
 
@@ -100,6 +101,7 @@ public class Countdown {
             aresonDeathSwap.getLogger().info("Interrupting countdown taskId " + taskMain.getTaskId());
             taskMain.cancel();
             aresonDeathSwap.getServer().getScheduler().cancelTask(taskMain.getTaskId());
+            initTask();
             taskInterrupted.runTaskLater(aresonDeathSwap, interruptDelaySeconds);
         }
     }
