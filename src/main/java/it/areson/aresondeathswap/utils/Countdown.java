@@ -56,9 +56,6 @@ public class Countdown {
 
                             currentValue--;
                         }
-                    } else {
-                        this.cancel();
-                        aresonDeathSwap.getLogger().info("Interrupted countdown taskId " + taskMain.getTaskId());
                     }
                 } catch (Exception e) {
                     System.out.println("Countdown error :");
@@ -92,6 +89,8 @@ public class Countdown {
     private synchronized void end() {
         isRunning = false;
         aresonDeathSwap.getLogger().info("Ending countdown taskId " + taskMain.getTaskId());
+        taskMain.cancel();
+        initTask();
         taskEnded.runTask(aresonDeathSwap);
     }
 
@@ -99,6 +98,8 @@ public class Countdown {
         if (isRunning) {
             isRunning = false;
             aresonDeathSwap.getLogger().info("Interrupting countdown taskId " + taskMain.getTaskId());
+            taskMain.cancel();
+            initTask();
             taskInterrupted.runTaskLater(aresonDeathSwap, interruptDelaySeconds);
         }
     }
