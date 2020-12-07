@@ -11,6 +11,7 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -56,16 +57,22 @@ public class Arena {
         //Countdowns
         this.countdownPregame = new Countdown(aresonDeathSwap,
                 aresonDeathSwap.STARTING_TIME,
-                () -> {
-                    arenaStatus = InGame;
-                    placeholders.setArenaStatus(InGame);
-                    startGame();
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        arenaStatus = InGame;
+                        placeholders.setArenaStatus(InGame);
+                        startGame();
+                    }
                 },
-                () -> {
-                    arenaStatus = Waiting;
-                    placeholders.setArenaStatus(Waiting);
-                    ArrayList<Player> copiedPlayers = new ArrayList<>(players);
-                    copiedPlayers.forEach(player -> aresonDeathSwap.messages.sendPlainMessage(player, "countdown-interrupted"));
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        arenaStatus = Waiting;
+                        placeholders.setArenaStatus(Waiting);
+                        ArrayList<Player> copiedPlayers = new ArrayList<>(players);
+                        copiedPlayers.forEach(player -> aresonDeathSwap.messages.sendPlainMessage(player, "countdown-interrupted"));
+                    }
                 },
                 0,
                 15,
@@ -77,29 +84,33 @@ public class Arena {
         this.countdownGame = new DelayedRepeatingTask(
                 aresonDeathSwap,
                 randomTeleportTime(),
-                () -> {
-                    try {
-                        rotatePlayers();
-                        int swapTime = randomTeleportTime();
-                        countdownGame.setEverySeconds(swapTime);
-                        aresonDeathSwap.getLogger().info("Started new countdownGame in arena " + arenaName + " with " + swapTime + " seconds");
-                        roundCounter++;
-                        lastSwapTime = Optional.of(LocalDateTime.now());
-                        if (roundCounter > aresonDeathSwap.MAX_ROUNDS) {
-                            witherPlayers();
-                            placeholders.setRoundsRemainingString("Round finali");
-                        } else {
-                            ArrayList<Player> copiedPlayers = new ArrayList<>(players);
-                            copiedPlayers.forEach(player -> aresonDeathSwap.messages.sendPlainMessage(
-                                    player,
-                                    "rounds-remaining",
-                                    StringPair.of("%remaining%", (aresonDeathSwap.MAX_ROUNDS - roundCounter) + "")
-                            ));
-                            placeholders.setRoundsRemainingString(roundCounter + "/" + aresonDeathSwap.MAX_ROUNDS);
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            rotatePlayers();
+                            int swapTime = randomTeleportTime();
+                            countdownGame.setEverySeconds(swapTime);
+                            aresonDeathSwap.getLogger().info("Started new countdownGame in arena " + arenaName + " with " + swapTime + " seconds");
+                            roundCounter++;
+                            lastSwapTime = Optional.of(LocalDateTime.now());
+                            if (roundCounter > aresonDeathSwap.MAX_ROUNDS) {
+                                witherPlayers();
+                                placeholders.setRoundsRemainingString("Round finali");
+                            } else {
+                                ArrayList<Player> copiedPlayers = new ArrayList<>(players);
+                                copiedPlayers.forEach(player -> aresonDeathSwap.messages.sendPlainMessage(
+                                        player,
+                                        "rounds-remaining",
+                                        StringPair.of("%remaining%", (aresonDeathSwap.MAX_ROUNDS - roundCounter) + "")
+                                ));
+                                placeholders.setRoundsRemainingString(roundCounter + "/" + aresonDeathSwap.MAX_ROUNDS);
+                            }
+                        } catch (
+                                Exception e) {
+                            System.out.println("ECCOLO !!!!");
+                            e.printStackTrace(System.out);
                         }
-                    } catch (Exception e) {
-                        System.out.println("ECCOLO !!!!");
-                        e.printStackTrace(System.out);
                     }
                 },
                 Optional.of(aresonDeathSwap.messages.getPlainMessage("countdown-swap-message")),
@@ -135,8 +146,8 @@ public class Arena {
         playerDestination.forEach((player, destination) -> {
             tpFroms.add(player);
             player.teleportAsync(destination).whenComplete((input, exception) -> {
-                if(input) {
-                    if(!player.getWorld().getName().equals(aresonDeathSwap.MAIN_WORLD_NAME)) {
+                if (input) {
+                    if (!player.getWorld().getName().equals(aresonDeathSwap.MAIN_WORLD_NAME)) {
                         if (Math.random() < 0.5) {
                             aresonDeathSwap.loot.placeNewChestNear(player);
                             aresonDeathSwap.messages.sendPlainMessage(player, "chest-spawned");

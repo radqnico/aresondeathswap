@@ -2,8 +2,10 @@ package it.areson.aresondeathswap.utils;
 
 import it.areson.aresondeathswap.AresonDeathSwap;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -12,15 +14,15 @@ import java.util.stream.Collectors;
 public class DelayedRepeatingTask {
 
     private final AresonDeathSwap aresonDeathSwap;
-    private final Runnable taskToRepeat;
+    private final BukkitRunnable taskToRepeat;
     private final Optional<String> countDownMessage;
     private final List<Player> playersToNotify;
     private int everySeconds;
     private boolean isRunning;
     private int currentTimeRemaining;
-    private int callerTaskId = 0;
+    private BukkitRunnable callerTask;
 
-    public DelayedRepeatingTask(AresonDeathSwap aresonDeathSwap, int everySeconds, Runnable taskToRepeat, Optional<String> countDownMessage, List<Player> playersToNotify) {
+    public DelayedRepeatingTask(AresonDeathSwap aresonDeathSwap, int everySeconds, BukkitRunnable taskToRepeat, Optional<String> countDownMessage, List<Player> playersToNotify) {
         this.aresonDeathSwap = aresonDeathSwap;
         this.everySeconds = everySeconds;
         this.taskToRepeat = taskToRepeat;
@@ -28,26 +30,23 @@ public class DelayedRepeatingTask {
         this.isRunning = false;
         this.countDownMessage = countDownMessage;
         currentTimeRemaining = 0;
+        initCallerTask();
     }
 
-    public void setEverySeconds(int everySeconds) {
-        this.everySeconds = everySeconds;
-    }
-
-    public void startRepeating() {
-        isRunning = true;
-        currentTimeRemaining = everySeconds;
-        callerTaskId = aresonDeathSwap.getServer().getScheduler().scheduleSyncRepeatingTask(
-                aresonDeathSwap,
-                () -> {
-                    if (isRunning) {
+    private void initCallerTask() {
+        callerTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (isRunning) {
+                    if (!callerTask.isCancelled()) {
                         if (currentTimeRemaining <= 0) {
                             callTask();
                             currentTimeRemaining = everySeconds;
                         } else {
                             if (currentTimeRemaining <= 10) {
+                                final List<Player> playersClone = new ArrayList<>(playersToNotify);
                                 countDownMessage.ifPresent(s ->
-                                        playersToNotify.parallelStream().forEach(player -> {
+                                        playersClone.parallelStream().forEach(player -> {
                                                     player.sendMessage(s.replaceAll("%seconds%", currentTimeRemaining + ""));
                                                     aresonDeathSwap.sounds.tick(player);
                                                 }
@@ -59,29 +58,38 @@ public class DelayedRepeatingTask {
                     } else {
                         stopRepeating();
                     }
-                },
-                0,
-                20
-        );
-        aresonDeathSwap.getLogger().info("Started repeatingTask taskId " + callerTaskId);
-        aresonDeathSwap.getLogger().warning("Tasks: " + aresonDeathSwap.getServer().getScheduler().getPendingTasks().stream().filter(task -> task.getOwner().equals(aresonDeathSwap)).map(BukkitTask::getTaskId).collect(Collectors.toList()));
+                } else {
+                    stopRepeating();
+                }
+            }
+        };
     }
 
-    public void stopRepeating() {
-        if (isRunning) {
-            isRunning = false;
-            aresonDeathSwap.getServer().getScheduler().cancelTask(callerTaskId);
-            aresonDeathSwap.getLogger().info("Stopped repeatingTask taskId " + callerTaskId);
+    public void setEverySeconds(int everySeconds) {
+        this.everySeconds = everySeconds;
+    }
+
+    public synchronized void startRepeating() {
+        if (!isRunning) {
+            isRunning = true;
+            currentTimeRemaining = everySeconds;
+            callerTask.runTaskTimer(aresonDeathSwap, 0L, 20L);
+            aresonDeathSwap.getLogger().info("Started repeatingTask taskId " + callerTask.getTaskId());
+            aresonDeathSwap.getLogger().warning("Tasks: " + aresonDeathSwap.getServer().getScheduler().getPendingTasks().stream().filter(task -> task.getOwner().equals(aresonDeathSwap)).map(BukkitTask::getTaskId).collect(Collectors.toList()));
         }
     }
 
-    private void callTask() {
-        int taskId = aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(
-                aresonDeathSwap,
-                taskToRepeat,
-                0
-        );
-        aresonDeathSwap.getLogger().info("Called internal repeatingTask of caller " + callerTaskId + " taskId " + taskId);
+    public synchronized void stopRepeating() {
+        if (isRunning) {
+            isRunning = false;
+            aresonDeathSwap.getLogger().info("Stopping repeatingTask taskId " + callerTask.getTaskId());
+            callerTask.cancel();
+        }
+    }
+
+    private synchronized void callTask() {
+        taskToRepeat.runTask(aresonDeathSwap);
+        aresonDeathSwap.getLogger().info("Called internal repeatingTask of caller " + callerTask.getTaskId());
     }
 
     public boolean isRunning() {
