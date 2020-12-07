@@ -75,7 +75,7 @@ public final class AresonDeathSwap extends JavaPlugin {
     public void onDisable() {
         getServer().getOnlinePlayers().forEach(player -> player.kickPlayer("Server chiuso"));
 
-        unloadArenaWorlds(dataFile);
+        unloadArenaWorlds();
     }
 
     public boolean loadArenaWorld(String worldName) {
@@ -140,9 +140,8 @@ public final class AresonDeathSwap extends JavaPlugin {
         }
     }
 
-    private void unloadArenaWorlds(FileManager dataFile) {
-        List<String> arenas = dataFile.getFileConfiguration().getStringList(ARENAS_PATH);
-        arenas.forEach(this::unloadArenaWorld);
+    private void unloadArenaWorlds() {
+        arenas.keySet().forEach(this::unloadArenaWorld);
     }
 
     public void restorePlayerState(Player player) {

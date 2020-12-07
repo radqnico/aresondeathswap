@@ -261,6 +261,9 @@ public class Arena {
                 aresonDeathSwap.loot.removeChestOfWorld(arenaName);
 
                 aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(aresonDeathSwap, () -> {
+                    if (world != null) {
+                        aresonDeathSwap.getServer().getLogger().warning("Players on " + arenaName + ": " + world.getPlayers());
+                    }
                     if (aresonDeathSwap.getServer().unloadWorld(arenaName, false)) {
                         aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(aresonDeathSwap, () -> {
                             if (aresonDeathSwap.loadArenaWorld(arenaName)) {
