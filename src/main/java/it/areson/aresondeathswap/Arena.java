@@ -69,11 +69,12 @@ public class Arena {
                 },
                 () -> {
                     try {
-                        arenaStatus = InGame;
-                        placeholders.setArenaStatus(InGame);
-                        startGame();
+                        arenaStatus = Waiting;
+                        placeholders.setArenaStatus(Waiting);
+                        ArrayList<Player> copiedPlayers = new ArrayList<>(players);
+                        copiedPlayers.forEach(player -> aresonDeathSwap.messages.sendPlainMessage(player, "countdown-interrupted"));
                     } catch (Exception e) {
-                        System.out.println("Countdown end run error :");
+                        System.out.println("Countdown interrupt run error :");
                         e.printStackTrace(System.out);
                     }
                 },
