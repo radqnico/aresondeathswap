@@ -91,6 +91,7 @@ public class DelayedRepeatingTask {
             isRunning = false;
             aresonDeathSwap.getLogger().info("Stopping repeatingTask taskId " + callerTask.getTaskId());
             callerTask.cancel();
+            initCallerTask();
         }
     }
 
