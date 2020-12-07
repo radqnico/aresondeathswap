@@ -37,29 +37,36 @@ public class DelayedRepeatingTask {
         callerTask = new BukkitRunnable() {
             @Override
             public void run() {
-                if (isRunning) {
-                    if (!callerTask.isCancelled()) {
-                        if (currentTimeRemaining <= 0) {
-                            callTask();
-                            currentTimeRemaining = everySeconds;
-                        } else {
-                            if (currentTimeRemaining <= 10) {
-                                final List<Player> playersClone = new ArrayList<>(playersToNotify);
-                                countDownMessage.ifPresent(s ->
-                                        playersClone.parallelStream().forEach(player -> {
-                                                    player.sendMessage(s.replaceAll("%seconds%", currentTimeRemaining + ""));
-                                                    aresonDeathSwap.sounds.tick(player);
-                                                }
-                                        )
-                                );
+                try {
+                    if (isRunning) {
+                        if (!callerTask.isCancelled()) {
+                            if (currentTimeRemaining <= 0) {
+                                callTask();
+                                currentTimeRemaining = everySeconds;
+                            } else {
+                                if (currentTimeRemaining <= 10) {
+                                    final List<Player> playersClone = new ArrayList<>(playersToNotify);
+                                    countDownMessage.ifPresent(s ->
+                                            playersClone.parallelStream().forEach(player -> {
+                                                        if (player != null) {
+                                                            player.sendMessage(s.replaceAll("%seconds%", currentTimeRemaining + ""));
+                                                            aresonDeathSwap.sounds.tick(player);
+                                                        }
+                                                    }
+                                            )
+                                    );
+                                }
+                                currentTimeRemaining--;
                             }
-                            currentTimeRemaining--;
+                        } else {
+                            stopRepeating();
                         }
                     } else {
                         stopRepeating();
                     }
-                } else {
-                    stopRepeating();
+                } catch (Exception e) {
+                    System.out.println("RepeatingTask error :");
+                    e.printStackTrace(System.out);
                 }
             }
         };

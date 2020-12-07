@@ -45,18 +45,23 @@ public class Countdown {
         taskMain = new BukkitRunnable() {
             @Override
             public void run() {
-                if (isRunning) {
-                    if (currentValue <= 0) {
-                        end();
-                    } else {
-                        if (currentValue <= timeBeforeShouting) {
-                            sendMessages(shoutingMessage.replaceAll("%seconds%", currentValue + ""));
-                        }
+                try {
+                    if (isRunning) {
+                        if (currentValue <= 0) {
+                            end();
+                        } else {
+                            if (currentValue <= timeBeforeShouting) {
+                                sendMessages(shoutingMessage.replaceAll("%seconds%", currentValue + ""));
+                            }
 
-                        currentValue--;
+                            currentValue--;
+                        }
+                    } else {
+                        this.cancel();
                     }
-                } else {
-                    this.cancel();
+                }catch (Exception e){
+                    System.out.println("Countdown error :");
+                    e.printStackTrace(System.out);
                 }
             }
         };
@@ -76,8 +81,10 @@ public class Countdown {
     private synchronized void sendMessages(String message) {
         List<Player> playersClone = new ArrayList<>(arena.getPlayers());
         playersClone.forEach(player -> {
-            player.sendMessage(message);
-            aresonDeathSwap.sounds.tick(player);
+            if (player != null) {
+                player.sendMessage(message);
+                aresonDeathSwap.sounds.tick(player);
+            }
         });
     }
 

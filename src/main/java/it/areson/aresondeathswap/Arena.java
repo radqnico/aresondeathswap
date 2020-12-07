@@ -60,18 +60,28 @@ public class Arena {
                 new BukkitRunnable() {
                     @Override
                     public void run() {
-                        arenaStatus = InGame;
-                        placeholders.setArenaStatus(InGame);
-                        startGame();
+                        try {
+                            arenaStatus = InGame;
+                            placeholders.setArenaStatus(InGame);
+                            startGame();
+                        } catch (Exception e) {
+                            System.out.println("Countdown end run error :");
+                            e.printStackTrace(System.out);
+                        }
                     }
                 },
                 new BukkitRunnable() {
                     @Override
                     public void run() {
-                        arenaStatus = Waiting;
-                        placeholders.setArenaStatus(Waiting);
-                        ArrayList<Player> copiedPlayers = new ArrayList<>(players);
-                        copiedPlayers.forEach(player -> aresonDeathSwap.messages.sendPlainMessage(player, "countdown-interrupted"));
+                        try {
+                            arenaStatus = Waiting;
+                            placeholders.setArenaStatus(Waiting);
+                            ArrayList<Player> copiedPlayers = new ArrayList<>(players);
+                            copiedPlayers.forEach(player -> aresonDeathSwap.messages.sendPlainMessage(player, "countdown-interrupted"));
+                        } catch (Exception e) {
+                            System.out.println("Countdown interrupt run error :");
+                            e.printStackTrace(System.out);
+                        }
                     }
                 },
                 0,
@@ -106,9 +116,8 @@ public class Arena {
                                 ));
                                 placeholders.setRoundsRemainingString(roundCounter + "/" + aresonDeathSwap.MAX_ROUNDS);
                             }
-                        } catch (
-                                Exception e) {
-                            System.out.println("ECCOLO !!!!");
+                        } catch (Exception e) {
+                            System.out.println("Repeating task run error");
                             e.printStackTrace(System.out);
                         }
                     }
