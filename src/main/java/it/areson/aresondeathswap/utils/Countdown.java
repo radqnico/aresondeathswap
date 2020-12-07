@@ -41,7 +41,7 @@ public class Countdown {
         initTask();
     }
 
-    private void initTask(){
+    private void initTask() {
         taskMain = new BukkitRunnable() {
             @Override
             public void run() {
@@ -58,8 +58,9 @@ public class Countdown {
                         }
                     } else {
                         this.cancel();
+                        aresonDeathSwap.getLogger().info("Interrupted countdown taskId " + taskMain.getTaskId());
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     System.out.println("Countdown error :");
                     e.printStackTrace(System.out);
                 }
@@ -91,7 +92,6 @@ public class Countdown {
     private synchronized void end() {
         isRunning = false;
         aresonDeathSwap.getLogger().info("Ending countdown taskId " + taskMain.getTaskId());
-        taskMain.cancel();
         taskEnded.runTask(aresonDeathSwap);
     }
 
@@ -99,7 +99,6 @@ public class Countdown {
         if (isRunning) {
             isRunning = false;
             aresonDeathSwap.getLogger().info("Interrupting countdown taskId " + taskMain.getTaskId());
-            taskMain.cancel();
             taskInterrupted.runTaskLater(aresonDeathSwap, interruptDelaySeconds);
         }
     }
