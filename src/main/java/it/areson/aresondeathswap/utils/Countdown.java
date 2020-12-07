@@ -90,7 +90,7 @@ public class Countdown {
         isRunning = false;
         aresonDeathSwap.getLogger().info("Ending countdown taskId " + taskMain.getTaskId());
         taskMain.cancel();
-        initTask();
+        aresonDeathSwap.getServer().getScheduler().cancelTask(taskMain.getTaskId());
         taskEnded.runTask(aresonDeathSwap);
     }
 
@@ -99,7 +99,7 @@ public class Countdown {
             isRunning = false;
             aresonDeathSwap.getLogger().info("Interrupting countdown taskId " + taskMain.getTaskId());
             taskMain.cancel();
-            initTask();
+            aresonDeathSwap.getServer().getScheduler().cancelTask(taskMain.getTaskId());
             taskInterrupted.runTaskLater(aresonDeathSwap, interruptDelaySeconds);
         }
     }
