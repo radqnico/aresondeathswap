@@ -1,4 +1,4 @@
-package it.areson.aresondeathswap.events;
+package it.areson.aresondeathswap.listeners;
 
 import it.areson.aresondeathswap.AresonDeathSwap;
 import it.areson.aresondeathswap.loot.LootConfigReader;
@@ -7,7 +7,6 @@ import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -20,9 +19,6 @@ import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-
-import static net.md_5.bungee.api.ChatColor.LIGHT_PURPLE;
 
 public class PlayerEvents implements Listener {
 

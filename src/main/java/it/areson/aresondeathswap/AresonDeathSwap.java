@@ -5,7 +5,7 @@ import it.areson.aresondeathswap.commands.PlayCommand;
 import it.areson.aresondeathswap.commands.SpawnCommand;
 import it.areson.aresondeathswap.commands.admin.*;
 import it.areson.aresondeathswap.enums.ArenaStatus;
-import it.areson.aresondeathswap.events.PlayerEvents;
+import it.areson.aresondeathswap.listeners.PlayerEvents;
 import it.areson.aresondeathswap.loot.LootConfigReader;
 import it.areson.aresondeathswap.managers.*;
 import org.bukkit.*;
