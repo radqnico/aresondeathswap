@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class DelayedRepeatingTask {
 
     private final AresonDeathSwap aresonDeathSwap;
-    private final BukkitRunnable taskToRepeat;
+    private final Runnable taskToRepeat;
     private final Optional<String> countDownMessage;
     private final List<Player> playersToNotify;
     private int everySeconds;
@@ -22,7 +22,7 @@ public class DelayedRepeatingTask {
     private int currentTimeRemaining;
     private BukkitRunnable callerTask;
 
-    public DelayedRepeatingTask(AresonDeathSwap aresonDeathSwap, int everySeconds, BukkitRunnable taskToRepeat, Optional<String> countDownMessage, List<Player> playersToNotify) {
+    public DelayedRepeatingTask(AresonDeathSwap aresonDeathSwap, int everySeconds, Runnable taskToRepeat, Optional<String> countDownMessage, List<Player> playersToNotify) {
         this.aresonDeathSwap = aresonDeathSwap;
         this.everySeconds = everySeconds;
         this.taskToRepeat = taskToRepeat;
@@ -95,7 +95,7 @@ public class DelayedRepeatingTask {
     }
 
     private synchronized void callTask() {
-        taskToRepeat.runTask(aresonDeathSwap);
+        aresonDeathSwap.getServer().getScheduler().runTask(aresonDeathSwap, taskToRepeat);
         aresonDeathSwap.getLogger().info("Called internal repeatingTask of caller " + callerTask.getTaskId());
     }
 

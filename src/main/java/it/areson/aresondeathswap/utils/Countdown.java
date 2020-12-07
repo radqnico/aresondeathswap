@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 public class Countdown {
 
     private final AresonDeathSwap aresonDeathSwap;
-    private final BukkitRunnable taskEnded;
-    private final BukkitRunnable taskInterrupted;
+    private final Runnable taskEnded;
+    private final Runnable taskInterrupted;
     private BukkitRunnable taskMain;
     private final int interruptDelaySeconds;
     private final int timeBeforeShouting;
@@ -26,7 +26,7 @@ public class Countdown {
     private int currentValue;
     private boolean isRunning;
 
-    public Countdown(AresonDeathSwap plugin, int countdownTime, BukkitRunnable taskEnded, BukkitRunnable taskInterrupted, int interruptDelaySeconds, int timeBeforeShouting, String shoutingMessage, Arena arena, String startingMessage) {
+    public Countdown(AresonDeathSwap plugin, int countdownTime, Runnable taskEnded, Runnable taskInterrupted, int interruptDelaySeconds, int timeBeforeShouting, String shoutingMessage, Arena arena, String startingMessage) {
         aresonDeathSwap = plugin;
         this.countdownTime = countdownTime;
         this.taskEnded = taskEnded;
@@ -92,7 +92,7 @@ public class Countdown {
         taskMain.cancel();
         aresonDeathSwap.getServer().getScheduler().cancelTask(taskMain.getTaskId());
         initTask();
-        taskEnded.runTask(aresonDeathSwap);
+        aresonDeathSwap.getServer().getScheduler().runTask(aresonDeathSwap, taskEnded);
     }
 
     public synchronized void interrupt() {
@@ -102,7 +102,7 @@ public class Countdown {
             taskMain.cancel();
             aresonDeathSwap.getServer().getScheduler().cancelTask(taskMain.getTaskId());
             initTask();
-            taskInterrupted.runTaskLater(aresonDeathSwap, interruptDelaySeconds);
+            aresonDeathSwap.getServer().getScheduler().runTask(aresonDeathSwap, taskInterrupted);
         }
     }
 

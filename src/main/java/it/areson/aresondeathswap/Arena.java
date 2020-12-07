@@ -57,31 +57,24 @@ public class Arena {
         //Countdowns
         this.countdownPregame = new Countdown(aresonDeathSwap,
                 aresonDeathSwap.STARTING_TIME,
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            arenaStatus = InGame;
-                            placeholders.setArenaStatus(InGame);
-                            startGame();
-                        } catch (Exception e) {
-                            System.out.println("Countdown end run error :");
-                            e.printStackTrace(System.out);
-                        }
+                () -> {
+                    try {
+                        arenaStatus = InGame;
+                        placeholders.setArenaStatus(InGame);
+                        startGame();
+                    } catch (Exception e) {
+                        System.out.println("Countdown end run error :");
+                        e.printStackTrace(System.out);
                     }
                 },
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            arenaStatus = Waiting;
-                            placeholders.setArenaStatus(Waiting);
-                            ArrayList<Player> copiedPlayers = new ArrayList<>(players);
-                            copiedPlayers.forEach(player -> aresonDeathSwap.messages.sendPlainMessage(player, "countdown-interrupted"));
-                        } catch (Exception e) {
-                            System.out.println("Countdown interrupt run error :");
-                            e.printStackTrace(System.out);
-                        }
+                () -> {
+                    try {
+                        arenaStatus = InGame;
+                        placeholders.setArenaStatus(InGame);
+                        startGame();
+                    } catch (Exception e) {
+                        System.out.println("Countdown end run error :");
+                        e.printStackTrace(System.out);
                     }
                 },
                 0,
@@ -94,32 +87,29 @@ public class Arena {
         this.countdownGame = new DelayedRepeatingTask(
                 aresonDeathSwap,
                 randomTeleportTime(),
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            rotatePlayers();
-                            int swapTime = randomTeleportTime();
-                            countdownGame.setEverySeconds(swapTime);
-                            aresonDeathSwap.getLogger().info("Started new countdownGame in arena " + arenaName + " with " + swapTime + " seconds");
-                            roundCounter++;
-                            lastSwapTime = Optional.of(LocalDateTime.now());
-                            if (roundCounter > aresonDeathSwap.MAX_ROUNDS) {
-                                witherPlayers();
-                                placeholders.setRoundsRemainingString("Round finali");
-                            } else {
-                                ArrayList<Player> copiedPlayers = new ArrayList<>(players);
-                                copiedPlayers.forEach(player -> aresonDeathSwap.messages.sendPlainMessage(
-                                        player,
-                                        "rounds-remaining",
-                                        StringPair.of("%remaining%", (aresonDeathSwap.MAX_ROUNDS - roundCounter) + "")
-                                ));
-                                placeholders.setRoundsRemainingString(roundCounter + "/" + aresonDeathSwap.MAX_ROUNDS);
-                            }
-                        } catch (Exception e) {
-                            System.out.println("Repeating task run error");
-                            e.printStackTrace(System.out);
+                () -> {
+                    try {
+                        rotatePlayers();
+                        int swapTime = randomTeleportTime();
+                        countdownGame.setEverySeconds(swapTime);
+                        aresonDeathSwap.getLogger().info("Started new countdownGame in arena " + arenaName + " with " + swapTime + " seconds");
+                        roundCounter++;
+                        lastSwapTime = Optional.of(LocalDateTime.now());
+                        if (roundCounter > aresonDeathSwap.MAX_ROUNDS) {
+                            witherPlayers();
+                            placeholders.setRoundsRemainingString("Round finali");
+                        } else {
+                            ArrayList<Player> copiedPlayers = new ArrayList<>(players);
+                            copiedPlayers.forEach(player -> aresonDeathSwap.messages.sendPlainMessage(
+                                    player,
+                                    "rounds-remaining",
+                                    StringPair.of("%remaining%", (aresonDeathSwap.MAX_ROUNDS - roundCounter) + "")
+                            ));
+                            placeholders.setRoundsRemainingString(roundCounter + "/" + aresonDeathSwap.MAX_ROUNDS);
                         }
+                    } catch (Exception e) {
+                        System.out.println("Repeating task run error");
+                        e.printStackTrace(System.out);
                     }
                 },
                 Optional.of(aresonDeathSwap.messages.getPlainMessage("countdown-swap-message")),
