@@ -68,10 +68,12 @@ public class LoadBalancer extends BukkitRunnable {
             }
             long stopTime = System.currentTimeMillis() + MAX_MILLIS_PER_TICK;
             mutex.acquire();
-            while (!jobs.isEmpty() && System.currentTimeMillis() <= stopTime) {
-                Job poll = jobs.poll();
-                if (poll != null) {
-                    poll.compute();
+            if (System.currentTimeMillis() + MAX_MILLIS_PER_TICK < LAST_TICK_START_TIME + 50) {
+                while (!jobs.isEmpty() && System.currentTimeMillis() <= stopTime) {
+                    Job poll = jobs.poll();
+                    if (poll != null) {
+                        poll.compute();
+                    }
                 }
             }
             totalTicks++;

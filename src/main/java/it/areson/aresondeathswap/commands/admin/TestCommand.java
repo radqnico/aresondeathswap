@@ -21,7 +21,7 @@ public class TestCommand implements CommandExecutor, TabCompleter {
     public TestCommand(AresonDeathSwap plugin) {
         aresonDeathSwap = plugin;
 
-        PluginCommand pluginCommand = plugin.getCommand("test");
+        PluginCommand pluginCommand = plugin.getCommand("testcommand");
         if (!Objects.isNull(pluginCommand)) {
             pluginCommand.setExecutor(this);
         }
@@ -40,10 +40,10 @@ public class TestCommand implements CommandExecutor, TabCompleter {
                     }
                 }
             }
-            player.sendMessage("Start job");
             loadBalancer.start(aresonDeathSwap).whenComplete((totalTicks, exception) -> {
                 player.sendMessage("Job took " + totalTicks + "ticks");
             });
+            player.sendMessage("Started job");
         } else {
             commandSender.sendMessage("Comando eseguibile solo da player");
         }
