@@ -1,4 +1,4 @@
-package it.areson.aresondeathswap.loadbalance;
+package it.areson.aresondeathswap.loadbalancer;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -7,9 +7,9 @@ import java.util.function.BiConsumer;
 
 public class TeleportJob implements Job {
 
-    private Location toLocation;
-    private Player player;
-    private BiConsumer<? super Boolean, ? super Throwable> whenComplete;
+    private final Location toLocation;
+    private final Player player;
+    private final BiConsumer<? super Boolean, ? super Throwable> whenComplete;
 
     public TeleportJob(Player player, Location toLocation, BiConsumer<? super Boolean, ? super Throwable> whenComplete) {
         this.toLocation = toLocation;

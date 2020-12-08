@@ -1,12 +1,12 @@
-package it.areson.aresondeathswap.loadbalance;
+package it.areson.aresondeathswap.loadbalancer;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 
 public class PlaceBlockJob implements Job {
 
-    private Location location;
-    private Material material;
+    private final Location location;
+    private final Material material;
 
     public PlaceBlockJob(Location location, Material material) {
         this.location = location;

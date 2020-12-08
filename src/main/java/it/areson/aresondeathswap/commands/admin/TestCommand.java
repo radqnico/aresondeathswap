@@ -1,8 +1,8 @@
 package it.areson.aresondeathswap.commands.admin;
 
 import it.areson.aresondeathswap.AresonDeathSwap;
-import it.areson.aresondeathswap.loadbalance.LoadBalancer;
-import it.areson.aresondeathswap.loadbalance.PlaceBlockJob;
+import it.areson.aresondeathswap.loadbalancer.LoadBalancer;
+import it.areson.aresondeathswap.loadbalancer.PlaceBlockJob;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("NullableProblems")
 public class TestCommand implements CommandExecutor, TabCompleter {
 
     private final AresonDeathSwap aresonDeathSwap;
@@ -40,9 +41,7 @@ public class TestCommand implements CommandExecutor, TabCompleter {
                     }
                 }
             }
-            loadBalancer.start(aresonDeathSwap).whenComplete((totalTicks, exception) -> {
-                player.sendMessage("Job took " + totalTicks + "ticks");
-            });
+            loadBalancer.start(aresonDeathSwap).whenComplete((totalTicks, exception) -> player.sendMessage("Job took " + totalTicks + " ticks"));
             player.sendMessage("Started job");
         } else {
             commandSender.sendMessage("Comando eseguibile solo da player");

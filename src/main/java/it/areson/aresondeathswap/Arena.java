@@ -1,8 +1,8 @@
 package it.areson.aresondeathswap;
 
 import it.areson.aresondeathswap.enums.ArenaStatus;
-import it.areson.aresondeathswap.loadbalance.LoadBalancer;
-import it.areson.aresondeathswap.loadbalance.TeleportJob;
+import it.areson.aresondeathswap.loadbalancer.LoadBalancer;
+import it.areson.aresondeathswap.loadbalancer.TeleportJob;
 import it.areson.aresondeathswap.utils.*;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -158,7 +158,7 @@ public class Arena {
         });
 
         loadBalancer.start(aresonDeathSwap).whenComplete(
-                (totalTicks, exception) -> aresonDeathSwap.getLogger().info("Rotating " + players.size() + " players in arena " + arenaName + " took " + totalTicks + "ticks")
+                (totalTicks, exception) -> aresonDeathSwap.getLogger().info("Rotating " + players.size() + " players in arena " + arenaName + " took " + totalTicks + " ticks")
         );
     }
 
@@ -206,9 +206,7 @@ public class Arena {
                     loadBalancer.addJob(new TeleportJob(player, getRandomLocationAroundSpawn(world), (result, exception) -> teleportInArenaEffects(result, player)));
                 }
             });
-            loadBalancer.start(aresonDeathSwap).whenComplete((totalTicks, exception) -> {
-                aresonDeathSwap.getLogger().severe("Inserted players in arena '" + arenaName + "' in " + totalTicks + " ticks");
-            });
+            loadBalancer.start(aresonDeathSwap).whenComplete((totalTicks, exception) -> aresonDeathSwap.getLogger().severe("Inserted players in arena '" + arenaName + "' in " + totalTicks + " ticks"));
             countdownGame.startRepeating();
             this.arenaStatus = ArenaStatus.InGame;
         } else {

@@ -1,4 +1,4 @@
-package it.areson.aresondeathswap.loadbalance;
+package it.areson.aresondeathswap.loadbalancer;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
