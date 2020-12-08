@@ -43,7 +43,7 @@ public class Arena {
     public Arena(AresonDeathSwap aresonDeathSwap, String arenaName) {
         this.aresonDeathSwap = aresonDeathSwap;
         this.arenaName = arenaName;
-        this.players = new MutexArrayList<>();
+        this.players = new ArrayList<>();
         this.arenaStatus = Waiting;
         lastSwapTime = Optional.empty();
         tpFroms = new ArrayList<>();
