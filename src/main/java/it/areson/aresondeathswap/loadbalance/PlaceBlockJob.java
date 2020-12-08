@@ -1,4 +1,4 @@
-package it.areson.aresondeathswap.loadsplit;
+package it.areson.aresondeathswap.loadbalance;
 
 import org.bukkit.Location;
 import org.bukkit.Material;

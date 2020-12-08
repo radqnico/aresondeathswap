@@ -1,8 +1,8 @@
 package it.areson.aresondeathswap.commands.admin;
 
 import it.areson.aresondeathswap.AresonDeathSwap;
-import it.areson.aresondeathswap.loadsplit.LoadBalancer;
-import it.areson.aresondeathswap.loadsplit.PlaceBlockJob;
+import it.areson.aresondeathswap.loadbalance.LoadBalancer;
+import it.areson.aresondeathswap.loadbalance.PlaceBlockJob;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -41,7 +41,9 @@ public class TestCommand implements CommandExecutor, TabCompleter {
                 }
             }
             player.sendMessage("Start job");
-            loadBalancer.runTaskTimer(aresonDeathSwap, 20, 1);
+            loadBalancer.start(aresonDeathSwap).whenComplete((totalTicks, exception) -> {
+                player.sendMessage("Job took " + totalTicks + "ticks");
+            });
         } else {
             commandSender.sendMessage("Comando eseguibile solo da player");
         }

@@ -1,8 +1,8 @@
 package it.areson.aresondeathswap;
 
 import it.areson.aresondeathswap.enums.ArenaStatus;
-import it.areson.aresondeathswap.loadsplit.LoadBalancer;
-import it.areson.aresondeathswap.loadsplit.TeleportJob;
+import it.areson.aresondeathswap.loadbalance.LoadBalancer;
+import it.areson.aresondeathswap.loadbalance.TeleportJob;
 import it.areson.aresondeathswap.utils.*;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -157,7 +157,9 @@ public class Arena {
             }));
         });
 
-        loadBalancer.start(aresonDeathSwap);
+        loadBalancer.start(aresonDeathSwap).whenComplete(
+                (totalTicks, exception) -> aresonDeathSwap.getLogger().info("Rotating " + players.size() + " players in arena " + arenaName + " took " + totalTicks + "ticks")
+        );
     }
 
     private void witherPlayers() {
@@ -192,35 +194,39 @@ public class Arena {
         if (world != null) {
             world.setTime((int) (Math.random() * 24000));
             ArrayList<Player> copiedPlayers = new ArrayList<>(players);
-
+            LoadBalancer loadBalancer = new LoadBalancer("Start game teleports");
+            placeholders.setRoundsRemainingString(roundCounter + "/" + aresonDeathSwap.MAX_ROUNDS);
             copiedPlayers.forEach(player -> {
                 try {
                     Location removedSpawn = spawns.remove(0);
                     aresonDeathSwap.effects.joinedArena(player);
-                    player.teleportAsync(removedSpawn).whenComplete((result, exception) -> {
-                        if (result) {
-                            aresonDeathSwap.loot.placeNewChestNear(player);
-                            aresonDeathSwap.messages.sendPlainMessage(player, "chest-spawned");
-                            aresonDeathSwap.sounds.openChest(player.getLocation());
-                            aresonDeathSwap.sounds.gameStarted(player);
-                            aresonDeathSwap.titles.sendLongTitle(player, "start");
-                            placeholders.setRoundsRemainingString(roundCounter + "/" + aresonDeathSwap.MAX_ROUNDS);
-                            aresonDeathSwap.eventCall.callPlayerStartGame(player);
-                        } else {
-                            aresonDeathSwap.messages.sendPlainMessage(player, "teleport-fail");
-                            aresonDeathSwap.removePlayerFromArenas(player);
-                        }
-                    });
+                    loadBalancer.addJob(new TeleportJob(player, removedSpawn, (result, exception) -> teleportInArenaEffects(result, player)));
                     player.getInventory().clear();
                 } catch (IndexOutOfBoundsException e) {
-                    player.teleportAsync(getRandomLocationAroundSpawn(world));
+                    loadBalancer.addJob(new TeleportJob(player, getRandomLocationAroundSpawn(world), (result, exception) -> teleportInArenaEffects(result, player)));
                 }
-
+            });
+            loadBalancer.start(aresonDeathSwap).whenComplete((totalTicks, exception) -> {
+                aresonDeathSwap.getLogger().severe("Inserted players in arena '" + arenaName + "' in " + totalTicks + " ticks");
             });
             countdownGame.startRepeating();
             this.arenaStatus = ArenaStatus.InGame;
         } else {
             aresonDeathSwap.getLogger().severe("Cannot found arena world");
+        }
+    }
+
+    private void teleportInArenaEffects(Boolean result, Player player) {
+        if (result) {
+            aresonDeathSwap.loot.placeNewChestNear(player);
+            aresonDeathSwap.messages.sendPlainMessage(player, "chest-spawned");
+            aresonDeathSwap.sounds.openChest(player.getLocation());
+            aresonDeathSwap.sounds.gameStarted(player);
+            aresonDeathSwap.titles.sendLongTitle(player, "start");
+            aresonDeathSwap.eventCall.callPlayerStartGame(player);
+        } else {
+            aresonDeathSwap.messages.sendPlainMessage(player, "teleport-fail");
+            aresonDeathSwap.removePlayerFromArenas(player);
         }
     }
 

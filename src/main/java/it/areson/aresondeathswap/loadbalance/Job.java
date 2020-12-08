@@ -1,4 +1,4 @@
-package it.areson.aresondeathswap.loadsplit;
+package it.areson.aresondeathswap.loadbalance;
 
 public interface Job {
 
