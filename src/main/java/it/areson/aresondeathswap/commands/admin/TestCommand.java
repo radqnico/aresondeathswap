@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class TestCommand implements CommandExecutor, TabCompleter {
@@ -33,7 +32,7 @@ public class TestCommand implements CommandExecutor, TabCompleter {
         if (commandSender instanceof Player) {
             Player player = (Player) commandSender;
             Location location = player.getLocation();
-            LoadBalancer loadBalancer = new LoadBalancer();
+            LoadBalancer loadBalancer = new LoadBalancer("place stones");
             for (int x = 0; x < 100; x++) {
                 for (int y = 0; y < 100; y++) {
                     for (int z = 0; z < 100; z++) {

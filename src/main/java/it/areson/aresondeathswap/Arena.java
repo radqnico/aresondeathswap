@@ -1,6 +1,8 @@
 package it.areson.aresondeathswap;
 
 import it.areson.aresondeathswap.enums.ArenaStatus;
+import it.areson.aresondeathswap.loadsplit.LoadBalancer;
+import it.areson.aresondeathswap.loadsplit.TeleportJob;
 import it.areson.aresondeathswap.utils.*;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -8,7 +10,6 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -115,11 +116,8 @@ public class Arena {
         );
     }
 
-    public Optional<LocalDateTime> getLastSwapTime() {
-        return lastSwapTime;
-    }
-
     public void rotatePlayers() {
+        LoadBalancer loadBalancer = new LoadBalancer("TELEPORTS " + arenaName);
         aresonDeathSwap.getLogger().info("Rotating " + players.size() + " players in arena " + arenaName);
         tpFroms.clear();
         tpTos.clear();
@@ -142,7 +140,7 @@ public class Arena {
 
         playerDestination.forEach((player, destination) -> {
             tpFroms.add(player);
-            player.teleportAsync(destination).whenComplete((input, exception) -> {
+            loadBalancer.addJob(new TeleportJob(player, destination, (input, exception) -> {
                 if (input) {
                     if (!player.getWorld().getName().equals(aresonDeathSwap.MAIN_WORLD_NAME)) {
                         if (Math.random() < 0.5) {
@@ -156,8 +154,10 @@ public class Arena {
                 } else {
                     removePlayer(player);
                 }
-            });
+            }));
         });
+
+        loadBalancer.start(aresonDeathSwap);
     }
 
     private void witherPlayers() {
