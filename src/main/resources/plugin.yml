@@ -28,7 +28,7 @@ commands:
     usage: "/setSpawn"
     permission: aresonDeathSwap.admin
   testchest:
-    usage: "/testChest"
+    usage: "/test"
     permission: aresonDeathSwap.admin
 
 permissions:

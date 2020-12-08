@@ -1,6 +1,10 @@
 package it.areson.aresondeathswap.commands.admin;
 
 import it.areson.aresondeathswap.AresonDeathSwap;
+import it.areson.aresondeathswap.loadsplit.LoadBalancer;
+import it.areson.aresondeathswap.loadsplit.PlaceBlockJob;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
@@ -11,15 +15,14 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class TestChestCommand implements CommandExecutor, TabCompleter {
+public class TestCommand implements CommandExecutor, TabCompleter {
 
     private final AresonDeathSwap aresonDeathSwap;
 
-
-    public TestChestCommand(AresonDeathSwap plugin) {
+    public TestCommand(AresonDeathSwap plugin) {
         aresonDeathSwap = plugin;
 
-        PluginCommand pluginCommand = plugin.getCommand("testChest");
+        PluginCommand pluginCommand = plugin.getCommand("test");
         if (!Objects.isNull(pluginCommand)) {
             pluginCommand.setExecutor(this);
         }
@@ -29,7 +32,17 @@ public class TestChestCommand implements CommandExecutor, TabCompleter {
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] arguments) {
         if (commandSender instanceof Player) {
             Player player = (Player) commandSender;
-            aresonDeathSwap.loot.placeNewChestNear(player);
+            Location location = player.getLocation();
+            LoadBalancer loadBalancer = new LoadBalancer();
+            for (int x = 0; x < 100; x++) {
+                for (int y = 0; y < 100; y++) {
+                    for (int z = 0; z < 100; z++) {
+                        loadBalancer.addJob(new PlaceBlockJob(player.getLocation().clone().add(x, y, z), Material.STONE));
+                    }
+                }
+            }
+            player.sendMessage("Start job");
+            loadBalancer.runTaskTimer(aresonDeathSwap, 20, 1);
         } else {
             commandSender.sendMessage("Comando eseguibile solo da player");
         }

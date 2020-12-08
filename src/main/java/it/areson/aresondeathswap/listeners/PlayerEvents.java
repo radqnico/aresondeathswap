@@ -1,6 +1,8 @@
 package it.areson.aresondeathswap.listeners;
 
+import com.destroystokyo.paper.event.server.ServerTickStartEvent;
 import it.areson.aresondeathswap.AresonDeathSwap;
+import it.areson.aresondeathswap.loadsplit.LoadBalancer;
 import it.areson.aresondeathswap.loot.LootConfigReader;
 import org.bukkit.*;
 import org.bukkit.block.Chest;
@@ -26,6 +28,11 @@ public class PlayerEvents implements Listener {
 
     public PlayerEvents(AresonDeathSwap plugin) {
         aresonDeathSwap = plugin;
+    }
+
+    @EventHandler
+    public void tickStartEvent(ServerTickStartEvent event){
+        LoadBalancer.LAST_TICK_START_TIME = System.currentTimeMillis();
     }
 
     @EventHandler

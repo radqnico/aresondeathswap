@@ -1,10 +1,7 @@
 package it.areson.aresondeathswap;
 
 import it.areson.aresondeathswap.enums.ArenaStatus;
-import it.areson.aresondeathswap.utils.ArenaPlaceholders;
-import it.areson.aresondeathswap.utils.Countdown;
-import it.areson.aresondeathswap.utils.DelayedRepeatingTask;
-import it.areson.aresondeathswap.utils.StringPair;
+import it.areson.aresondeathswap.utils.*;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.HumanEntity;
@@ -27,7 +24,7 @@ public class Arena {
     private final AresonDeathSwap aresonDeathSwap;
     private final String arenaName;
     private final Countdown countdownPregame;
-    private final ArrayList<Player> players;
+    private final MutexArrayList<Player> players;
     private DelayedRepeatingTask countdownGame;
     private ArenaStatus arenaStatus;
 
@@ -45,7 +42,7 @@ public class Arena {
     public Arena(AresonDeathSwap aresonDeathSwap, String arenaName) {
         this.aresonDeathSwap = aresonDeathSwap;
         this.arenaName = arenaName;
-        this.players = new ArrayList<>();
+        this.players = new MutexArrayList<>();
         this.arenaStatus = Waiting;
         lastSwapTime = Optional.empty();
         tpFroms = new ArrayList<>();
