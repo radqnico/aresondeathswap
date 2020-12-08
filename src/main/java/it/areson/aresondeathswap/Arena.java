@@ -25,7 +25,7 @@ public class Arena {
     private final AresonDeathSwap aresonDeathSwap;
     private final String arenaName;
     private final Countdown countdownPregame;
-    private final MutexArrayList<Player> players;
+    private final ArrayList<Player> players;
     private DelayedRepeatingTask countdownGame;
     private ArenaStatus arenaStatus;
 
