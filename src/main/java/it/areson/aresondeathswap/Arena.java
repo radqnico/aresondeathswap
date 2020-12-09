@@ -211,7 +211,7 @@ public class Arena {
         swapsLoadBalancer.start(aresonDeathSwap).whenComplete(
                 (totalTicks, exception) -> aresonDeathSwap.getLogger().info("Rotating " + players.size() + " players in arena " + arenaName + " took " + totalTicks + " ticks")
         );
-        swapsLoadBalancer.start(aresonDeathSwap).whenComplete(
+        chestLoadBalancer.start(aresonDeathSwap).whenComplete(
                 (totalTicks, exception) -> aresonDeathSwap.getLogger().info("Spawning chests in arena " + arenaName + " took " + totalTicks + " ticks")
         );
     }
