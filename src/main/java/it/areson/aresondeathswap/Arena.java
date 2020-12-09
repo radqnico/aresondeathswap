@@ -119,6 +119,7 @@ public class Arena {
 
     public void forceSwap() {
         try {
+            lastSwapTime = LocalDateTime.now();
             rotatePlayers();
         } catch (Exception e) {
             System.out.println("Force swap error");
