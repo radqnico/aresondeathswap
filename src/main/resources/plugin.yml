@@ -30,6 +30,9 @@ commands:
   testcommand:
     usage: "/testcommand"
     permission: aresonDeathSwap.admin
+  forceswap:
+    usage: "/forceswap"
+    permission: aresonDeathSwap.admin
 
 permissions:
   aresonDeathSwap.admin:

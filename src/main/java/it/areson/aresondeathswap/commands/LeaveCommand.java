@@ -1,6 +1,7 @@
 package it.areson.aresondeathswap.commands;
 
 import it.areson.aresondeathswap.AresonDeathSwap;
+import it.areson.aresondeathswap.loadbalancer.LoadBalancer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -29,6 +30,7 @@ public class LeaveCommand implements CommandExecutor {
             Player player = (Player) commandSender;
             if (aresonDeathSwap.playerIsInAnArena(player)) {
                 aresonDeathSwap.removePlayerFromArenas(player);
+                aresonDeathSwap.teleportToLobbySpawn(player);
                 aresonDeathSwap.messages.sendPlainMessage(player, "arena-leaved");
             } else {
                 aresonDeathSwap.messages.sendPlainMessage(player, "no-arena-playing");

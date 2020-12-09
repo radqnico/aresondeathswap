@@ -2,8 +2,12 @@ package it.areson.aresondeathswap;
 
 import it.areson.aresondeathswap.enums.ArenaStatus;
 import it.areson.aresondeathswap.loadbalancer.LoadBalancer;
+import it.areson.aresondeathswap.loadbalancer.SpawnChestJob;
 import it.areson.aresondeathswap.loadbalancer.TeleportJob;
-import it.areson.aresondeathswap.utils.*;
+import it.areson.aresondeathswap.utils.ArenaPlaceholders;
+import it.areson.aresondeathswap.utils.Countdown;
+import it.areson.aresondeathswap.utils.DelayedRepeatingTask;
+import it.areson.aresondeathswap.utils.StringPair;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.HumanEntity;
@@ -19,24 +23,20 @@ import java.util.stream.Collectors;
 
 import static it.areson.aresondeathswap.enums.ArenaStatus.*;
 
-@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class Arena {
 
     private final AresonDeathSwap aresonDeathSwap;
     private final String arenaName;
     private final Countdown countdownPregame;
     private final ArrayList<Player> players;
-    private DelayedRepeatingTask countdownGame;
-    private ArenaStatus arenaStatus;
-
     private final ArenaPlaceholders placeholders;
-
     private final ArrayList<Location> spawns;
-
     private final ArrayList<Player> tpFroms;
     private final ArrayList<Player> tpTos;
-
-    private Optional<LocalDateTime> lastSwapTime;
+    private DelayedRepeatingTask countdownGame;
+    private ArenaStatus arenaStatus;
+    private LocalDateTime lastSwapTime;
+    private Map<String, String> lastSwaps;
 
     private int roundCounter;
 
@@ -45,13 +45,14 @@ public class Arena {
         this.arenaName = arenaName;
         this.players = new ArrayList<>();
         this.arenaStatus = Waiting;
-        lastSwapTime = Optional.empty();
+        lastSwapTime = LocalDateTime.MIN;
         tpFroms = new ArrayList<>();
         tpTos = new ArrayList<>();
         roundCounter = 0;
         spawns = new ArrayList<>();
         placeholders = new ArenaPlaceholders(this.arenaStatus, this.arenaName, this.players);
         placeholders.register();
+        lastSwaps = new HashMap<>();
         //Countdowns
         this.countdownPregame = new Countdown(aresonDeathSwap,
                 aresonDeathSwap.STARTING_TIME,
@@ -93,7 +94,7 @@ public class Arena {
                         countdownGame.setEverySeconds(swapTime);
                         aresonDeathSwap.getLogger().info("Started new countdownGame in arena " + arenaName + " with " + swapTime + " seconds");
                         roundCounter++;
-                        lastSwapTime = Optional.of(LocalDateTime.now());
+                        lastSwapTime = LocalDateTime.now();
                         if (roundCounter > aresonDeathSwap.MAX_ROUNDS) {
                             witherPlayers();
                             placeholders.setRoundsRemainingString("Round finali");
@@ -116,49 +117,102 @@ public class Arena {
         );
     }
 
+    public void forceSwap() {
+        try {
+            rotatePlayers();
+        } catch (Exception e) {
+            System.out.println("Force swap error");
+            e.printStackTrace(System.out);
+        }
+    }
+
     public void rotatePlayers() {
-        LoadBalancer loadBalancer = new LoadBalancer("TELEPORTS " + arenaName);
+        // TODO messaggi rotti
+        LoadBalancer swapsLoadBalancer = new LoadBalancer("TELEPORTS " + arenaName);
         aresonDeathSwap.getLogger().info("Rotating " + players.size() + " players in arena " + arenaName);
-        tpFroms.clear();
-        tpTos.clear();
-        ArrayList<Location> playerLocation = new ArrayList<>();
-        HashMap<Player, Location> playerDestination = new HashMap<>();
 
         ArrayList<Player> copiedPlayers = new ArrayList<>(players);
+        Map<Player, Location> playerDestination = new HashMap<>();
+
         Collections.shuffle(copiedPlayers);
-        copiedPlayers.forEach(player -> playerLocation.add(player.getLocation().clone()));
 
-        for (int i = 0; i < copiedPlayers.size(); i++) {
-            if (i == (copiedPlayers.size() - 1)) {
-                playerDestination.put(copiedPlayers.get(i), playerLocation.get(0));
-                tpTos.add(copiedPlayers.get(0));
-            } else {
-                playerDestination.put(copiedPlayers.get(i), playerLocation.get(i + 1));
-                tpTos.add(copiedPlayers.get(i + 1));
-            }
-        }
-
-        playerDestination.forEach((player, destination) -> {
-            tpFroms.add(player);
-            loadBalancer.addJob(new TeleportJob(player, destination, (input, exception) -> {
-                if (input) {
-                    if (!player.getWorld().getName().equals(aresonDeathSwap.MAIN_WORLD_NAME)) {
-                        if (Math.random() < 0.5) {
-                            aresonDeathSwap.loot.placeNewChestNear(player);
-                            aresonDeathSwap.messages.sendPlainMessage(player, "chest-spawned");
-                            aresonDeathSwap.sounds.chestAppear(player);
-                        }
-                        aresonDeathSwap.sounds.teleport(player);
-                        aresonDeathSwap.titles.sendShortTitle(player, "swap");
-                    }
+        int index = 0;
+        int size;
+        do {
+            playerDestination.clear();
+            lastSwaps.clear();
+            size = copiedPlayers.size();
+            for (Player player : copiedPlayers) {
+                if (index == size - 1) {
+                    playerDestination.put(player, copiedPlayers.get(index + 1).getLocation().clone());
+                    lastSwaps.put(player.getName(), copiedPlayers.get(index + 1).getName());
                 } else {
-                    removePlayer(player);
+                    playerDestination.put(player, copiedPlayers.get(0).getLocation().clone());
+                    lastSwaps.put(player.getName(), copiedPlayers.get(0).getName());
                 }
-            }));
-        });
+                index++;
+            }
+        } while (size != copiedPlayers.size());
 
-        loadBalancer.start(aresonDeathSwap).whenComplete(
+        LoadBalancer chestLoadBalancer = new LoadBalancer("Chests swapsLoadBalancer of '" + arenaName + "'");
+
+        playerDestination.forEach(((player, location) -> swapsLoadBalancer.addJob(
+                new TeleportJob(player, location, (input, exception) -> {
+                    if (input) {
+                        if (!player.getWorld().getName().equals(aresonDeathSwap.MAIN_WORLD_NAME)) {
+                            chestLoadBalancer.addJob(new SpawnChestJob(player, aresonDeathSwap));
+                            aresonDeathSwap.sounds.teleport(player);
+                            aresonDeathSwap.titles.sendShortTitle(player, "swap");
+                        }
+                    } else {
+                        removePlayer(player);
+                    }
+                })
+        )));
+
+//        tpFroms.clear();
+//        tpTos.clear();
+//        ArrayList<Location> playerLocation = new ArrayList<>();
+//        HashMap<Player, Location> playerDestination = new HashMap<>();
+//
+//        ArrayList<Player> copiedPlayers = new ArrayList<>(players);
+//        Collections.shuffle(copiedPlayers);
+//        copiedPlayers.forEach(player -> playerLocation.add(player.getLocation().clone()));
+//
+//        for (int i = 0; i < copiedPlayers.size(); i++) {
+//            if (i == (copiedPlayers.size() - 1)) {
+//                playerDestination.put(copiedPlayers.get(i), playerLocation.get(0));
+//                tpTos.add(copiedPlayers.get(0));
+//            } else {
+//                playerDestination.put(copiedPlayers.get(i), playerLocation.get(i + 1));
+//                tpTos.add(copiedPlayers.get(i + 1));
+//            }
+//        }
+//
+//        playerDestination.forEach((player, destination) -> {
+//            tpFroms.add(player);
+//            swapsLoadBalancer.addJob(new TeleportJob(player, destination, (input, exception) -> {
+//                if (input) {
+//                    if (!player.getWorld().getName().equals(aresonDeathSwap.MAIN_WORLD_NAME)) {
+//                        if (Math.random() < 0.5) {
+//                            aresonDeathSwap.loot.placeNewChestNear(player);
+//                            aresonDeathSwap.messages.sendPlainMessage(player, "chest-spawned");
+//                            aresonDeathSwap.sounds.chestAppear(player);
+//                        }
+//                        aresonDeathSwap.sounds.teleport(player);
+//                        aresonDeathSwap.titles.sendShortTitle(player, "swap");
+//                    }
+//                } else {
+//                    removePlayer(player);
+//                }
+//            }));
+//        });
+
+        swapsLoadBalancer.start(aresonDeathSwap).whenComplete(
                 (totalTicks, exception) -> aresonDeathSwap.getLogger().info("Rotating " + players.size() + " players in arena " + arenaName + " took " + totalTicks + " ticks")
+        );
+        swapsLoadBalancer.start(aresonDeathSwap).whenComplete(
+                (totalTicks, exception) -> aresonDeathSwap.getLogger().info("Spawning chests in arena " + arenaName + " took " + totalTicks + " ticks")
         );
     }
 
@@ -271,7 +325,7 @@ public class Arena {
                                 arenaStatus = Waiting;
                                 placeholders.setArenaStatus(Waiting);
                                 placeholders.setRoundsRemainingString("Non in gioco");
-                                lastSwapTime = Optional.empty();
+                                lastSwapTime = LocalDateTime.MIN;
                                 aresonDeathSwap.getLogger().info("Game on '" + arenaName + "' interrupted");
                             } else {
                                 aresonDeathSwap.getLogger().severe("Error while loading world " + arenaName);
@@ -320,6 +374,7 @@ public class Arena {
 
     public void removePlayer(Player player) {
         if (players.contains(player)) {
+            ArrayList<Player> copiedPlayers = new ArrayList<>(players);
             players.remove(player);
             switch (arenaStatus) {
                 case Starting:
@@ -333,47 +388,25 @@ public class Arena {
                         winGame();
                     } else {
                         String playersString = players.stream().map(HumanEntity::getName).collect(Collectors.joining(", "));
-                        int killerIndex = tpFroms.indexOf(player);
-                        if (killerIndex != -1) {
-                            if (lastSwapTime.isPresent()) {
-                                aresonDeathSwap.messages.sendPlainMessageDelayed(
-                                        player,
-                                        "arena-kill",
-                                        5,
-                                        StringPair.of("%player%", player.getName()),
-                                        StringPair.of("%killer%", tpTos.get(killerIndex).getName())
-                                );
-                                aresonDeathSwap.getLogger().info("Player " + player.getName() + " killed by " + tpTos.get(killerIndex) + " in arena " + arenaName);
-                            }
-                        }
-                        ArrayList<Player> copiedPlayers = new ArrayList<>(players);
                         copiedPlayers.forEach(messagePlayer -> {
-                                    if (killerIndex != -1) {
-                                        if (lastSwapTime.isPresent()) {
-                                            if (Duration.between(lastSwapTime.get(), LocalDateTime.now()).getSeconds() < 10) {
-                                                aresonDeathSwap.messages.sendPlainMessageDelayed(
-                                                        messagePlayer,
-                                                        "arena-kill",
-                                                        5,
-                                                        StringPair.of("%player%", player.getName()),
-                                                        StringPair.of("%killer%", tpTos.get(killerIndex).getName())
-                                                );
-                                            } else {
-                                                aresonDeathSwap.messages.sendPlainMessageDelayed(
-                                                        messagePlayer,
-                                                        "arena-kill-solo",
-                                                        5,
-                                                        StringPair.of("%player%", player.getName())
-                                                );
-                                            }
-                                        } else {
-                                            aresonDeathSwap.messages.sendPlainMessageDelayed(
-                                                    messagePlayer,
-                                                    "arena-kill-solo",
-                                                    5,
-                                                    StringPair.of("%player%", player.getName())
-                                            );
-                                        }
+                                    if (Duration.between(lastSwapTime, LocalDateTime.now()).getSeconds() < 15) {
+                                        // Is a kill
+                                        String deadPlayerName = player.getName();
+                                        aresonDeathSwap.messages.sendPlainMessageDelayed(
+                                                messagePlayer,
+                                                "arena-kill",
+                                                5,
+                                                StringPair.of("%player%", deadPlayerName),
+                                                StringPair.of("%killer%", lastSwaps.get(deadPlayerName))
+                                        );
+                                    } else {
+                                        // Is not a kill
+                                        aresonDeathSwap.messages.sendPlainMessageDelayed(
+                                                messagePlayer,
+                                                "arena-kill-solo",
+                                                5,
+                                                StringPair.of("%player%", player.getName())
+                                        );
                                     }
                                     aresonDeathSwap.messages.sendPlainMessageDelayed(
                                             messagePlayer,

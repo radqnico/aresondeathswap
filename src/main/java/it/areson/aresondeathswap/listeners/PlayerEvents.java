@@ -4,7 +4,9 @@ import com.destroystokyo.paper.event.server.ServerTickStartEvent;
 import it.areson.aresondeathswap.AresonDeathSwap;
 import it.areson.aresondeathswap.loadbalancer.LoadBalancer;
 import it.areson.aresondeathswap.loot.LootConfigReader;
-import org.bukkit.*;
+import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Player;
@@ -31,7 +33,7 @@ public class PlayerEvents implements Listener {
     }
 
     @EventHandler
-    public void tickStartEvent(ServerTickStartEvent event){
+    public void tickStartEvent(ServerTickStartEvent event) {
         LoadBalancer.LAST_TICK_START_TIME = System.currentTimeMillis();
     }
 
@@ -73,14 +75,15 @@ public class PlayerEvents implements Listener {
         }, 5);
     }
 
+    @EventHandler
     public void onAsyncPlayerChatEvent(AsyncPlayerChatEvent event) {
         World playerWorld = event.getPlayer().getLocation().getWorld();
 
-        if(playerWorld != null) {
+        if (playerWorld != null) {
             ArrayList<Player> players = new ArrayList<>(event.getRecipients());
             players.forEach(player -> {
                 World targetWorld = player.getLocation().getWorld();
-                if(targetWorld != null && !targetWorld.getName().equals(playerWorld.getName())) {
+                if (targetWorld != null && !targetWorld.getName().equals(playerWorld.getName())) {
                     event.getRecipients().remove(player);
                 }
             });
