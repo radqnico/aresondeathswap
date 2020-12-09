@@ -127,7 +127,7 @@ public class LootConfigReader extends FileManager {
         addedLocation.setY(highestBlockYAt + 1);
         Block block = addedLocation.getBlock();
         block.setType(Material.CHEST);
-        lootChests.add(addedLocation);
+        lootChests.add(block.getLocation());
     }
 
     public boolean isLootChest(Location chestLocation) {
@@ -136,7 +136,7 @@ public class LootConfigReader extends FileManager {
             World chestLocationWorld = chestLocation.getWorld();
             if (locationWorld != null && chestLocationWorld != null) {
                 if (chestLocation.getWorld().getName().equals(locationWorld.getName())) {
-                    return chestLocation.toVector().distance(location.toVector()) < 1.5;
+                    return chestLocation.toVector().distance(location.toVector()) < 1.;
                 } else {
                     return false;
                 }
