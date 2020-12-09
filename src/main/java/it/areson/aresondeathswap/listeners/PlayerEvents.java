@@ -67,7 +67,6 @@ public class PlayerEvents implements Listener {
         Optional<Location> lobbyLocation = aresonDeathSwap.getLobbyLocation();
         lobbyLocation.ifPresent(event::setRespawnLocation);
 
-
         aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(aresonDeathSwap, () -> {
             aresonDeathSwap.removePlayerFromArenas(event.getPlayer());
             aresonDeathSwap.sounds.loser(event.getPlayer());
