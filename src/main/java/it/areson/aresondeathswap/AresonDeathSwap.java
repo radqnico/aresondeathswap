@@ -65,6 +65,7 @@ public final class AresonDeathSwap extends JavaPlugin {
         new SetSpawnCommand(this, dataFile);
         new SpawnCommand(this);
         new TestCommand(this);
+        new ForceSwapCommand(this);
 
         loot.readLoot();
 

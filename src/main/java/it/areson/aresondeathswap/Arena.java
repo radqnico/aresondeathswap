@@ -144,11 +144,11 @@ public class Arena {
             size = copiedPlayers.size();
             for (Player player : copiedPlayers) {
                 if (index == size - 1) {
-                    playerDestination.put(player, copiedPlayers.get(index + 1).getLocation().clone());
-                    lastSwaps.put(player.getName(), copiedPlayers.get(index + 1).getName());
-                } else {
                     playerDestination.put(player, copiedPlayers.get(0).getLocation().clone());
                     lastSwaps.put(player.getName(), copiedPlayers.get(0).getName());
+                } else {
+                    playerDestination.put(player, copiedPlayers.get(index + 1).getLocation().clone());
+                    lastSwaps.put(player.getName(), copiedPlayers.get(index + 1).getName());
                 }
                 index++;
             }
