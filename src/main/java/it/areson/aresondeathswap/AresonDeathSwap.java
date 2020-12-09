@@ -163,8 +163,10 @@ public final class AresonDeathSwap extends JavaPlugin {
         World world = getServer().getWorld(MAIN_WORLD_NAME);
         restorePlayerState(player);
         if (world != null) {
-            Optional<Location> location = dataFile.getLocation("lobby-spawn");
-            return location.map(player::teleportAsync).orElseGet(() -> player.teleportAsync(world.getSpawnLocation()));
+            if (player.isOnline() && !player.isDead()) {
+                Optional<Location> location = dataFile.getLocation("lobby-spawn");
+                return location.map(player::teleportAsync).orElseGet(() -> player.teleportAsync(world.getSpawnLocation()));
+            }
         } else {
             getLogger().severe("Cannot found main world");
         }

@@ -19,10 +19,14 @@ public class TeleportJob implements Job {
 
     @Override
     public void compute() {
-        if (player != null) {
+        if (player != null && player.isOnline() && !player.isDead()) {
             toLocation.setYaw(player.getLocation().getYaw());
             toLocation.setPitch(player.getLocation().getPitch());
-            player.teleportAsync(toLocation).whenComplete(whenComplete);
+            if (whenComplete != null) {
+                player.teleportAsync(toLocation).whenComplete(whenComplete);
+            } else {
+                player.teleportAsync(toLocation);
+            }
         }
     }
 }
