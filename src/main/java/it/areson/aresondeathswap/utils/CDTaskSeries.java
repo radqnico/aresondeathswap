@@ -83,6 +83,7 @@ public class CDTaskSeries {
         for (Integer id : taskIDs) {
             aresonDeathSwap.getServer().getScheduler().cancelTask(id);
         }
+        taskIDs.clear();
     }
 
     private synchronized void end() {
