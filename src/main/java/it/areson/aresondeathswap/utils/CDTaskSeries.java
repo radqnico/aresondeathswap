@@ -54,19 +54,21 @@ public class CDTaskSeries {
         if (!isRunning) {
             isRunning = true;
             final long offset = countdownTime - timeBeforeShouting;
+            int counter = 0;
             for (long i = timeBeforeShouting; i >= 0; i--) {
                 final long finalI = i;
-                int counter = 1;
                 taskIDs.add(aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(
                         aresonDeathSwap,
                         () -> {
-                            sendMessages(shoutingMessage.replaceAll("%seconds%", counter + ""));
+                            sendMessages(shoutingMessage.replaceAll("%seconds%", finalI + ""));
+                            aresonDeathSwap.getLogger().info("Time: " + finalI);
                             if(finalI <=0){
                                 end();
                             }
                         },
                         20L * (counter + offset)
                 ));
+                counter++;
             }
             sendMessages(startingMessage.replaceAll("%seconds%", countdownTime + ""));
             if(arena!=null) {
