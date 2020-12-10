@@ -3,6 +3,7 @@ package it.areson.aresondeathswap.commands.admin;
 import it.areson.aresondeathswap.AresonDeathSwap;
 import it.areson.aresondeathswap.loadbalancer.LoadBalancer;
 import it.areson.aresondeathswap.loadbalancer.PlaceBlockJob;
+import it.areson.aresondeathswap.utils.CDTaskSeries;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -13,6 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static it.areson.aresondeathswap.enums.ArenaStatus.InGame;
+import static it.areson.aresondeathswap.enums.ArenaStatus.Waiting;
 
 @SuppressWarnings("NullableProblems")
 public class TestCommand implements CommandExecutor, TabCompleter {
@@ -32,17 +36,19 @@ public class TestCommand implements CommandExecutor, TabCompleter {
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] arguments) {
         if (commandSender instanceof Player) {
             Player player = (Player) commandSender;
-            Location location = player.getLocation();
-            LoadBalancer loadBalancer = new LoadBalancer("place stones");
-            for (int x = 0; x < 100; x++) {
-                for (int y = 0; y < 100; y++) {
-                    for (int z = 0; z < 100; z++) {
-                        loadBalancer.addJob(new PlaceBlockJob(player.getLocation().clone().add(x, y, z), Material.STONE));
-                    }
-                }
-            }
-            loadBalancer.start(aresonDeathSwap).whenComplete((totalTicks, exception) -> player.sendMessage("Job took " + totalTicks + " ticks"));
-            player.sendMessage("Started job");
+            new CDTaskSeries(aresonDeathSwap,
+                    aresonDeathSwap.STARTING_TIME,
+                    () -> {
+                        player.sendMessage("ended");
+                    },
+                    () -> {
+                        player.sendMessage("interrupted");
+                    },
+                    15,
+                    aresonDeathSwap.messages.getPlainMessage("countdown-starting-message"),
+                    null,
+                    aresonDeathSwap.messages.getPlainMessage("countdown-start-message")
+            ).start();
         } else {
             commandSender.sendMessage("Comando eseguibile solo da player");
         }

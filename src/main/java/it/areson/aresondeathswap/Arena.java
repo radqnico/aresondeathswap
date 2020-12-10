@@ -4,10 +4,7 @@ import it.areson.aresondeathswap.enums.ArenaStatus;
 import it.areson.aresondeathswap.loadbalancer.LoadBalancer;
 import it.areson.aresondeathswap.loadbalancer.SpawnChestJob;
 import it.areson.aresondeathswap.loadbalancer.TeleportJob;
-import it.areson.aresondeathswap.utils.ArenaPlaceholders;
-import it.areson.aresondeathswap.utils.Countdown;
-import it.areson.aresondeathswap.utils.DelayedRepeatingTask;
-import it.areson.aresondeathswap.utils.StringPair;
+import it.areson.aresondeathswap.utils.*;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.HumanEntity;
@@ -27,7 +24,7 @@ public class Arena {
 
     private final AresonDeathSwap aresonDeathSwap;
     private final String arenaName;
-    private final Countdown countdownPregame;
+    private final CDTaskSeries countdownPregame;
     private final ArrayList<Player> players;
     private final ArenaPlaceholders placeholders;
     private final ArrayList<Location> spawns;
@@ -54,7 +51,7 @@ public class Arena {
         placeholders.register();
         lastSwaps = new HashMap<>();
         //Countdowns
-        this.countdownPregame = new Countdown(aresonDeathSwap,
+        this.countdownPregame = new CDTaskSeries(aresonDeathSwap,
                 aresonDeathSwap.STARTING_TIME,
                 () -> {
                     try {
@@ -77,7 +74,6 @@ public class Arena {
                         e.printStackTrace(System.out);
                     }
                 },
-                0,
                 15,
                 aresonDeathSwap.messages.getPlainMessage("countdown-starting-message"),
                 this,
@@ -255,11 +251,9 @@ public class Arena {
     }
 
     public void interruptPregame() {
-        if (countdownPregame.isRunning()) {
-            countdownPregame.interrupt();
-            ArrayList<Player> copiedPlayers = new ArrayList<>(players);
-            copiedPlayers.forEach(player -> aresonDeathSwap.sounds.startingGameInterrupted(player));
-        }
+        countdownPregame.interrupt();
+        ArrayList<Player> copiedPlayers = new ArrayList<>(players);
+        copiedPlayers.forEach(player -> aresonDeathSwap.sounds.startingGameInterrupted(player));
     }
 
     public void interruptGame() {
@@ -417,17 +411,19 @@ public class Arena {
     }
 
     public void startPregame() {
-        if (!countdownPregame.isRunning()) {
-            countdownPregame.start();
-            arenaStatus = ArenaStatus.Starting;
-            placeholders.setArenaStatus(Starting);
-            ArrayList<Player> copiedPlayers = new ArrayList<>(players);
-            copiedPlayers.forEach(player -> aresonDeathSwap.sounds.startingGame(player));
-            spawns.forEach(location -> location.getChunk().load());
-        }
+        countdownPregame.start();
+        arenaStatus = ArenaStatus.Starting;
+        placeholders.setArenaStatus(Starting);
+        ArrayList<Player> copiedPlayers = new ArrayList<>(players);
+        copiedPlayers.forEach(player -> aresonDeathSwap.sounds.startingGame(player));
+        spawns.forEach(location -> location.getChunk().load());
     }
 
     public ArenaStatus getArenaStatus() {
         return arenaStatus;
+    }
+
+    public String getName() {
+        return arenaName;
     }
 }
