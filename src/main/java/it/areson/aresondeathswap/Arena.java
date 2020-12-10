@@ -30,7 +30,7 @@ public class Arena {
     private final ArrayList<Location> spawns;
     private final ArrayList<Player> tpFroms;
     private final ArrayList<Player> tpTos;
-    private DelayedRepeatingTask countdownGame;
+    private CDTaskSeries countdownGame;
     private ArenaStatus arenaStatus;
     private LocalDateTime lastSwapTime;
     private Map<String, String> lastSwaps;
@@ -51,7 +51,8 @@ public class Arena {
         placeholders.register();
         lastSwaps = new HashMap<>();
         //Countdowns
-        this.countdownPregame = new CDTaskSeries(aresonDeathSwap,
+        this.countdownPregame = new CDTaskSeries(
+                aresonDeathSwap,
                 aresonDeathSwap.STARTING_TIME,
                 () -> {
                     try {
@@ -80,15 +81,12 @@ public class Arena {
                 aresonDeathSwap.messages.getPlainMessage("countdown-start-message")
         );
 
-        this.countdownGame = new DelayedRepeatingTask(
+        this.countdownGame = new CDTaskSeries(
                 aresonDeathSwap,
                 randomTeleportTime(),
                 () -> {
                     try {
                         rotatePlayers();
-                        int swapTime = randomTeleportTime();
-                        countdownGame.setEverySeconds(swapTime);
-                        aresonDeathSwap.getLogger().info("Started new countdownGame in arena " + arenaName + " with " + swapTime + " seconds");
                         roundCounter++;
                         lastSwapTime = LocalDateTime.now();
                         if (roundCounter > aresonDeathSwap.MAX_ROUNDS) {
@@ -108,9 +106,22 @@ public class Arena {
                         e.printStackTrace(System.out);
                     }
                 },
-                Optional.of(aresonDeathSwap.messages.getPlainMessage("countdown-swap-message")),
-                players
+                () -> {
+                    aresonDeathSwap.getLogger().info("Interrupted countdownGame in arena " + arenaName);
+                },
+                10,
+                aresonDeathSwap.messages.getPlainMessage("countdown-swap-message"),
+                this,
+                null
         );
+    }
+
+    public void restartCountdownGame(){
+        countdownGame.interrupt();
+        int swapTime = randomTeleportTime();
+        countdownGame.setCountdownTime(swapTime);
+        countdownGame.start();
+        aresonDeathSwap.getLogger().info("Started new countdownGame in arena " + arenaName + " with " + swapTime + " seconds");
     }
 
     public void forceSwap() {
@@ -124,7 +135,7 @@ public class Arena {
     }
 
     public void rotatePlayers() {
-        // TODO messaggi rotti
+
         LoadBalancer swapsLoadBalancer = new LoadBalancer("TELEPORTS " + arenaName);
         aresonDeathSwap.getLogger().info("Rotating " + players.size() + " players in arena " + arenaName);
 
@@ -151,8 +162,6 @@ public class Arena {
             }
         } while (size != copiedPlayers.size());
 
-        LoadBalancer chestLoadBalancer = new LoadBalancer("Chests swapsLoadBalancer of '" + arenaName + "'");
-
         playerDestination.forEach(((player, location) -> swapsLoadBalancer.addJob(
                 new TeleportJob(player, location, (input, exception) -> {
                     if (input) {
@@ -174,9 +183,8 @@ public class Arena {
         swapsLoadBalancer.start(aresonDeathSwap).whenComplete(
                 (totalTicks, exception) -> aresonDeathSwap.getLogger().info("Rotating " + players.size() + " players in arena " + arenaName + " took " + totalTicks + " ticks")
         );
-        chestLoadBalancer.start(aresonDeathSwap).whenComplete(
-                (totalTicks, exception) -> aresonDeathSwap.getLogger().info("Spawning chests in arena " + arenaName + " took " + totalTicks + " ticks")
-        );
+
+        restartCountdownGame();
     }
 
     private void witherPlayers() {
@@ -224,7 +232,7 @@ public class Arena {
                 }
             });
             loadBalancer.start(aresonDeathSwap).whenComplete((totalTicks, exception) -> aresonDeathSwap.getLogger().severe("Inserted players in arena '" + arenaName + "' in " + totalTicks + " ticks"));
-            countdownGame.startRepeating();
+            countdownGame.start();
             this.arenaStatus = ArenaStatus.InGame;
         } else {
             aresonDeathSwap.getLogger().severe("Cannot found arena world");
@@ -273,7 +281,7 @@ public class Arena {
         listCompletableFuture.whenComplete((booleans, throwable) -> {
 
             if (!booleans.contains(false)) {
-                countdownGame.stopRepeating();
+                countdownGame.interrupt();
                 aresonDeathSwap.loot.removeChestOfWorld(arenaName);
 
                 aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(aresonDeathSwap, () -> {

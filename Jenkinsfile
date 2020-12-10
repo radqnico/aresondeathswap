@@ -40,7 +40,7 @@ pipeline {
                                         transfers: [
                                                 sshTransfer(
                                                         sourceFiles: "**/*.jar",
-                                                        remoteDirectory: "/home/minecraft/test/plugins/",
+                                                        remoteDirectory: "/home/minecraft/deathSwap/plugins/",
                                                         flatten: true,
                                                         excludes: "**/*original*.jar"
                                                 )

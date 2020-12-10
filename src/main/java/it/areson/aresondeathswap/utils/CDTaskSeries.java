@@ -14,15 +14,14 @@ import java.util.stream.Collectors;
 public class CDTaskSeries {
 
     private final AresonDeathSwap aresonDeathSwap;
-    private final int countdownTime;
     private final Runnable taskEnded;
     private final Runnable taskInterrupted;
     private final int timeBeforeShouting;
     private final String shoutingMessage;
-    private boolean isRunning;
     private final Arena arena;
     private final String startingMessage;
-
+    private int countdownTime;
+    private boolean isRunning;
     private HashSet<Integer> taskIDs;
 
     public CDTaskSeries(AresonDeathSwap plugin, int countdownTime, Runnable taskEnded, Runnable taskInterrupted, int timeBeforeShouting, String shoutingMessage, Arena arena, String startingMessage) {
@@ -39,7 +38,7 @@ public class CDTaskSeries {
     }
 
     private synchronized void sendMessages(String message) {
-        if(arena!=null) {
+        if (arena != null) {
             List<Player> playersClone = new ArrayList<>(arena.getPlayers());
             playersClone.forEach(player -> {
                 if (player != null) {
@@ -62,7 +61,7 @@ public class CDTaskSeries {
                         () -> {
                             sendMessages(shoutingMessage.replaceAll("%seconds%", finalI + ""));
                             aresonDeathSwap.getLogger().info("Time: " + finalI);
-                            if(finalI <=0){
+                            if (finalI <= 0) {
                                 end();
                             }
                         },
@@ -70,23 +69,25 @@ public class CDTaskSeries {
                 ));
                 counter++;
             }
-            sendMessages(startingMessage.replaceAll("%seconds%", countdownTime + ""));
-            if(arena!=null) {
+            if (startingMessage != null) {
+                sendMessages(startingMessage.replaceAll("%seconds%", countdownTime + ""));
+            }
+            if (arena != null) {
                 aresonDeathSwap.getLogger().info("Started countdown as tasklist for '" + arena.getName() + "'");
             }
             aresonDeathSwap.getLogger().info("Tasks: " + aresonDeathSwap.getServer().getScheduler().getPendingTasks().stream().filter(task -> task.getOwner().equals(aresonDeathSwap)).map(BukkitTask::getTaskId).collect(Collectors.toList()));
         }
     }
 
-    private void cancelAllTasks(){
-        for(Integer id : taskIDs){
+    private void cancelAllTasks() {
+        for (Integer id : taskIDs) {
             aresonDeathSwap.getServer().getScheduler().cancelTask(id);
         }
     }
 
     private synchronized void end() {
         isRunning = false;
-        if(arena!=null) {
+        if (arena != null) {
             aresonDeathSwap.getLogger().info("Ended countdown as tasklist for '" + arena.getName() + "'");
         }
         cancelAllTasks();
@@ -95,11 +96,14 @@ public class CDTaskSeries {
 
     public synchronized void interrupt() {
         isRunning = false;
-        if(arena!=null) {
+        if (arena != null) {
             aresonDeathSwap.getLogger().info("Interrupted countdown as tasklist for '" + arena.getName() + "'");
         }
         cancelAllTasks();
         aresonDeathSwap.getServer().getScheduler().runTask(aresonDeathSwap, taskInterrupted);
     }
 
+    public void setCountdownTime(int countdownTime) {
+        this.countdownTime = countdownTime;
+    }
 }
