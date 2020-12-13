@@ -53,7 +53,8 @@ public class SetArenaCommand implements CommandExecutor {
 
                     locationWorld.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
 
-                    if (multiverseCore.getMVWorldManager().deleteWorld(worldName, true, false)) {
+                    if (multiverseCore.getMVWorldManager().unloadWorld(worldName, true)) {
+                        multiverseCore.getMVWorldManager().removeWorldFromConfig(worldName);
                         aresonDeathSwap.loadArenaByName(worldName);
                     } else {
                         aresonDeathSwap.getLogger().severe("Error while deleting MultiVerse world " + worldName);
