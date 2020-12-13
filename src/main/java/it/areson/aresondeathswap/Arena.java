@@ -28,12 +28,10 @@ public class Arena {
     private final ArrayList<Player> players;
     private final ArenaPlaceholders placeholders;
     private final ArrayList<Location> spawns;
-    private final ArrayList<Player> tpFroms;
-    private final ArrayList<Player> tpTos;
-    private CDTaskSeries countdownGame;
+    private final CDTaskSeries countdownGame;
     private ArenaStatus arenaStatus;
     private LocalDateTime lastSwapTime;
-    private Map<String, String> lastSwaps;
+    private final Map<String, String> lastSwaps;
 
     private int roundCounter;
 
@@ -43,8 +41,6 @@ public class Arena {
         this.players = new ArrayList<>();
         this.arenaStatus = Waiting;
         lastSwapTime = LocalDateTime.MIN;
-        tpFroms = new ArrayList<>();
-        tpTos = new ArrayList<>();
         roundCounter = 0;
         spawns = new ArrayList<>();
         placeholders = new ArenaPlaceholders(this.arenaStatus, this.arenaName, this.players);
@@ -106,9 +102,7 @@ public class Arena {
                         e.printStackTrace(System.out);
                     }
                 },
-                () -> {
-                    aresonDeathSwap.getLogger().info("Interrupted countdownGame in arena " + arenaName);
-                },
+                () -> aresonDeathSwap.getLogger().info("Interrupted countdownGame in arena " + arenaName),
                 10,
                 aresonDeathSwap.messages.getPlainMessage("countdown-swap-message"),
                 this,
@@ -434,4 +428,5 @@ public class Arena {
     public String getName() {
         return arenaName;
     }
+
 }

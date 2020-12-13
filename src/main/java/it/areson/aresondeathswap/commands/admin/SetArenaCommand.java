@@ -1,6 +1,7 @@
 package it.areson.aresondeathswap.commands.admin;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
 import it.areson.aresondeathswap.AresonDeathSwap;
 import it.areson.aresondeathswap.managers.FileManager;
@@ -44,18 +45,18 @@ public class SetArenaCommand implements CommandExecutor {
                 String worldName = locationWorld.getName();
                 if (!worldName.equalsIgnoreCase(aresonDeathSwap.MAIN_WORLD_NAME)) {
 
-                    Block highestBlock = locationWorld.getHighestBlockAt(0, 0);
-                    locationWorld.setSpawnLocation(highestBlock.getLocation());
-
                     dataFile.addArena(locationWorld.getName());
 
+                    Block highestBlock = locationWorld.getHighestBlockAt(0, 0);
+                    locationWorld.setSpawnLocation(highestBlock.getLocation());
                     locationWorld.getWorldBorder().setCenter(0, 0);
                     locationWorld.getWorldBorder().setSize(3500);
-
                     locationWorld.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
 
                     try {
-                        multiverseCore.getMVWorldManager().getMVWorld(locationWorld).setPropertyValue("autoLoad", "false");
+                        MultiverseWorld mvWorld = multiverseCore.getMVWorldManager().getMVWorld(locationWorld);
+                        mvWorld.setPropertyValue("autoLoad", "false");
+                        mvWorld.setSpawnLocation(highestBlock.getLocation());
 
                         if (multiverseCore.getMVWorldManager().unloadWorld(worldName, true)) {
                             aresonDeathSwap.loadArenaByName(worldName);
@@ -65,7 +66,7 @@ public class SetArenaCommand implements CommandExecutor {
 
                         commandSender.sendMessage("Arena creata");
                     } catch (PropertyDoesNotExistException e) {
-                        e.printStackTrace();
+                        aresonDeathSwap.getServer().getLogger().severe("Invalid property on MultiVerse world");
                     }
                 } else {
                     commandSender.sendMessage("Sei nel mondo principale");

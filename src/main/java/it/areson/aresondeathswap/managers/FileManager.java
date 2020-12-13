@@ -43,9 +43,11 @@ public class FileManager {
 
     public void addArena(String arenaName) {
         List<String> arenas = fileConfiguration.getStringList(aresonDeathSwap.ARENAS_PATH);
-        arenas.add(arenaName);
-        fileConfiguration.set(aresonDeathSwap.ARENAS_PATH, arenas);
-        save();
+        if (!arenas.contains(arenaName)) {
+            arenas.add(arenaName);
+            fileConfiguration.set(aresonDeathSwap.ARENAS_PATH, arenas);
+            save();
+        }
     }
 
     public void removeArena(String arenaName) {
@@ -59,7 +61,7 @@ public class FileManager {
         String worldName = fileConfiguration.getString(path + ".world");
         if (worldName != null) {
             World world = aresonDeathSwap.getServer().getWorld(worldName);
-            if(world != null) {
+            if (world != null) {
                 return Optional.of(new Location(
                         world,
                         fileConfiguration.getDouble(path + ".x"),
@@ -79,12 +81,12 @@ public class FileManager {
     public void setLocation(Location location, String path) {
         World world = location.getWorld();
         if (world != null) {
-            fileConfiguration.set(path+".world", world.getName());
-            fileConfiguration.set(path+".x", location.getX());
-            fileConfiguration.set(path+".y", location.getY());
-            fileConfiguration.set(path+".z", location.getZ());
-            fileConfiguration.set(path+".yaw", location.getYaw());
-            fileConfiguration.set(path+".pitch", location.getPitch());
+            fileConfiguration.set(path + ".world", world.getName());
+            fileConfiguration.set(path + ".x", location.getX());
+            fileConfiguration.set(path + ".y", location.getY());
+            fileConfiguration.set(path + ".z", location.getZ());
+            fileConfiguration.set(path + ".yaw", location.getYaw());
+            fileConfiguration.set(path + ".pitch", location.getPitch());
         }
         save();
     }
