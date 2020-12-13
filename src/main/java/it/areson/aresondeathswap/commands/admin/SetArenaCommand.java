@@ -52,8 +52,7 @@ public class SetArenaCommand implements CommandExecutor {
                     locationWorld.getWorldBorder().setSize(3500);
 
                     locationWorld.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
-                    aresonDeathSwap.getServer().unloadWorld(worldName, true);
-                    multiverseCore.getMVWorldManager().unloadWorld(worldName, true);
+                    multiverseCore.getMVWorldManager().deleteWorld(worldName, true, false);
 
                     aresonDeathSwap.loadArenaByName(worldName);
 
