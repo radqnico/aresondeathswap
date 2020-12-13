@@ -1,6 +1,7 @@
 package it.areson.aresondeathswap.commands.admin;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException;
 import it.areson.aresondeathswap.AresonDeathSwap;
 import it.areson.aresondeathswap.managers.FileManager;
 import org.bukkit.GameRule;
@@ -53,13 +54,19 @@ public class SetArenaCommand implements CommandExecutor {
 
                     locationWorld.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
 
-                    if (multiverseCore.getMVWorldManager().unloadWorld(worldName, true)) {
-                        aresonDeathSwap.loadArenaByName(worldName);
-                    } else {
-                        aresonDeathSwap.getLogger().severe("Error while deleting MultiVerse world " + worldName);
-                    }
+                    try {
+                        multiverseCore.getMVWorldManager().getMVWorld(locationWorld).setPropertyValue("autoLoad", "false");
 
-                    commandSender.sendMessage("Arena creata");
+                        if (multiverseCore.getMVWorldManager().unloadWorld(worldName, true)) {
+                            aresonDeathSwap.loadArenaByName(worldName);
+                        } else {
+                            aresonDeathSwap.getLogger().severe("Error while deleting MultiVerse world " + worldName);
+                        }
+
+                        commandSender.sendMessage("Arena creata");
+                    } catch (PropertyDoesNotExistException e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     commandSender.sendMessage("Sei nel mondo principale");
                 }
