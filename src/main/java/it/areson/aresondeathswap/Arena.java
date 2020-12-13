@@ -25,6 +25,7 @@ public class Arena {
 
     private final AresonDeathSwap aresonDeathSwap;
     private final String arenaName;
+    private final String arenaWorld;
     private final CDTaskSeries countdownPregame;
     private final ArrayList<Player> players;
     private final ArenaPlaceholders placeholders;
@@ -39,6 +40,7 @@ public class Arena {
     public Arena(AresonDeathSwap aresonDeathSwap, String arenaName) {
         this.aresonDeathSwap = aresonDeathSwap;
         this.arenaName = arenaName;
+        this.arenaWorld = arenaName + "Game";
         this.players = new ArrayList<>();
         this.arenaStatus = Waiting;
         lastSwapTime = LocalDateTime.MIN;
@@ -130,7 +132,6 @@ public class Arena {
     }
 
     public void rotatePlayers() {
-
         LoadBalancer swapsLoadBalancer = new LoadBalancer("TELEPORTS " + arenaName);
         aresonDeathSwap.getLogger().info("Rotating " + players.size() + " players in arena " + arenaName);
 
@@ -210,7 +211,8 @@ public class Arena {
 
     public void startGame() {
         roundCounter = 0;
-        World world = aresonDeathSwap.getServer().getWorld(arenaName);
+        World world = aresonDeathSwap.getServer().getWorld(arenaWorld);
+
         if (world != null) {
             world.setTime((int) (Math.random() * 24000));
             ArrayList<Player> copiedPlayers = new ArrayList<>(players);
@@ -230,7 +232,7 @@ public class Arena {
             countdownGame.start();
             this.arenaStatus = ArenaStatus.InGame;
         } else {
-            aresonDeathSwap.getLogger().severe("Cannot found arena world");
+            aresonDeathSwap.getLogger().severe("Cannot found arena world " + arenaWorld + " for " + arenaName);
         }
     }
 
