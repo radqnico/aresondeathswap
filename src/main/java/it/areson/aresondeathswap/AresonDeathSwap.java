@@ -53,10 +53,9 @@ public final class AresonDeathSwap extends JavaPlugin {
         titles = new TitlesManager(messages);
         eventCall = new EventCallManager(this);
         loot = new LootConfigReader(this, "loot.yml");
-//        loadArenas(dataFile);
-
-        //Stuff
         multiverseCore = JavaPlugin.getPlugin(MultiverseCore.class);
+
+        loadArenas(dataFile);
 
         new PlayCommand(this);
         new LeaveCommand(this);
@@ -105,8 +104,10 @@ public final class AresonDeathSwap extends JavaPlugin {
     }
 
     private void loadArenas(FileManager dataFile) {
-        List<String> arenas = dataFile.getFileConfiguration().getStringList(ARENAS_PATH);
-        arenas.forEach(this::loadArenaByName);
+        List<String> configArenas = dataFile.getFileConfiguration().getStringList(ARENAS_PATH);
+        configArenas.forEach(
+                arenaName -> arenas.put(arenaName, new Arena(this, arenaName))
+        );
     }
 
     public void loadArenaByName(String arenaName) {
@@ -118,7 +119,7 @@ public final class AresonDeathSwap extends JavaPlugin {
                     arenas.put(arenaName, new Arena(this, arenaName));
                     getLogger().info("World " + arenaName + " loaded successfully");
                 } else {
-                    getLogger().severe("Error while loading world " + arenaName);
+                    getLogger().severe("Error while loading MultiVerse world " + arenaName);
                 }
             } else {
                 getLogger().severe("No arenas section found");
