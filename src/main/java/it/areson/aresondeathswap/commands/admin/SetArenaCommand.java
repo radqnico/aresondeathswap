@@ -1,5 +1,6 @@
 package it.areson.aresondeathswap.commands.admin;
 
+import com.onarandombox.MultiverseCore.MultiverseCore;
 import it.areson.aresondeathswap.AresonDeathSwap;
 import it.areson.aresondeathswap.managers.FileManager;
 import org.bukkit.GameRule;
@@ -11,6 +12,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
+import org.graalvm.compiler.nodes.memory.MemoryCheckpoint;
 
 import java.util.Objects;
 
@@ -19,10 +21,12 @@ public class SetArenaCommand implements CommandExecutor {
 
     private final AresonDeathSwap aresonDeathSwap;
     private final FileManager dataFile;
+    private final MultiverseCore multiverseCore;
 
-    public SetArenaCommand(AresonDeathSwap plugin, FileManager fileManager) {
-        aresonDeathSwap = plugin;
-        dataFile = fileManager;
+    public SetArenaCommand(AresonDeathSwap plugin, FileManager dataFile, MultiverseCore multiverseCore) {
+        this.aresonDeathSwap = plugin;
+        this.dataFile = dataFile;
+        this.multiverseCore = multiverseCore;
 
         PluginCommand pluginCommand = aresonDeathSwap.getCommand("setArena");
         if (!Objects.isNull(pluginCommand)) {
@@ -35,6 +39,7 @@ public class SetArenaCommand implements CommandExecutor {
         if (commandSender instanceof Player) {
             Location playerLocation = ((Player) commandSender).getLocation();
             World locationWorld = playerLocation.getWorld();
+
             if (locationWorld != null) {
                 String worldName = locationWorld.getName();
                 if (!worldName.equalsIgnoreCase(aresonDeathSwap.MAIN_WORLD_NAME)) {
@@ -47,13 +52,19 @@ public class SetArenaCommand implements CommandExecutor {
                     locationWorld.getWorldBorder().setCenter(0,0);
                     locationWorld.getWorldBorder().setSize(3500);
 
-                    //Kick arena players
-                    aresonDeathSwap.kickPlayersFromWorld(locationWorld.getName());
-                    commandSender.sendMessage("Arena creata");
-
                     locationWorld.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
                     aresonDeathSwap.getServer().unloadWorld(worldName, true);
-                    aresonDeathSwap.loadArenaByName(worldName);
+                    multiverseCore.getMVWorldManager().unloadWorld(worldName, true);
+
+                    aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(
+                            aresonDeathSwap,
+                            () -> multiverseCore.getMVWorldManager().loadWorld(worldName),
+                            100
+                    );
+
+//                    aresonDeathSwap.loadArenaByName(worldName);
+
+                    commandSender.sendMessage("Arena creata");
                 } else {
                     commandSender.sendMessage("Sei nel mondo principale");
                 }

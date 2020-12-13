@@ -54,13 +54,14 @@ public final class AresonDeathSwap extends JavaPlugin {
         loot = new LootConfigReader(this, "loot.yml");
 //        loadArenas(dataFile);
 
+        //Stuff
+        MultiverseCore multiverseCore = JavaPlugin.getPlugin(MultiverseCore.class);
+
         new PlayCommand(this);
         new LeaveCommand(this);
 
-        new SetArenaCommand(this, dataFile);
+        new SetArenaCommand(this, dataFile, multiverseCore);
         new DeleteArenaCommand(this, dataFile);
-        new LoadWorldCommand(this);
-        new TpWorldCommand(this);
         new SetSpawnCommand(this, dataFile);
         new SpawnCommand(this);
         new TestCommand(this);
@@ -69,11 +70,6 @@ public final class AresonDeathSwap extends JavaPlugin {
         loot.readLoot();
 
         new PlayerEvents(this);
-
-
-        //Stuff
-        MultiverseCore multiverseCore = JavaPlugin.getPlugin(MultiverseCore.class);
-        multiverseCore.getMVWorldManager().addWorld("toRemove", World.Environment.NORMAL, "", WorldType.NORMAL, true, "");
     }
 
     @Override
