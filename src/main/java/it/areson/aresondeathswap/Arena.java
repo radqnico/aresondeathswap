@@ -228,7 +228,7 @@ public class Arena {
                     loadBalancer.addJob(new TeleportJob(player, getRandomLocationAroundSpawn(world), (result, exception) -> teleportInArenaEffects(result, player)));
                 }
             });
-            loadBalancer.start(aresonDeathSwap).whenComplete((totalTicks, exception) -> aresonDeathSwap.getLogger().severe("Inserted players in arena '" + arenaName + "' in " + totalTicks + " ticks"));
+            loadBalancer.start(aresonDeathSwap).whenComplete((totalTicks, exception) -> aresonDeathSwap.getLogger().info("Inserted players in arena '" + arenaName + "' in " + totalTicks + " ticks"));
             countdownGame.start();
             this.arenaStatus = ArenaStatus.InGame;
         } else {
@@ -318,9 +318,10 @@ public class Arena {
                     )
             );
             players.add(player);
+
             // Async spawn generation
             aresonDeathSwap.getServer().getScheduler().runTaskAsynchronously(aresonDeathSwap, () -> {
-                World world = aresonDeathSwap.getServer().getWorld(arenaName);
+                World world = aresonDeathSwap.getServer().getWorld(arenaWorld);
                 if (world != null) {
                     spawns.add(getRandomLocationAroundSpawn(world));
                 }
