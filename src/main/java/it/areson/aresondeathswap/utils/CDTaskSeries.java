@@ -22,7 +22,7 @@ public class CDTaskSeries {
     private final String startingMessage;
     private int countdownTime;
     private boolean isRunning;
-    private HashSet<Integer> taskIDs;
+    private final HashSet<Integer> taskIDs;
 
     public CDTaskSeries(AresonDeathSwap plugin, int countdownTime, Runnable taskEnded, Runnable taskInterrupted, int timeBeforeShouting, String shoutingMessage, Arena arena, String startingMessage) {
         aresonDeathSwap = plugin;
