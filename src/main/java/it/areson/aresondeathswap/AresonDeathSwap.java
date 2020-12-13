@@ -1,6 +1,7 @@
 package it.areson.aresondeathswap;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import it.areson.aresondeathswap.commands.LeaveCommand;
 import it.areson.aresondeathswap.commands.PlayCommand;
 import it.areson.aresondeathswap.commands.SpawnCommand;
@@ -9,7 +10,9 @@ import it.areson.aresondeathswap.enums.ArenaStatus;
 import it.areson.aresondeathswap.listeners.PlayerEvents;
 import it.areson.aresondeathswap.loot.LootConfigReader;
 import it.areson.aresondeathswap.managers.*;
-import org.bukkit.*;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
@@ -76,32 +79,41 @@ public final class AresonDeathSwap extends JavaPlugin {
     public void onDisable() {
         getServer().getOnlinePlayers().forEach(player -> player.kickPlayer("Server chiuso"));
 
-        unloadArenaWorlds();
+        arenas.keySet().forEach(this::deleteArenaWorld);
     }
 
-    public boolean loadArenaWorld(String worldName) {
-        World world = new WorldCreator(worldName).createWorld();
-        if (world != null) {
-            world.setAutoSave(false);
-            world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
-            world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
-            getLogger().info("Correcly loaded world " + worldName);
-            return true;
+    public boolean resetArenaWorld(String arenaName) {
+        String arenaWorld = arenaName + "Game";
+
+        if (multiverseCore.getMVWorldManager().deleteWorld(arenaWorld)) {
+
+            if (multiverseCore.getMVWorldManager().cloneWorld(arenaName, arenaWorld)) {
+                MultiverseWorld mvWorld = multiverseCore.getMVWorldManager().getMVWorld(arenaWorld);
+
+                if (mvWorld != null) {
+                    mvWorld.getCBWorld().setAutoSave(false);
+                    getLogger().info("World " + arenaWorld + " reset successfully");
+                    return true;
+                } else {
+                    getLogger().severe("Error while getting MultiVerse world " + arenaWorld + " in resetArenaWorld");
+                }
+            } else {
+                getLogger().severe("Error while loading MultiVerse world " + arenaWorld + " in resetArenaWorld");
+            }
         } else {
-            getLogger().severe("Error while loading world " + worldName);
-            return false;
+            getLogger().severe("Error while deleting world " + arenaWorld + " in resetArenaWorld");
         }
+
+        return false;
     }
 
-    private boolean unloadArenaWorld(String worldName) {
+    private void deleteArenaWorld(String worldName) {
         String arenaWorld = worldName + "Game";
 
         if (multiverseCore.getMVWorldManager().deleteWorld(arenaWorld)) {
             getLogger().info("World " + arenaWorld + " deleted successfully");
-            return true;
         } else {
             getLogger().info("Error while deleting world " + arenaWorld);
-            return false;
         }
     }
 
@@ -129,10 +141,6 @@ public final class AresonDeathSwap extends JavaPlugin {
         } else {
             getLogger().severe("Arena already intialized");
         }
-    }
-
-    private void unloadArenaWorlds() {
-        arenas.keySet().forEach(this::unloadArenaWorld);
     }
 
     public void restorePlayerState(Player player) {

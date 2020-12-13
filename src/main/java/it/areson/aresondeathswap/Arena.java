@@ -2,9 +2,10 @@ package it.areson.aresondeathswap;
 
 import it.areson.aresondeathswap.enums.ArenaStatus;
 import it.areson.aresondeathswap.loadbalancer.LoadBalancer;
-import it.areson.aresondeathswap.loadbalancer.SpawnChestJob;
 import it.areson.aresondeathswap.loadbalancer.TeleportJob;
-import it.areson.aresondeathswap.utils.*;
+import it.areson.aresondeathswap.utils.ArenaPlaceholders;
+import it.areson.aresondeathswap.utils.CDTaskSeries;
+import it.areson.aresondeathswap.utils.StringPair;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.HumanEntity;
@@ -110,7 +111,7 @@ public class Arena {
         );
     }
 
-    public void restartCountdownGame(){
+    public void restartCountdownGame() {
         countdownGame.interrupt();
         int swapTime = randomTeleportTime();
         countdownGame.setCountdownTime(swapTime);
@@ -260,49 +261,40 @@ public class Arena {
 
     public void interruptGame() {
         World world = aresonDeathSwap.getServer().getWorld(arenaName);
-        List<CompletableFuture<Boolean>> teleports = new ArrayList<>();
+        List<CompletableFuture<Boolean>> teleportsList = new ArrayList<>();
+
         if (world != null) {
             for (Player player : world.getPlayers()) {
-                teleports.add(aresonDeathSwap.teleportToLobbySpawn(player));
+                teleportsList.add(aresonDeathSwap.teleportToLobbySpawn(player));
             }
             spawns.clear();
         } else {
             aresonDeathSwap.getLogger().severe("Error while getting the world while teleporting players");
         }
-        CompletableFuture<List<Boolean>> listCompletableFuture = CompletableFuture.allOf(teleports.toArray(new CompletableFuture[0]))
-                .thenApply(ignored -> teleports.stream().map(CompletableFuture::join).collect(Collectors.toList()));
+        CompletableFuture<List<Boolean>> futureTeleports = CompletableFuture.allOf(teleportsList.toArray(new CompletableFuture[0]))
+                .thenApply(ignored -> teleportsList.stream().map(CompletableFuture::join).collect(Collectors.toList()));
 
-        listCompletableFuture.whenComplete((booleans, throwable) -> {
-
+        futureTeleports.whenComplete((booleans, throwable) -> {
             if (!booleans.contains(false)) {
                 countdownGame.interrupt();
                 aresonDeathSwap.loot.removeChestOfWorld(arenaName);
 
-                aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(aresonDeathSwap, () -> {
-                    if (world != null) {
-                        aresonDeathSwap.getServer().getLogger().warning("Players on " + arenaName + ": " + world.getPlayers());
-                        while (world.getPlayers().size()>0){
-                            aresonDeathSwap.teleportToLobbySpawn(world.getPlayers().get(0));
-                        }
+                if (world != null) {
+                    aresonDeathSwap.getServer().getLogger().warning("Players on " + arenaName + ": " + world.getPlayers());
+                    while (world.getPlayers().size() > 0) {
+                        aresonDeathSwap.teleportToLobbySpawn(world.getPlayers().get(0));
                     }
-                    if (aresonDeathSwap.getServer().unloadWorld(arenaName, false)) {
-                        aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(aresonDeathSwap, () -> {
-                            if (aresonDeathSwap.loadArenaWorld(arenaName)) {
-                                arenaStatus = Waiting;
-                                placeholders.setArenaStatus(Waiting);
-                                placeholders.setRoundsRemainingString("Non in gioco");
-                                lastSwapTime = LocalDateTime.MIN;
-                                aresonDeathSwap.getLogger().info("Game on '" + arenaName + "' interrupted");
-                            } else {
-                                aresonDeathSwap.getLogger().severe("Error while loading world " + arenaName);
-                            }
-                        }, 10 * 20);
+                }
 
-                        aresonDeathSwap.getLogger().info("World " + arenaName + " unloaded. Tasked the load");
-                    } else {
-                        aresonDeathSwap.getLogger().severe("Error while unloading world " + arenaName);
-                    }
-                }, 10 * 20);
+                if (aresonDeathSwap.resetArenaWorld(arenaName)) {
+                    arenaStatus = Waiting;
+                    placeholders.setArenaStatus(Waiting);
+                    placeholders.setRoundsRemainingString("Non in gioco");
+                    lastSwapTime = LocalDateTime.MIN;
+                    aresonDeathSwap.getLogger().info("Game on " + arenaName + " restarted");
+                } else {
+                    aresonDeathSwap.getLogger().severe("Error while resetting arena world " + arenaName);
+                }
             } else {
                 aresonDeathSwap.getLogger().severe("Error while teleporting to main world from " + arenaName);
             }
@@ -409,6 +401,7 @@ public class Arena {
         } else {
             aresonDeathSwap.getLogger().severe("Interrupting game with no remaining players");
         }
+
         interruptGame();
     }
 

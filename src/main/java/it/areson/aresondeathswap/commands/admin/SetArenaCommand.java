@@ -52,6 +52,7 @@ public class SetArenaCommand implements CommandExecutor {
                     locationWorld.getWorldBorder().setCenter(0, 0);
                     locationWorld.getWorldBorder().setSize(3500);
                     locationWorld.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
+                    locationWorld.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
 
                     try {
                         MultiverseWorld mvWorld = multiverseCore.getMVWorldManager().getMVWorld(locationWorld);
