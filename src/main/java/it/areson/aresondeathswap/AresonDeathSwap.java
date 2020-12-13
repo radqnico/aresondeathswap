@@ -94,11 +94,13 @@ public final class AresonDeathSwap extends JavaPlugin {
     }
 
     private boolean unloadArenaWorld(String worldName) {
-        if (getServer().unloadWorld(worldName, false)) {
-            getLogger().info("World " + worldName + " unloaded successfully");
+        String arenaWorld = worldName + "Game";
+
+        if (multiverseCore.getMVWorldManager().deleteWorld(arenaWorld)) {
+            getLogger().info("World " + arenaWorld + " deleted successfully");
             return true;
         } else {
-            getLogger().info("Error while unloading world " + worldName);
+            getLogger().info("Error while deleting world " + arenaWorld);
             return false;
         }
     }
