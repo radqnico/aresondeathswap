@@ -60,7 +60,6 @@ public class CDTaskSeries {
                         aresonDeathSwap,
                         () -> {
                             sendMessages(shoutingMessage.replaceAll("%seconds%", finalI + ""));
-                            aresonDeathSwap.getLogger().info("Time: " + finalI);
                             if (finalI <= 0) {
                                 end();
                             }

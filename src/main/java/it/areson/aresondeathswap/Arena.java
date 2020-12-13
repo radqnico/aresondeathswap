@@ -262,7 +262,7 @@ public class Arena {
     }
 
     public void interruptGame() {
-        World world = aresonDeathSwap.getServer().getWorld(arenaName);
+        World world = aresonDeathSwap.getServer().getWorld(arenaWorld);
         List<CompletableFuture<Boolean>> teleportsList = new ArrayList<>();
 
         if (world != null) {
@@ -273,6 +273,7 @@ public class Arena {
         } else {
             aresonDeathSwap.getLogger().severe("Error while getting the world while teleporting players");
         }
+
         CompletableFuture<List<Boolean>> futureTeleports = CompletableFuture.allOf(teleportsList.toArray(new CompletableFuture[0]))
                 .thenApply(ignored -> teleportsList.stream().map(CompletableFuture::join).collect(Collectors.toList()));
 
