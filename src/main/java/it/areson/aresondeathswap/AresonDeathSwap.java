@@ -111,6 +111,7 @@ public final class AresonDeathSwap extends JavaPlugin {
                     World world = getServer().getWorld(arenaName);
                     if(world != null) {
                         world.setAutoSave(false);
+                        getLogger().severe("Messo autosave false");//TODO
                     } else {
                         getLogger().severe("Errore ciaone");//TODO
                     }
