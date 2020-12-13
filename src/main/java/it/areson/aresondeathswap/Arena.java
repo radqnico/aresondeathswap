@@ -171,6 +171,7 @@ public class Arena {
                             aresonDeathSwap.titles.sendShortTitle(player, "swap");
                         }
                     } else {
+                        aresonDeathSwap.getLogger().severe("rotatePlayers");
                         removePlayer(player);
                     }
                 })
@@ -216,6 +217,7 @@ public class Arena {
         if (world != null) {
             world.setTime((int) (Math.random() * 24000));
             ArrayList<Player> copiedPlayers = new ArrayList<>(players);
+
             LoadBalancer loadBalancer = new LoadBalancer("Start game teleports");
             placeholders.setRoundsRemainingString(roundCounter + "/" + aresonDeathSwap.MAX_ROUNDS);
             copiedPlayers.forEach(player -> {
@@ -280,7 +282,7 @@ public class Arena {
         futureTeleports.whenComplete((booleans, throwable) -> {
             if (!booleans.contains(false)) {
                 countdownGame.interrupt();
-                aresonDeathSwap.loot.removeChestOfWorld(arenaName);
+                aresonDeathSwap.loot.removeChestOfWorld(arenaWorld);
 
                 if (world != null) {
                     aresonDeathSwap.getServer().getLogger().warning("Players on " + arenaName + ": " + world.getPlayers());
@@ -324,8 +326,11 @@ public class Arena {
                 World world = aresonDeathSwap.getServer().getWorld(arenaWorld);
                 if (world != null) {
                     spawns.add(getRandomLocationAroundSpawn(world));
+                } else {
+                    aresonDeathSwap.getLogger().severe("Error while getting arena world " + arenaWorld + " in addPlayer");
                 }
             });
+
             if (players.size() >= aresonDeathSwap.MIN_PLAYERS) {
                 startPregame();
             }
