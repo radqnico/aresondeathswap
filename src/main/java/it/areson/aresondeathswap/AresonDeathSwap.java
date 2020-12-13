@@ -106,7 +106,15 @@ public final class AresonDeathSwap extends JavaPlugin {
     private void loadArenas(FileManager dataFile) {
         List<String> configArenas = dataFile.getFileConfiguration().getStringList(ARENAS_PATH);
         configArenas.forEach(
-                arenaName -> arenas.put(arenaName, new Arena(this, arenaName))
+                arenaName -> {
+                    arenas.put(arenaName, new Arena(this, arenaName));
+                    World world = getServer().getWorld(arenaName);
+                    if(world != null) {
+                        world.setAutoSave(false);
+                    } else {
+                        getLogger().severe("Errore ciaone");//TODO
+                    }
+                }
         );
     }
 
