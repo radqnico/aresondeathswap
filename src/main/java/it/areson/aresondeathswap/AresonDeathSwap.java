@@ -1,5 +1,6 @@
 package it.areson.aresondeathswap;
 
+import com.onarandombox.MultiverseCore.MultiverseCore;
 import it.areson.aresondeathswap.commands.LeaveCommand;
 import it.areson.aresondeathswap.commands.PlayCommand;
 import it.areson.aresondeathswap.commands.SpawnCommand;
@@ -13,14 +14,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-@SuppressWarnings("ResultOfMethodCallIgnored")
 public final class AresonDeathSwap extends JavaPlugin {
 
     public final String ARENAS_PATH = "arenas";
@@ -53,7 +52,7 @@ public final class AresonDeathSwap extends JavaPlugin {
         titles = new TitlesManager(messages);
         eventCall = new EventCallManager(this);
         loot = new LootConfigReader(this, "loot.yml");
-        loadArenas(dataFile);
+//        loadArenas(dataFile);
 
         new PlayCommand(this);
         new LeaveCommand(this);
@@ -69,7 +68,12 @@ public final class AresonDeathSwap extends JavaPlugin {
 
         loot.readLoot();
 
-        getServer().getPluginManager().registerEvents(new PlayerEvents(this), this);
+        new PlayerEvents(this);
+
+
+        //Stuff
+        MultiverseCore multiverseCore = JavaPlugin.getPlugin(MultiverseCore.class);
+        multiverseCore.getMVWorldManager().addWorld("toRemove", World.Environment.NORMAL, "", WorldType.NORMAL, true, "");
     }
 
     @Override
@@ -91,20 +95,6 @@ public final class AresonDeathSwap extends JavaPlugin {
             getLogger().severe("Error while loading world " + worldName);
             return false;
         }
-    }
-
-    public boolean deleteWorld(File path) {
-        if (path.exists()) {
-            File[] files = path.listFiles();
-            for (File file : files) {
-                if (file.isDirectory()) {
-                    deleteWorld(file);
-                } else {
-                    file.delete();
-                }
-            }
-        }
-        return (path.delete());
     }
 
     private boolean unloadArenaWorld(String worldName) {
@@ -177,7 +167,7 @@ public final class AresonDeathSwap extends JavaPlugin {
         World world = getServer().getWorld(MAIN_WORLD_NAME);
         if (world != null) {
             Optional<Location> location = dataFile.getLocation("lobby-spawn");
-            if(location.isPresent()) {
+            if (location.isPresent()) {
                 return location;
             } else {
                 return Optional.of(world.getSpawnLocation());

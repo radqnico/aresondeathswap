@@ -30,10 +30,11 @@ public class PlayerEvents implements Listener {
 
     public PlayerEvents(AresonDeathSwap plugin) {
         aresonDeathSwap = plugin;
+        aresonDeathSwap.getServer().getPluginManager().registerEvents(this, aresonDeathSwap);
     }
 
     @EventHandler
-    public void tickStartEvent(ServerTickStartEvent event) {
+    public void onServerTickStartEvent(ServerTickStartEvent event) {
         LoadBalancer.LAST_TICK_START_TIME = System.currentTimeMillis();
     }
 
