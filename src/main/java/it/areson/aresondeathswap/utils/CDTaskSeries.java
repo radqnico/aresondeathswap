@@ -59,9 +59,10 @@ public class CDTaskSeries {
                 taskIDs.add(aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(
                         aresonDeathSwap,
                         () -> {
-                            sendMessages(shoutingMessage.replaceAll("%seconds%", finalI + ""));
                             if (finalI <= 0) {
                                 end();
+                            } else {
+                                sendMessages(shoutingMessage.replaceAll("%seconds%", finalI + ""));
                             }
                         },
                         20L * (counter + offset)
