@@ -12,7 +12,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
-import org.graalvm.compiler.nodes.memory.MemoryCheckpoint;
 
 import java.util.Objects;
 
@@ -49,7 +48,7 @@ public class SetArenaCommand implements CommandExecutor {
 
                     dataFile.addArena(locationWorld.getName());
 
-                    locationWorld.getWorldBorder().setCenter(0,0);
+                    locationWorld.getWorldBorder().setCenter(0, 0);
                     locationWorld.getWorldBorder().setSize(3500);
 
                     locationWorld.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
