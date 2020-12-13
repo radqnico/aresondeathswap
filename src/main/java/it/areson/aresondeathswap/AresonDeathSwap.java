@@ -39,6 +39,7 @@ public final class AresonDeathSwap extends JavaPlugin {
     public LootConfigReader loot;
 
     private FileManager dataFile;
+    private MultiverseCore multiverseCore;
 
     @Override
     public void onEnable() {
@@ -55,7 +56,7 @@ public final class AresonDeathSwap extends JavaPlugin {
 //        loadArenas(dataFile);
 
         //Stuff
-        MultiverseCore multiverseCore = JavaPlugin.getPlugin(MultiverseCore.class);
+        multiverseCore = JavaPlugin.getPlugin(MultiverseCore.class);
 
         new PlayCommand(this);
         new LeaveCommand(this);
@@ -110,20 +111,20 @@ public final class AresonDeathSwap extends JavaPlugin {
 
     public void loadArenaByName(String arenaName) {
         if (!arenas.containsKey(arenaName)) {
-            List<String> arenas = dataFile.getFileConfiguration().getStringList(ARENAS_PATH);
+            List<String> configArenas = dataFile.getFileConfiguration().getStringList(ARENAS_PATH);
 
-            if (arenas.contains(arenaName)) {
-                if (loadArenaWorld(arenaName)) {
-                    this.arenas.put(arenaName, new Arena(this, arenaName));
+            if (configArenas.contains(arenaName)) {
+                if (multiverseCore.getMVWorldManager().loadWorld(arenaName)) {
+                    arenas.put(arenaName, new Arena(this, arenaName));
                     getLogger().info("World " + arenaName + " loaded successfully");
                 } else {
                     getLogger().severe("Error while loading world " + arenaName);
                 }
             } else {
-                getLogger().warning("No arenas section found");
+                getLogger().severe("No arenas section found");
             }
         } else {
-            getLogger().warning("Arena already intialized");
+            getLogger().severe("Arena already intialized");
         }
     }
 

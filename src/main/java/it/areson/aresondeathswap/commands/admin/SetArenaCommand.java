@@ -55,13 +55,7 @@ public class SetArenaCommand implements CommandExecutor {
                     aresonDeathSwap.getServer().unloadWorld(worldName, true);
                     multiverseCore.getMVWorldManager().unloadWorld(worldName, true);
 
-                    aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(
-                            aresonDeathSwap,
-                            () -> multiverseCore.getMVWorldManager().loadWorld(worldName),
-                            100
-                    );
-
-//                    aresonDeathSwap.loadArenaByName(worldName);
+                    aresonDeathSwap.loadArenaByName(worldName);
 
                     commandSender.sendMessage("Arena creata");
                 } else {
