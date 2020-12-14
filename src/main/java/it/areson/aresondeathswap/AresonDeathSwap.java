@@ -186,7 +186,7 @@ public final class AresonDeathSwap extends JavaPlugin {
     }
 
     public void removePlayerFromArenas(Player player) {
-        getLogger().severe("removePlayerFromArenas");
+        getLogger().severe("toRemove removePlayerFromArenas");
         arenas.forEach((arenaName, arena) -> {
             if (arena.getPlayers().contains(player)) {
                 if (arena.getArenaStatus().equals(ArenaStatus.InGame)) {

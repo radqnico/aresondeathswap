@@ -53,6 +53,7 @@ public class PlayerEvents implements Listener {
     public void onPlayerQuitEvent(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         aresonDeathSwap.removePlayerFromArenas(player);
+        aresonDeathSwap.getLogger().severe("toRemove onPlayerQuitEvent");
     }
 
     @EventHandler
@@ -70,6 +71,7 @@ public class PlayerEvents implements Listener {
 
         aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(aresonDeathSwap, () -> {
             aresonDeathSwap.removePlayerFromArenas(event.getPlayer());
+            aresonDeathSwap.getLogger().severe("toRemove onPlayerRespawnEvent");
             aresonDeathSwap.sounds.loser(event.getPlayer());
             aresonDeathSwap.titles.sendLongTitle(event.getPlayer(), "lose");
         }, 5);

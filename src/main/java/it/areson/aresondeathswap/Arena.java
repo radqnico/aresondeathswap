@@ -171,7 +171,6 @@ public class Arena {
                             aresonDeathSwap.titles.sendShortTitle(player, "swap");
                         }
                     } else {
-                        aresonDeathSwap.getLogger().severe("rotatePlayers");
                         removePlayer(player);
                     }
                 })
@@ -248,6 +247,7 @@ public class Arena {
             aresonDeathSwap.eventCall.callPlayerStartGame(player);
         } else {
             aresonDeathSwap.messages.sendPlainMessage(player, "teleport-fail");
+            aresonDeathSwap.getLogger().severe("toRemove teleportInArenaEffects");
             aresonDeathSwap.removePlayerFromArenas(player);
         }
     }
