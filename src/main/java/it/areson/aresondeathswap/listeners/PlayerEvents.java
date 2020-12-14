@@ -60,14 +60,15 @@ public class PlayerEvents implements Listener {
     public void onPlayerDeathEvent(PlayerDeathEvent event) {
         Player player = event.getEntity();
         aresonDeathSwap.effects.deathStrike(player);
+        System.out.println(player.getName() + " morto per " + event.getDeathMessage());
 
-        event.setDeathMessage(null);
+//        event.setDeathMessage(null);
     }
 
     @EventHandler
     public void onPlayerRespawnEvent(PlayerRespawnEvent event) {
         Optional<Location> lobbyLocation = aresonDeathSwap.getLobbyLocation();
-        lobbyLocation.ifPresent(event::setRespawnLocation);
+//        lobbyLocation.ifPresent(event::setRespawnLocation);
 
         aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(aresonDeathSwap, () -> {
             aresonDeathSwap.getLogger().severe("toRemove onPlayerRespawnEvent");
