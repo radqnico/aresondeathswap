@@ -220,9 +220,6 @@ public class Arena {
             copiedPlayers.forEach(player -> {
                 try {
                     Location removedSpawn = spawns.remove(0);
-
-                    System.out.println("Tipping " + player.getName() + " to " + removedSpawn.toString());
-
                     aresonDeathSwap.effects.joinedArena(player);
                     loadBalancer.addJob(new TeleportJob(player, removedSpawn, (result, exception) -> teleportInArenaEffects(result, player)));
                     player.getInventory().clear();
