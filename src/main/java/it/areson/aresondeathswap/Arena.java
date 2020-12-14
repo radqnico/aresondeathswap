@@ -325,7 +325,9 @@ public class Arena {
             aresonDeathSwap.getServer().getScheduler().runTaskAsynchronously(aresonDeathSwap, () -> {
                 World world = aresonDeathSwap.getServer().getWorld(arenaWorld);
                 if (world != null) {
-                    spawns.add(getRandomLocationAroundSpawn(world));
+                    Location randomLocationAroundSpawn = getRandomLocationAroundSpawn(world);
+                    System.out.println("Location: " + randomLocationAroundSpawn.toString());
+                    spawns.add(randomLocationAroundSpawn);
                 } else {
                     aresonDeathSwap.getLogger().severe("Error while getting arena world " + arenaWorld + " in addPlayer");
                 }
