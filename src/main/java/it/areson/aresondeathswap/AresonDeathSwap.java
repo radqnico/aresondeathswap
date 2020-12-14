@@ -88,15 +88,8 @@ public final class AresonDeathSwap extends JavaPlugin {
         if (multiverseCore.getMVWorldManager().deleteWorld(arenaWorld)) {
 
             if (multiverseCore.getMVWorldManager().cloneWorld(arenaName, arenaWorld)) {
-                MultiverseWorld mvWorld = multiverseCore.getMVWorldManager().getMVWorld(arenaWorld);
-
-                if (mvWorld != null) {
-                    mvWorld.getCBWorld().setAutoSave(false);
-                    getLogger().info("World " + arenaWorld + " reset successfully");
-                    return true;
-                } else {
-                    getLogger().severe("Error while getting MultiVerse world " + arenaWorld + " in resetArenaWorld");
-                }
+                getLogger().info("World " + arenaWorld + " reset successfully");
+                return true;
             } else {
                 getLogger().severe("Error while loading MultiVerse world " + arenaWorld + " in resetArenaWorld");
             }
