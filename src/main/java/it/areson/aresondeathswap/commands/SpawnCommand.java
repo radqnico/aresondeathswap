@@ -1,16 +1,12 @@
 package it.areson.aresondeathswap.commands;
 
 import it.areson.aresondeathswap.AresonDeathSwap;
-import org.bukkit.World;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
+@SuppressWarnings("NullableProblems")
 public class SpawnCommand implements CommandExecutor {
 
     private final AresonDeathSwap aresonDeathSwap;

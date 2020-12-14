@@ -1,7 +1,6 @@
 package it.areson.aresondeathswap.commands;
 
 import it.areson.aresondeathswap.AresonDeathSwap;
-import it.areson.aresondeathswap.loadbalancer.LoadBalancer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

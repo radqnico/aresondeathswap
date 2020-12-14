@@ -1,18 +1,17 @@
 package it.areson.aresondeathswap.loadbalancer;
 
-import it.areson.aresondeathswap.AresonDeathSwap;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-public class TeleportJob implements Job {
+import java.util.function.BiConsumer;
 
-    private final AresonDeathSwap aresonDeathSwap;
+public class TeleportJobAsync implements Job {
+
     private final Location toLocation;
     private final Player player;
-    private final Runnable whenComplete;
+    private final BiConsumer<? super Boolean, ? super Throwable> whenComplete;
 
-    public TeleportJob(AresonDeathSwap aresonDeathSwap, Player player, Location toLocation, Runnable whenComplete) {
-        this.aresonDeathSwap = aresonDeathSwap;
+    public TeleportJobAsync(Player player, Location toLocation, BiConsumer<? super Boolean, ? super Throwable> whenComplete) {
         this.toLocation = toLocation;
         this.player = player;
         this.whenComplete = whenComplete;
@@ -24,10 +23,9 @@ public class TeleportJob implements Job {
             toLocation.setYaw(player.getLocation().getYaw());
             toLocation.setPitch(player.getLocation().getPitch());
             if (whenComplete != null) {
-                player.teleport(toLocation);
-                aresonDeathSwap.getServer().getScheduler().runTask(aresonDeathSwap, whenComplete);
+                player.teleportAsync(toLocation).whenComplete(whenComplete);
             } else {
-                player.teleport(toLocation);
+                player.teleportAsync(toLocation);
             }
         }
     }

@@ -1,7 +1,6 @@
 package it.areson.aresondeathswap;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import it.areson.aresondeathswap.commands.LeaveCommand;
 import it.areson.aresondeathswap.commands.PlayCommand;
 import it.areson.aresondeathswap.commands.SpawnCommand;
@@ -150,7 +149,23 @@ public final class AresonDeathSwap extends JavaPlugin {
         }
     }
 
-    public CompletableFuture<Boolean> teleportToLobbySpawn(Player player) {
+    public void teleportToLobbySpawn(Player player) {
+        World world = getServer().getWorld(MAIN_WORLD_NAME);
+        restorePlayerState(player);
+        if (world != null) {
+            if (player.isOnline() && !player.isDead()) {
+                Optional<Location> location = dataFile.getLocation("lobby-spawn");
+                if(location.isPresent()){
+                    Location spawnLocation = location.get();
+                    player.teleport(spawnLocation);
+                }
+            }
+        } else {
+            getLogger().severe("Cannot found main world");
+        }
+    }
+
+    public CompletableFuture<Boolean> teleportAsyncToLobbySpawn(Player player) {
         World world = getServer().getWorld(MAIN_WORLD_NAME);
         restorePlayerState(player);
         if (world != null) {

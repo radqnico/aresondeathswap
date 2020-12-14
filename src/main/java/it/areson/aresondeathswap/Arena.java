@@ -31,10 +31,9 @@ public class Arena {
     private final ArenaPlaceholders placeholders;
     private final ArrayList<Location> spawns;
     private final CDTaskSeries countdownGame;
+    private final Map<String, String> lastSwaps;
     private ArenaStatus arenaStatus;
     private LocalDateTime lastSwapTime;
-    private final Map<String, String> lastSwaps;
-
     private int roundCounter;
 
     public Arena(AresonDeathSwap aresonDeathSwap, String arenaName) {
@@ -158,20 +157,15 @@ public class Arena {
             }
         } while (size != copiedPlayers.size());
 
-        playerDestination.forEach(((player, location) -> swapsLoadBalancer.addJob(
-                new TeleportJob(player, location, (input, exception) -> {
-                    if (input) {
-                        if (!player.getWorld().getName().equals(aresonDeathSwap.MAIN_WORLD_NAME)) {
-                            if (Math.random() < 0.5) {
-                                aresonDeathSwap.loot.placeNewChestNear(player);
-                                aresonDeathSwap.messages.sendPlainMessage(player, "chest-spawned");
-                                aresonDeathSwap.sounds.chestAppear(player);
-                            }
-                            aresonDeathSwap.sounds.teleport(player);
-                            aresonDeathSwap.titles.sendShortTitle(player, "swap");
+        playerDestination.forEach(((player, location) -> swapsLoadBalancer.addJob(new TeleportJob(aresonDeathSwap, player, location, () -> {
+                    if (!player.getWorld().getName().equals(aresonDeathSwap.MAIN_WORLD_NAME)) {
+                        if (Math.random() < 0.5) {
+                            aresonDeathSwap.loot.placeNewChestNear(player);
+                            aresonDeathSwap.messages.sendPlainMessage(player, "chest-spawned");
+                            aresonDeathSwap.sounds.chestAppear(player);
                         }
-                    } else {
-                        removePlayer(player);
+                        aresonDeathSwap.sounds.teleport(player);
+                        aresonDeathSwap.titles.sendShortTitle(player, "swap");
                     }
                 })
         )));
@@ -221,10 +215,10 @@ public class Arena {
                 try {
                     Location removedSpawn = spawns.remove(0);
                     aresonDeathSwap.effects.joinedArena(player);
-                    loadBalancer.addJob(new TeleportJob(player, removedSpawn, (result, exception) -> teleportInArenaEffects(result, player)));
+                    loadBalancer.addJob(new TeleportJob(aresonDeathSwap, player, removedSpawn, () -> teleportInArenaEffects(player)));
                     player.getInventory().clear();
                 } catch (IndexOutOfBoundsException e) {
-                    loadBalancer.addJob(new TeleportJob(player, getRandomLocationAroundSpawn(world), (result, exception) -> teleportInArenaEffects(result, player)));
+                    loadBalancer.addJob(new TeleportJob(aresonDeathSwap, player, getRandomLocationAroundSpawn(world), () -> teleportInArenaEffects(player)));
                 }
             });
             loadBalancer.start(aresonDeathSwap).whenComplete((totalTicks, exception) -> aresonDeathSwap.getLogger().info("Inserted players in arena '" + arenaName + "' in " + totalTicks + " ticks"));
@@ -235,14 +229,18 @@ public class Arena {
         }
     }
 
-    private void teleportInArenaEffects(Boolean result, Player player) {
+    private void teleportInArenaEffects(Player player) {
+        aresonDeathSwap.loot.placeNewChestNear(player);
+        aresonDeathSwap.messages.sendPlainMessage(player, "chest-spawned");
+        aresonDeathSwap.sounds.openChest(player.getLocation());
+        aresonDeathSwap.sounds.gameStarted(player);
+        aresonDeathSwap.titles.sendLongTitle(player, "start");
+        aresonDeathSwap.eventCall.callPlayerStartGame(player);
+    }
+
+    private void teleportInArenaAsyncEffects(Boolean result, Player player) {
         if (result) {
-            aresonDeathSwap.loot.placeNewChestNear(player);
-            aresonDeathSwap.messages.sendPlainMessage(player, "chest-spawned");
-            aresonDeathSwap.sounds.openChest(player.getLocation());
-            aresonDeathSwap.sounds.gameStarted(player);
-            aresonDeathSwap.titles.sendLongTitle(player, "start");
-            aresonDeathSwap.eventCall.callPlayerStartGame(player);
+            teleportInArenaEffects(player);
         } else {
             aresonDeathSwap.messages.sendPlainMessage(player, "teleport-fail");
             aresonDeathSwap.removePlayerFromArenas(player);
@@ -266,41 +264,32 @@ public class Arena {
 
         if (world != null) {
             for (Player player : world.getPlayers()) {
-                teleportsList.add(aresonDeathSwap.teleportToLobbySpawn(player));
+                aresonDeathSwap.teleportToLobbySpawn(player);
             }
             spawns.clear();
         } else {
             aresonDeathSwap.getLogger().severe("Error while getting the world while teleporting players");
         }
 
-        CompletableFuture<List<Boolean>> futureTeleports = CompletableFuture.allOf(teleportsList.toArray(new CompletableFuture[0]))
-                .thenApply(ignored -> teleportsList.stream().map(CompletableFuture::join).collect(Collectors.toList()));
+        countdownGame.interrupt();
+        aresonDeathSwap.loot.removeChestOfWorld(arenaWorld);
 
-        futureTeleports.whenComplete((booleans, throwable) -> {
-            if (!booleans.contains(false)) {
-                countdownGame.interrupt();
-                aresonDeathSwap.loot.removeChestOfWorld(arenaWorld);
-
-                if (world != null) {
-                    aresonDeathSwap.getServer().getLogger().warning("Players on " + arenaName + ": " + world.getPlayers());
-                    while (world.getPlayers().size() > 0) {
-                        aresonDeathSwap.teleportToLobbySpawn(world.getPlayers().get(0));
-                    }
-                }
-
-                if (aresonDeathSwap.resetArenaWorld(arenaName)) {
-                    arenaStatus = Waiting;
-                    placeholders.setArenaStatus(Waiting);
-                    placeholders.setRoundsRemainingString("Non in gioco");
-                    lastSwapTime = LocalDateTime.MIN;
-                    aresonDeathSwap.getLogger().info("Game on " + arenaName + " restarted");
-                } else {
-                    aresonDeathSwap.getLogger().severe("Error while resetting arena world " + arenaName);
-                }
-            } else {
-                aresonDeathSwap.getLogger().severe("Error while teleporting to main world from " + arenaName);
+        if (world != null) {
+            aresonDeathSwap.getServer().getLogger().warning("Players on " + arenaName + ": " + world.getPlayers());
+            while (world.getPlayers().size() > 0) {
+                aresonDeathSwap.teleportToLobbySpawn(world.getPlayers().get(0));
             }
-        });
+        }
+
+        if (aresonDeathSwap.resetArenaWorld(arenaName)) {
+            arenaStatus = Waiting;
+            placeholders.setArenaStatus(Waiting);
+            placeholders.setRoundsRemainingString("Non in gioco");
+            lastSwapTime = LocalDateTime.MIN;
+            aresonDeathSwap.getLogger().info("Game on " + arenaName + " restarted");
+        } else {
+            aresonDeathSwap.getLogger().severe("Error while resetting arena world " + arenaName);
+        }
     }
 
 
@@ -397,13 +386,12 @@ public class Arena {
             aresonDeathSwap.getServer().getOnlinePlayers().forEach(player ->
                     aresonDeathSwap.messages.sendPlainMessageDelayed(player, "victory-message", 5, StringPair.of("%player%", winnerPlayer.getName()))
             );
-            aresonDeathSwap.teleportToLobbySpawn(winnerPlayer).whenComplete((input, trhowable) -> {
-                aresonDeathSwap.sounds.winner(winnerPlayer);
-                aresonDeathSwap.titles.sendLongTitle(winnerPlayer, "win");
-                aresonDeathSwap.effects.winFirework(winnerPlayer);
-                aresonDeathSwap.eventCall.callPlayerWin(winnerPlayer);
-                aresonDeathSwap.eventCall.callPlayerEndGame(winnerPlayer);
-            });
+            aresonDeathSwap.teleportToLobbySpawn(winnerPlayer);
+            aresonDeathSwap.sounds.winner(winnerPlayer);
+            aresonDeathSwap.titles.sendLongTitle(winnerPlayer, "win");
+            aresonDeathSwap.effects.winFirework(winnerPlayer);
+            aresonDeathSwap.eventCall.callPlayerWin(winnerPlayer);
+            aresonDeathSwap.eventCall.callPlayerEndGame(winnerPlayer);
             players.clear();
         } else {
             aresonDeathSwap.getLogger().severe("Interrupting game with no remaining players");
