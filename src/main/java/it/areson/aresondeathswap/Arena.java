@@ -202,7 +202,7 @@ public class Arena {
         int dz = (random.nextBoolean() ? 1 : -1) * random.nextInt(3000);
         Location clone = spawnLocation.clone();
         Location add = clone.add(dx, 0, dz);
-        int highestBlockYAt = world.getHighestBlockYAt(add);
+        int highestBlockYAt = world.getHighestBlockYAt(add) + 30;
         add.setY(highestBlockYAt);
         return add;
     }
