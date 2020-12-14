@@ -202,12 +202,10 @@ public class Arena {
         int dz = (random.nextBoolean() ? 1 : -1) * random.nextInt(1500);
         Location clone = spawnLocation.clone();
         Location add = clone.add(dx, 0, dz);
-        int highestBlockYAt = world.getHighestBlockYAt(add) + 30;
+        int highestBlockYAt = world.getHighestBlockYAt(add);
         add.setY(highestBlockYAt);
         return add;
     }
-
-    //TODO min max dinamici
 
     public void startGame() {
         roundCounter = 0;
@@ -250,7 +248,6 @@ public class Arena {
             aresonDeathSwap.eventCall.callPlayerStartGame(player);
         } else {
             aresonDeathSwap.messages.sendPlainMessage(player, "teleport-fail");
-            aresonDeathSwap.getLogger().severe("toRemove teleportInArenaEffects");
             aresonDeathSwap.removePlayerFromArenas(player);
         }
     }
