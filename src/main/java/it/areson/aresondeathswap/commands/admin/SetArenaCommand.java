@@ -50,7 +50,7 @@ public class SetArenaCommand implements CommandExecutor {
                     Block highestBlock = locationWorld.getHighestBlockAt(0, 0);
                     locationWorld.setSpawnLocation(highestBlock.getLocation());
                     locationWorld.getWorldBorder().setCenter(0, 0);
-                    locationWorld.getWorldBorder().setSize(7000);
+                    locationWorld.getWorldBorder().setSize(3500);
                     locationWorld.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
                     locationWorld.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
 
