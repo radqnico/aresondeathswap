@@ -9,6 +9,7 @@ import it.areson.aresondeathswap.enums.ArenaStatus;
 import it.areson.aresondeathswap.listeners.PlayerEvents;
 import it.areson.aresondeathswap.loot.LootConfigReader;
 import it.areson.aresondeathswap.managers.*;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -122,8 +123,14 @@ public final class AresonDeathSwap extends JavaPlugin {
                 multiverseCore.getMVWorldManager().deleteWorld(arenaName + "Game");
 
                 if (multiverseCore.getMVWorldManager().cloneWorld(arenaName, arenaName + "Game")) {
-                    arenas.put(arenaName, new Arena(this, arenaName));
-                    getLogger().info("World " + arenaName + "Game loaded successfully");
+                    World world = Bukkit.getWorld(arenaName + "Game");
+                    if (world != null) {
+                        world.setAutoSave(false);
+                        arenas.put(arenaName, new Arena(this, arenaName));
+                        getLogger().info("World " + arenaName + "Game loaded successfully");
+                    } else {
+                        getLogger().info("World " + arenaName + "Game doesn't exist");
+                    }
                 } else {
                     getLogger().severe("Error while loading MultiVerse world " + arenaName);
                 }
@@ -155,7 +162,7 @@ public final class AresonDeathSwap extends JavaPlugin {
         if (world != null) {
             if (player.isOnline() && !player.isDead()) {
                 Optional<Location> location = dataFile.getLocation("lobby-spawn");
-                if(location.isPresent()){
+                if (location.isPresent()) {
                     Location spawnLocation = location.get();
                     player.teleport(spawnLocation);
                 }
