@@ -4,6 +4,7 @@ import com.destroystokyo.paper.event.server.ServerTickStartEvent;
 import it.areson.aresondeathswap.AresonDeathSwap;
 import it.areson.aresondeathswap.loadbalancer.LoadBalancer;
 import it.areson.aresondeathswap.loot.LootConfigReader;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
@@ -68,11 +69,13 @@ public class PlayerEvents implements Listener {
         Optional<Location> lobbyLocation = aresonDeathSwap.getLobbyLocation();
         lobbyLocation.ifPresent(event::setRespawnLocation);
 
-        aresonDeathSwap.getServer().getScheduler().scheduleSyncDelayedTask(aresonDeathSwap, () -> {
-            aresonDeathSwap.removePlayerFromArenas(event.getPlayer());
+        Bukkit.getScheduler().runTaskLaterAsynchronously(aresonDeathSwap, () -> {
+            Bukkit.getScheduler().runTask(aresonDeathSwap, () -> {
+                aresonDeathSwap.removePlayerFromArenas(event.getPlayer());
+            });
             aresonDeathSwap.sounds.loser(event.getPlayer());
             aresonDeathSwap.titles.sendLongTitle(event.getPlayer(), "lose");
-        }, 5);
+        }, 20);
     }
 
     @EventHandler
