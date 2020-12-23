@@ -125,6 +125,9 @@ public class LootConfigReader extends FileManager {
         Location addedLocation = playerLocation.add(dx, 0, dz);
         int highestBlockYAt = player.getWorld().getHighestBlockYAt(addedLocation);
         addedLocation.setY(highestBlockYAt + 1);
+
+        aresonDeathSwap.getLogger().warning("[LootChest] Spawning chest for " + player.getName() + " in location " + addedLocation.toString());
+
         Block block = addedLocation.getBlock();
         block.setType(Material.CHEST);
         lootChests.add(block.getLocation());
