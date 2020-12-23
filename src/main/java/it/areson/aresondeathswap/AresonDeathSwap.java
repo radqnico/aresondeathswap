@@ -17,10 +17,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
 
 public final class AresonDeathSwap extends JavaPlugin {
@@ -33,7 +33,7 @@ public final class AresonDeathSwap extends JavaPlugin {
     public final int MAX_ROUNDS = getConfig().getInt("arena-max-rounds");
     public final String MAIN_WORLD_NAME = "world";
 
-    public HashMap<String, Arena> arenas;
+    public TreeMap<String, Arena> arenas;
     public MessageManager messages;
     public TitlesManager titles;
     public SoundManager sounds;
@@ -48,7 +48,7 @@ public final class AresonDeathSwap extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
 
-        arenas = new HashMap<>();
+        arenas = new TreeMap<>();
         sounds = new SoundManager();
         effects = new EffectManager(this);
         messages = new MessageManager(this, "messages.yml");

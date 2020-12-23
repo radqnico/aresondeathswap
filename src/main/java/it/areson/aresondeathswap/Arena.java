@@ -5,6 +5,7 @@ import it.areson.aresondeathswap.loadbalancer.LoadBalancer;
 import it.areson.aresondeathswap.loadbalancer.TeleportJob;
 import it.areson.aresondeathswap.utils.ArenaPlaceholders;
 import it.areson.aresondeathswap.utils.CDTaskSeries;
+import it.areson.aresondeathswap.utils.PlayersComparator;
 import it.areson.aresondeathswap.utils.StringPair;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -31,7 +32,7 @@ public class Arena {
     private final ArenaPlaceholders placeholders;
     private final ArrayList<Location> spawns;
     private final CDTaskSeries countdownGame;
-    private final Map<String, String> lastSwaps;
+    private final TreeMap<String, String> lastSwaps;
     private ArenaStatus arenaStatus;
     private LocalDateTime lastSwapTime;
     private int roundCounter;
@@ -47,7 +48,7 @@ public class Arena {
         spawns = new ArrayList<>();
         placeholders = new ArenaPlaceholders(this.arenaStatus, this.arenaName, this.players);
         placeholders.register();
-        lastSwaps = new HashMap<>();
+        lastSwaps = new TreeMap<>();
         //Countdowns
         this.countdownPregame = new CDTaskSeries(
                 aresonDeathSwap,
@@ -135,7 +136,7 @@ public class Arena {
         aresonDeathSwap.getLogger().info("Rotating " + players.size() + " players in arena " + arenaName);
 
         ArrayList<Player> copiedPlayers = new ArrayList<>(players);
-        Map<Player, Location> playerDestination = new HashMap<>();
+        TreeMap<Player, Location> playerDestination = new TreeMap<>(new PlayersComparator());
 
         Collections.shuffle(copiedPlayers);
 

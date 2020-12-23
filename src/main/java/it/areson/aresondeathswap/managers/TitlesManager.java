@@ -3,16 +3,16 @@ package it.areson.aresondeathswap.managers;
 import it.areson.aresondeathswap.utils.StringPair;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
+import java.util.TreeMap;
 
 public class TitlesManager {
 
     private final MessageManager messageManager;
-    private HashMap<String, StringPair> titles;
+    private final TreeMap<String, StringPair> titles;
 
     public TitlesManager(MessageManager messageManager) {
         this.messageManager = messageManager;
-        titles = new HashMap<>();
+        titles = new TreeMap<>();
         readAllTitles();
     }
 
