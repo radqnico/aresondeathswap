@@ -158,6 +158,10 @@ public class Arena {
             }
         } while (size != copiedPlayers.size());
 
+        for (Map.Entry<Player, Location> entry : playerDestination.entrySet()) {
+            entry.getValue().getChunk().setForceLoaded(true);
+        }
+
         playerDestination.forEach(((player, location) -> swapsLoadBalancer.addJob(new TeleportJob(aresonDeathSwap, player, location, () -> {
                     if (!player.getWorld().getName().equals(aresonDeathSwap.MAIN_WORLD_NAME)) {
                         if (Math.random() < 0.5) {
@@ -172,7 +176,13 @@ public class Arena {
         )));
 
         swapsLoadBalancer.start(aresonDeathSwap).whenComplete(
-                (totalTicks, exception) -> aresonDeathSwap.getLogger().info("Rotating " + players.size() + " players in arena " + arenaName + " took " + totalTicks + " ticks")
+                (totalTicks, exception) -> {
+                    aresonDeathSwap.getLogger().info("Rotating " + players.size() + " players in arena " + arenaName + " took " + totalTicks + " ticks");
+
+                    for (Map.Entry<Player, Location> entry : playerDestination.entrySet()) {
+                        entry.getValue().getChunk().setForceLoaded(false);
+                    }
+                }
         );
 
         restartCountdownGame();
