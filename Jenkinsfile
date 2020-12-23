@@ -40,7 +40,7 @@ pipeline {
                                         transfers: [
                                                 sshTransfer(
                                                         sourceFiles: "**/*.jar",
-                                                        remoteDirectory: "/home/minecraft/test/plugins/",
+                                                        remoteDirectory: "/home/minecraft/deathSwap/plugins/",
                                                         flatten: true,
                                                         excludes: "**/*original*.jar"
                                                 )
@@ -54,7 +54,7 @@ pipeline {
                                 sshPublisherDesc(
                                         configName: "Areson",
                                         transfers: [
-                                                sshTransfer(execCommand: "screen -S test -X stuff ^['stop'^M")
+                                                sshTransfer(execCommand: "screen -S deathSwap -X stuff ^['stop'^M")
                                         ]
                                 )
                         ]
