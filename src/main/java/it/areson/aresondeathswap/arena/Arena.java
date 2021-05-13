@@ -1,6 +1,9 @@
 package it.areson.aresondeathswap.arena;
 
+import it.areson.aresoncore.time.countdown.Countdown;
+import it.areson.aresoncore.time.countdown.CountdownManager;
 import it.areson.aresondeathswap.AresonDeathSwap;
+import it.areson.aresondeathswap.Constants;
 import it.areson.aresondeathswap.player.DeathswapPlayer;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -13,12 +16,14 @@ import java.util.Objects;
 public class Arena {
 
     private final HashMap<DeathswapPlayer, Location> players;
-    private AresonDeathSwap aresonDeathSwap;
-    private String arenaName;
-    private String arenaWorldName;
+    private final AresonDeathSwap aresonDeathSwap;
+    private final String arenaName;
+    private final String arenaWorldName;
     private World arenaWorld;
     private ArenaStatus arenaStatus;
     private int minPlayers;
+
+    private Countdown countdownStarting;
 
     public Arena(AresonDeathSwap aresonDeathSwap, String arenaName, String arenaWorldName, int minPlayers) {
         this.aresonDeathSwap = aresonDeathSwap;
@@ -28,6 +33,16 @@ public class Arena {
 
         this.arenaStatus = ArenaStatus.CLOSED;
         this.players = new HashMap<>();
+
+        resetStartingCountdown();
+    }
+
+    public void resetStartingCountdown() {
+        countdownStarting = new Countdown(arenaName + Constants.COUNTDOWN_PREGAME_SUFFIX, 30, 5);
+    }
+
+    private void startStartingCountdown() {
+        CountdownManager.getInstance().startCountdown(countdownStarting);
     }
 
     public HashMap<DeathswapPlayer, Location> getPlayers() {
@@ -52,11 +67,7 @@ public class Arena {
 
     public void addPlayer(DeathswapPlayer deathswapPlayer, Location previousLocation) {
         players.putIfAbsent(deathswapPlayer, previousLocation);
-    }
-
-    public void removePlayer(DeathswapPlayer deathswapPlayer) {
-        returnPlayerToPreviousLocation(deathswapPlayer);
-        players.remove(deathswapPlayer);
+        openToStartingIfMinPlayersReached();
     }
 
     public void loadArenaWorld() {
@@ -78,12 +89,42 @@ public class Arena {
         player.getActualPlayer().ifPresent(player1 -> player1.teleport(players.get(player)));
     }
 
-    public void kickAllPlayersFromArena() {
+    public void removePlayer(DeathswapPlayer deathswapPlayer) {
+        if (arenaStatus.equals(ArenaStatus.IN_GAME)) {
+            returnPlayerToPreviousLocation(deathswapPlayer);
+        }
+        players.remove(deathswapPlayer);
+        startingToOpenIfNotMinPlayersReach();
+    }
+
+    public void removeAllPlayersFromArena() {
         for (Map.Entry<DeathswapPlayer, Location> entry : players.entrySet()) {
-            returnPlayerToPreviousLocation(entry.getKey());
+            removePlayer(entry.getKey());
         }
         players.clear();
     }
+
+    public boolean isMinPlayerReached() {
+        return players.size() >= minPlayers;
+    }
+
+    public void openToStartingIfMinPlayersReached() {
+        if (arenaStatus.equals(ArenaStatus.OPEN) && isMinPlayerReached()) {
+            arenaStatus = ArenaStatus.STARTING;
+            startStartingCountdown();
+        }
+    }
+
+    public void startingToOpenIfNotMinPlayersReach() {
+        if (arenaStatus.equals(ArenaStatus.STARTING) && !isMinPlayerReached()) {
+            arenaStatus = ArenaStatus.OPEN;
+        }
+    }
+
+    public boolean canNewPlayerJoin() {
+        return arenaStatus.equals(ArenaStatus.OPEN) || arenaStatus.equals(ArenaStatus.STARTING);
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -96,5 +137,11 @@ public class Arena {
     @Override
     public int hashCode() {
         return Objects.hash(arenaName);
+    }
+
+    public void startGame() {
+        if (arenaStatus.equals(ArenaStatus.STARTING)) {
+            arenaStatus = ArenaStatus.IN_GAME;
+        }
     }
 }

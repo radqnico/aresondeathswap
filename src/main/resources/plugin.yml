@@ -8,7 +8,11 @@ depend: [ PlaceholderAPI, Multiverse-Core ]
 commands:
   arena:
     permission: deathswap.admin
+  situation:
+    permission: deathswap.admin
   play:
+    permission: deathswap.play
+  leave:
     permission: deathswap.play
 
 permissions:

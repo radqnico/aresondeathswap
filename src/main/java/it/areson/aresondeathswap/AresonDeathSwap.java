@@ -5,6 +5,11 @@ import it.areson.aresoncore.database.MySqlConnection;
 import it.areson.aresondeathswap.arena.ArenaManager;
 import it.areson.aresondeathswap.commands.CommandParser;
 import it.areson.aresondeathswap.commands.arena.CreateCommand;
+import it.areson.aresondeathswap.commands.arena.DeleteCommand;
+import it.areson.aresondeathswap.commands.arena.OpenCommand;
+import it.areson.aresondeathswap.commands.play.LeaveCommand;
+import it.areson.aresondeathswap.commands.play.PlayCommand;
+import it.areson.aresondeathswap.commands.situation.SituationCommand;
 import it.areson.aresondeathswap.player.DeathswapPlayerManager;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -57,6 +62,8 @@ public final class AresonDeathSwap extends JavaPlugin {
         }
         try {
             arenaParser.addAresonCommand(new CreateCommand());
+            arenaParser.addAresonCommand(new DeleteCommand());
+            arenaParser.addAresonCommand(new OpenCommand());
             arenaParser.registerCommands();
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -64,6 +71,27 @@ public final class AresonDeathSwap extends JavaPlugin {
 
         arena.setExecutor(arenaParser);
         arena.setTabCompleter(arenaParser);
+
+        PluginCommand play = getCommand("play");
+        if (play != null) {
+            PlayCommand playCommand = new PlayCommand();
+            play.setExecutor(playCommand);
+            play.setTabCompleter(playCommand);
+        }
+
+        PluginCommand leave = getCommand("leave");
+        if (leave != null) {
+            LeaveCommand leaveCommand = new LeaveCommand();
+            leave.setExecutor(leaveCommand);
+            leave.setTabCompleter(leaveCommand);
+        }
+
+        PluginCommand situation = getCommand("situation");
+        if (situation != null) {
+            SituationCommand situationCommand = new SituationCommand();
+            situation.setExecutor(situationCommand);
+            situation.setTabCompleter(situationCommand);
+        }
     }
 
     @Override

@@ -1,56 +1,46 @@
-package it.areson.aresondeathswap.commands.arena;
+package it.areson.aresondeathswap.commands.play;
 
 import it.areson.aresondeathswap.AresonDeathSwap;
-import it.areson.aresondeathswap.arena.Arena;
 import it.areson.aresondeathswap.arena.ArenaManager;
-import it.areson.aresondeathswap.commands.AresonCommand;
-import it.areson.aresondeathswap.commands.CommandParserCommand;
+import it.areson.aresondeathswap.player.DeathswapPlayer;
+import it.areson.aresondeathswap.player.DeathswapPlayerManager;
 import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-@AresonCommand("delete")
-public class PrepareCommand extends CommandParserCommand {
-
+public class LeaveCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
-        if (strings.length != 2) {
-            commandSender.sendMessage("Command '/arena' usage: " + command.getUsage());
-            return true;
-        }
-        String arenaName = strings[1];
-
-        ArenaManager arenaManager = AresonDeathSwap.instance.getArenaManager();
-
         if (commandSender instanceof Player) {
             Player player = (Player) commandSender;
-            player.teleport(AresonDeathSwap.instance.getServer().getWorld("world").getSpawnLocation());
+            removePlayerFromArenas(player);
+            player.sendMessage("Hai lasciato tutte le arene");
+        } else {
+            commandSender.sendMessage("Command only available by player");
         }
-        Optional<Arena> arenaByName = arenaManager.getArenaByName(arenaName);
-        if(arenaByName.isPresent()){
-            Arena arena = arenaByName.get();
-            arena.open();
-        }
-
-        commandSender.sendMessage("Deleted arena " + arenaName);
-
         return true;
+    }
+
+    private void removePlayerFromArenas(Player player) {
+        DeathswapPlayerManager deathswapPlayerManager = AresonDeathSwap.instance.getDeathswapPlayerManager();
+        DeathswapPlayer deathswapPlayer = deathswapPlayerManager.getDeathswapPlayer(player);
+        AresonDeathSwap.instance.getArenaManager().removePlayerFromAllArenas(deathswapPlayer);
     }
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         List<String> suggestions = new ArrayList<>();
-        if (strings.length == 2) {
+        if (strings.length == 1) {
             ArenaManager arenaManager = AresonDeathSwap.instance.getArenaManager();
             suggestions.addAll(arenaManager.getArenas().keySet());
         }
         return suggestions;
     }
-
 }

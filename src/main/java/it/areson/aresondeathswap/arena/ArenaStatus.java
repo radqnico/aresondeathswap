@@ -4,6 +4,5 @@ public enum ArenaStatus {
     CLOSED,
     OPEN,
     STARTING,
-    IN_GAME,
-    RESETTING
+    IN_GAME
 }

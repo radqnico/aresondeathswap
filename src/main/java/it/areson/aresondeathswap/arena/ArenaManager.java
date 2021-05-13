@@ -10,19 +10,13 @@ import java.util.Optional;
 public class ArenaManager {
 
     private final HashMap<String, Arena> arenas;
-    private final HashMap<DeathswapPlayer, Arena> playerArenas;
 
     public ArenaManager() {
         this.arenas = new HashMap<>();
-        this.playerArenas = new HashMap<>();
     }
 
     public HashMap<String, Arena> getArenas() {
         return arenas;
-    }
-
-    public HashMap<DeathswapPlayer, Arena> getPlayerArenas() {
-        return playerArenas;
     }
 
     public Arena createNewArenaAndLoadWorld(AresonDeathSwap aresonDeathSwap, String arenaName, String arenaWorldName, int minPlayers) {
@@ -35,7 +29,7 @@ public class ArenaManager {
     public void removeArenaAndUnloadWorld(String arenaName) {
         Arena remove = arenas.remove(arenaName);
         if (remove != null) {
-            remove.kickAllPlayersFromArena();
+            remove.removeAllPlayersFromArena();
             remove.unloadArenaWorld();
         }
     }
@@ -49,19 +43,15 @@ public class ArenaManager {
     }
 
     public Optional<Arena> getArenaOfPlayer(DeathswapPlayer player) {
-        return Optional.ofNullable(playerArenas.get(player));
-    }
-
-    public void playerJoinArena(DeathswapPlayer deathswapPlayer, Arena arena, Location previousLocation) {
-        arena.addPlayer(deathswapPlayer, previousLocation);
-        playerArenas.put(deathswapPlayer, arena);
-    }
-
-    public void playerLeaveArena(DeathswapPlayer deathswapPlayer) {
-        Arena arena = playerArenas.remove(deathswapPlayer);
-        if (arena != null) {
-            arena.removePlayer(deathswapPlayer);
+        for (Arena arena : arenas.values()) {
+            HashMap<DeathswapPlayer, Location> players = arena.getPlayers();
+            for (DeathswapPlayer arenaPlayer : players.keySet()) {
+                if (player.getNickName().equalsIgnoreCase(arenaPlayer.getNickName())) {
+                    return Optional.of(arena);
+                }
+            }
         }
+        return Optional.empty();
     }
 
     public void removePlayerFromAllArenas(DeathswapPlayer deathswapPlayer) {

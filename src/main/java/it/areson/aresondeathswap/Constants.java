@@ -8,4 +8,7 @@ public class Constants {
     public static String MYSQL_DB = "deathSwap";
     public static String MYSQL_PLAYER_TABLE = "player";
 
+    public static String COUNTDOWN_PREGAME_SUFFIX = "_pregame";
+    public static String COUNTDOWN_SWAP_SUFFIX = "_swap";
+
 }
