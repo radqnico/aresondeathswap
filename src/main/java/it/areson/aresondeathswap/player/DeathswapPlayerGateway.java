@@ -81,31 +81,27 @@ public class DeathswapPlayerGateway extends DBGateway<String, DeathswapPlayer> {
 
     @Override
     public String objectToQuery(DeathswapPlayer deathswapPlayer) {
-        String query;
-        String formatted;
-        if (Objects.equals(deathswapPlayer.getNickName(), "")) {
-            query = "INSERT INTO " + tableName +
-                    "(nickname, killCount, deathCount, secondsPlayed, gamesPlayed) " +
-                    "VALUES ('%s', '%d', '%d', '%d', '%d')";
-        } else {
-            query = "UPDATE " + tableName + " " +
-                    "SET nickname='%s', killCount='%s', deathCount='%s', secondsPlayed='%s', gamesPlayed='%s' " +
-                    "WHERE nickname='%s'";
-        }
-        formatted = String.format(query,
+        String query = "INSERT INTO " + tableName +
+                "(nickname, killCount, deathCount, secondsPlayed, gamesPlayed) " +
+                "VALUES ('%s', %d, %d, %d, %d) " +
+                "ON DUPLICATE KEY UPDATE " +
+                "killCount=%d, deathCount=%d, secondsPlayed=%d, gamesPlayed=%d";
+        return String.format(query,
                 deathswapPlayer.getNickName(),
                 deathswapPlayer.getKillCount(),
                 deathswapPlayer.getDeathCount(),
                 deathswapPlayer.getSecondsPlayed(),
                 deathswapPlayer.getGamesPlayed(),
-                deathswapPlayer.getNickName()
+                deathswapPlayer.getKillCount(),
+                deathswapPlayer.getDeathCount(),
+                deathswapPlayer.getSecondsPlayed(),
+                deathswapPlayer.getGamesPlayed()
         );
-        return formatted;
     }
 
     @Override
     public boolean delete(String nickname) {
-        String query = "DELETE FROM " + tableName + " WHERE nickname = " + nickname;
+        String query = "DELETE FROM " + tableName + " WHERE nickname = '" + nickname + "'";
         try {
             Connection connection = mySqlConnection.connect();
             int affectedRows = mySqlConnection.update(connection, query);
@@ -125,6 +121,7 @@ public class DeathswapPlayerGateway extends DBGateway<String, DeathswapPlayer> {
         String query = objectToQuery(object);
         try {
             Connection connection = mySqlConnection.connect();
+            System.out.println(query);
             int affectedRows = mySqlConnection.update(connection, query);
             connection.close();
             if (affectedRows > 0) {

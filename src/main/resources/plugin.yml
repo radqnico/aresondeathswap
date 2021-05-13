@@ -6,8 +6,8 @@ author: Areson
 depend: [ PlaceholderAPI, Multiverse-Core ]
 
 commands:
-  test:
-    permission: op
+  arena:
+    permission: deathswap.admin
 
 permissions:
   deathswap.admin:

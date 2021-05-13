@@ -1,5 +1,7 @@
 package it.areson.aresondeathswap.player;
 
+import java.util.Objects;
+
 public class DeathswapPlayer {
 
     private String nickName;
@@ -54,5 +56,18 @@ public class DeathswapPlayer {
 
     public void setGamesPlayed(int gamesPlayed) {
         this.gamesPlayed = gamesPlayed;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DeathswapPlayer)) return false;
+        DeathswapPlayer that = (DeathswapPlayer) o;
+        return Objects.equals(nickName, that.nickName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nickName);
     }
 }

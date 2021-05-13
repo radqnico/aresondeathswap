@@ -38,7 +38,8 @@ public final class AresonDeathSwap extends JavaPlugin {
 
     @Override
     public void onDisable() {
-
+        deathswapPlayerManager.saveAllPlayers();
+        deathswapPlayerManager.unregisterEvents();
     }
 
 }
