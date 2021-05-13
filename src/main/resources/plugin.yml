@@ -6,34 +6,9 @@ author: Areson
 depend: [ PlaceholderAPI, Multiverse-Core ]
 
 commands:
-  play:
-    usage: "/play"
-  leave:
-    usage: "/leave"
-  spawn:
-    usage: "/spawn"
-  setArena:
-    usage: "/setArena"
-    permission: aresonDeathSwap.admin
-  deleteArena:
-    usage: "/deleteArena"
-    permission: aresonDeathSwap.admin
-  loadWorld:
-    usage: "/loadWorld"
-    permission: aresonDeathSwap.admin
-  tpWorld:
-    usage: "/tpWorld"
-    permission: aresonDeathSwap.admin
-  setspawn:
-    usage: "/setSpawn"
-    permission: aresonDeathSwap.admin
-  testcommand:
-    usage: "/testcommand"
-    permission: aresonDeathSwap.admin
-  forceswap:
-    usage: "/forceswap"
-    permission: aresonDeathSwap.admin
+  test:
+    permission: op
 
 permissions:
-  aresonDeathSwap.admin:
+  deathswap.admin:
     default: op
