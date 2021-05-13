@@ -19,4 +19,4 @@ permissions:
   deathswap.admin:
     default: op
   deathswap.play:
-    default: not op
+    default: true

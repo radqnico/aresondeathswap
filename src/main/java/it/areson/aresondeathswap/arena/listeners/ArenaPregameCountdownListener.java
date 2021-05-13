@@ -1,13 +1,10 @@
-package it.areson.aresondeathswap.arena;
+package it.areson.aresondeathswap.arena.listeners;
 
 import it.areson.aresoncore.time.countdown.Countdown;
+import it.areson.aresoncore.time.countdown.CountdownManager;
 import it.areson.aresoncore.time.countdown.listeners.CountdownListener;
 import it.areson.aresondeathswap.Constants;
-import it.areson.aresondeathswap.player.DeathswapPlayer;
-import org.bukkit.entity.Player;
-
-import java.util.Optional;
-import java.util.Set;
+import it.areson.aresondeathswap.arena.Arena;
 
 public class ArenaPregameCountdownListener implements CountdownListener {
 
@@ -15,15 +12,14 @@ public class ArenaPregameCountdownListener implements CountdownListener {
 
     public ArenaPregameCountdownListener(Arena arena) {
         this.arena = arena;
+        CountdownManager.getInstance().registerListener(this);
     }
 
     private boolean checkIfThisArena(Countdown countdown) {
         String countdownName = countdown.getName();
         if (countdownName.contains(Constants.COUNTDOWN_PREGAME_SUFFIX)) {
             String arenaName = countdownName.split("_")[0];
-            if (arena.getArenaName().equals(arenaName)) {
-                return true;
-            }
+            return arena.getArenaName().equals(arenaName);
         }
         return false;
     }
@@ -33,17 +29,17 @@ public class ArenaPregameCountdownListener implements CountdownListener {
         if (checkIfThisArena(countdown)) {
             arena.startGame();
             arena.resetStartingCountdown();
+
+            String message = "Il gioco è iniziato!";
+            arena.sendMessageToArenaPlayers(message);
         }
     }
 
     @Override
     public void countdownShoutRemainingSeconds(Countdown countdown) {
         if (checkIfThisArena(countdown)) {
-            Set<DeathswapPlayer> deathswapPlayers = arena.getPlayers().keySet();
-            for (DeathswapPlayer deathswapPlayer : deathswapPlayers) {
-                Optional<Player> actualPlayer = deathswapPlayer.getActualPlayer();
-                actualPlayer.ifPresent(player -> player.sendMessage("Il gioco inizierà tra " + countdown.getCurrentRemaining() + "s. Preparati!"));
-            }
+            String message = "Il gioco inizierà tra " + countdown.getCurrentRemaining() + "s. Preparati!";
+            arena.sendMessageToArenaPlayers(message);
         }
     }
 }

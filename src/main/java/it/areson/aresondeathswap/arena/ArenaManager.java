@@ -29,6 +29,7 @@ public class ArenaManager {
     public void removeArenaAndUnloadWorld(String arenaName) {
         Arena remove = arenas.remove(arenaName);
         if (remove != null) {
+            remove.unregisterListeners();
             remove.removeAllPlayersFromArena();
             remove.unloadArenaWorld();
         }
