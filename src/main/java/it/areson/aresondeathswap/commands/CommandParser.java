@@ -42,8 +42,8 @@ public class CommandParser extends CommandParserCommand {
         Annotation[] ann = executor.getClass().getAnnotations();
         boolean added = false;
         for (Annotation a : ann) {
-            if (a instanceof it.areson.aresonsomnium.commands.AresonCommand) {
-                commandBuffer.put(((it.areson.aresonsomnium.commands.AresonCommand) a).value(), executor);
+            if (a instanceof AresonCommand) {
+                commandBuffer.put(((AresonCommand) a).value(), executor);
                 added = true;
                 plugin.getLogger().log(Level.INFO, "Command inserted to buffer " + executor.getClass().getName() + " command");
             }

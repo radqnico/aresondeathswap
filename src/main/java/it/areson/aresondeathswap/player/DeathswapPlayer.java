@@ -1,6 +1,10 @@
 package it.areson.aresondeathswap.player;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
 import java.util.Objects;
+import java.util.Optional;
 
 public class DeathswapPlayer {
 
@@ -16,6 +20,10 @@ public class DeathswapPlayer {
         this.deathCount = deathCount;
         this.secondsPlayed = secondsPlayed;
         this.gamesPlayed = gamesPlayed;
+    }
+
+    public Optional<Player> getActualPlayer() {
+        return Optional.ofNullable(Bukkit.getPlayer(nickName));
     }
 
     public String getNickName() {
