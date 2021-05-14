@@ -6,8 +6,15 @@ import it.areson.aresoncore.time.countdown.listeners.CountdownListener;
 import it.areson.aresondeathswap.AresonDeathSwap;
 import it.areson.aresondeathswap.Constants;
 import it.areson.aresondeathswap.arena.Arena;
+import it.areson.aresondeathswap.player.DeathswapPlayer;
 import it.areson.aresondeathswap.utils.Message;
 import it.areson.aresondeathswap.utils.Pair;
+import it.areson.aresondeathswap.utils.SoundManager;
+import org.bukkit.entity.Player;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ArenaSwapsCountdownListener implements CountdownListener {
 
@@ -46,6 +53,10 @@ public class ArenaSwapsCountdownListener implements CountdownListener {
                     Message.SWAP_CD_MESSAGE,
                     Pair.of("%seconds%", countdown.getCurrentRemaining() + "")
             ));
+            List<Player> players = arena.getPlayers().keySet().stream().map(DeathswapPlayer::getActualPlayer).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
+            for (Player player : players) {
+                SoundManager.tick(player);
+            }
         }
     }
 }

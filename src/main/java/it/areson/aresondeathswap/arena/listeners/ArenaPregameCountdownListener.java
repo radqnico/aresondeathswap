@@ -55,7 +55,7 @@ public class ArenaPregameCountdownListener implements CountdownListener {
             ));
             List<Player> players = arena.getPlayers().keySet().stream().map(DeathswapPlayer::getActualPlayer).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
             for (Player player : players) {
-                SoundManager.winner(player);
+                SoundManager.tick(player);
             }
         }
     }

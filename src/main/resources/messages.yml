@@ -23,6 +23,7 @@ player-dead: "&cSei morto! Ti riporto alla lobby..."
 chest-spawned: "&6&lE' apparsa una cassa bonus vicino a te!"
 teleport-fail: "C'è stato un problema durante il teletrasporto"
 
+player-kill: "&6Attenzione! &c&l%killer% &6ha eliminato &c&l%player%&6!"
 
 # Titles and subtitles must start with "title-<name>" and "subtitle-<name>"
 

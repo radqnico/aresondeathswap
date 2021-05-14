@@ -21,6 +21,7 @@ public class Message {
     public static String GAME_PLAYERS_REMAINING = "arena-players-remaining";
     public static String GAME_LEAVE = "game-leaved";
     public static String GAME_PLAYER_DEAD = "player-dead";
+    public static String GAME_KILL = "player-kill";
 
     public static String TITLE_JOIN = "title-join";
     public static String TITLE_JOIN_SUB = "subtitle-join";
