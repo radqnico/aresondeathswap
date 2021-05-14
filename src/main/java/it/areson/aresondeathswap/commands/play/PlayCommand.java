@@ -66,7 +66,7 @@ public class PlayCommand implements CommandExecutor, TabCompleter {
         }
 
         arenaManager.removePlayerFromAllArenas(deathswapPlayer);
-        arena.addPlayer(deathswapPlayer, player.getLocation());
+        arena.addPlayer(deathswapPlayer, player.getLocation().clone());
 
         player.sendMessage(AresonDeathSwap.instance.messages.getPlainMessage(Message.ARENA_JOIN, Pair.of("%arena%", arena.getArenaName())));
 

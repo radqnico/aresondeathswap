@@ -36,7 +36,8 @@ public class Arena {
     private Countdown countdownSwaps;
 
     private boolean timeToKill;
-    private boolean gameWon;
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    private Optional<Player> winner;
 
     private HashMap<DeathswapPlayer, Boolean> playersToRemove;
     private boolean canRemovePlayers;
@@ -56,7 +57,7 @@ public class Arena {
         this.canRemovePlayers = true;
 
         this.timeToKill = false;
-        this.gameWon = false;
+        this.winner = Optional.empty();
 
         startingCountdownListener = new ArenaPregameCountdownListener(this);
         swapsCountdownListener = new ArenaSwapsCountdownListener(this);
@@ -71,7 +72,7 @@ public class Arena {
         this.playersToRemove.clear();
         this.canRemovePlayers = true;
         this.timeToKill = false;
-        this.gameWon = false;
+        this.winner = Optional.empty();
     }
 
     public void unregisterListeners() {
@@ -142,7 +143,7 @@ public class Arena {
         if (arenaWorld != null) {
             arenaWorld.setAutoSave(false);
             arenaWorld.getWorldBorder().setCenter(arenaWorld.getSpawnLocation());
-            arenaWorld.getWorldBorder().setSize(5000);
+            arenaWorld.getWorldBorder().setSize(8000);
         }
     }
 
@@ -162,47 +163,58 @@ public class Arena {
     }
 
     public void removePlayer(DeathswapPlayer deathswapPlayer, boolean checkStatusOrWin) {
-        Optional<Player> actualPlayerOptional = deathswapPlayer.getActualPlayer();
-        if (canRemovePlayers) {
-            if (arenaStatus.equals(ArenaStatus.IN_GAME)) {
-                actualPlayerOptional.ifPresent(player -> arenaWorld.strikeLightningEffect(player.getLocation()));
-
-                returnPlayerToPreviousLocation(deathswapPlayer);
-                deathswapPlayer.setGamesPlayed(deathswapPlayer.getGamesPlayed() + 1);
-
-                sendMessageToArenaPlayers(aresonDeathSwap.messages.getPlainMessage(
-                        Message.GAME_PLAYERS_REMAINING,
-                        Pair.of("%number%", (players.size() - 1) + ""),
-                        Pair.of("%players%", players.keySet().parallelStream().map(DeathswapPlayer::getNickName).collect(Collectors.joining(" ")))
-                ));
-
-                actualPlayerOptional.ifPresent(player -> {
-                    if (timeToKill) {
-                        Player killer = lastSwapCouples.get(player);
-                        sendMessageToArenaPlayers(aresonDeathSwap.messages.getPlainMessage(
-                                Message.GAME_KILL,
-                                Pair.of("%killer%", killer.getName()),
-                                Pair.of("%players%", deathswapPlayer.getNickName())
-                        ));
-                        DeathswapPlayer killerDSPlayer = aresonDeathSwap.getDeathswapPlayerManager().getDeathswapPlayer(killer);
-                        killerDSPlayer.setKillCount(deathswapPlayer.getKillCount() + 1);
-                    }
-                    if (!gameWon) {
-                        player.sendMessage(aresonDeathSwap.messages.getPlainMessage(Message.GAME_PLAYER_DEAD));
-                        PlayerUtils.sendLongTitle(player, Message.TITLE_LOSE, Message.TITLE_LOSE_SUB);
-                        SoundManager.loser(player);
-                        deathswapPlayer.setDeathCount(deathswapPlayer.getDeathCount() + 1);
-                    }
-                });
-            }
-
-            players.remove(deathswapPlayer);
-            if (checkStatusOrWin) {
-                startingToOpenIfNotMinPlayersReach();
-                inGameWinIfLastOne();
-            }
-        } else {
+        if (!canRemovePlayers) {
             playersToRemove.put(deathswapPlayer, checkStatusOrWin);
+            return;
+        }
+
+        returnPlayerToPreviousLocation(deathswapPlayer);
+
+        Optional<Player> actualPlayerOptional = deathswapPlayer.getActualPlayer();
+        players.remove(deathswapPlayer);
+
+        if (checkStatusOrWin) {
+            startingToOpenIfNotMinPlayersReach();
+            inGameWinIfLastOne();
+        }
+
+        if (arenaStatus.equals(ArenaStatus.IN_GAME) || arenaStatus.equals(ArenaStatus.CLOSED)) {
+            actualPlayerOptional.ifPresent(player -> arenaWorld.strikeLightningEffect(player.getLocation()));
+
+            System.out.println("Ciao");
+            deathswapPlayer.setGamesPlayed(deathswapPlayer.getGamesPlayed() + 1);
+
+            actualPlayerOptional.ifPresent(player -> {
+                if (timeToKill) {
+                    Player killer = lastSwapCouples.get(player);
+                    sendMessageToArenaPlayers(aresonDeathSwap.messages.getPlainMessage(
+                            Message.GAME_KILL,
+                            Pair.of("%killer%", killer.getName()),
+                            Pair.of("%players%", deathswapPlayer.getNickName())
+                    ));
+                    DeathswapPlayer killerDSPlayer = aresonDeathSwap.getDeathswapPlayerManager().getDeathswapPlayer(killer);
+                    killerDSPlayer.setKillCount(deathswapPlayer.getKillCount() + 1);
+                }
+                if (!winner.isPresent()) {
+                    sendMessageToArenaPlayers(aresonDeathSwap.messages.getPlainMessage(
+                            Message.GAME_PLAYERS_REMAINING,
+                            Pair.of("%number%", players.size() + ""),
+                            Pair.of("%players%", players.keySet().parallelStream().map(DeathswapPlayer::getNickName).collect(Collectors.joining(" ")))
+                    ));
+                }
+                if (!winner.isPresent() || !winner.get().equals(player)) {
+                    sendMessageToArenaPlayers(aresonDeathSwap.messages.getPlainMessage(
+                            Message.GAME_PLAYERS_REMAINING,
+                            Pair.of("%number%", players.size() + ""),
+                            Pair.of("%players%", players.keySet().parallelStream().map(DeathswapPlayer::getNickName).collect(Collectors.joining(" ")))
+                    ));
+
+                    player.sendMessage(aresonDeathSwap.messages.getPlainMessage(Message.GAME_PLAYER_DEAD));
+                    PlayerUtils.sendLongTitle(player, Message.TITLE_LOSE, Message.TITLE_LOSE_SUB);
+                    SoundManager.loser(player);
+                    deathswapPlayer.setDeathCount(deathswapPlayer.getDeathCount() + 1);
+                }
+            });
         }
     }
 
@@ -214,13 +226,13 @@ public class Arena {
     }
 
     private void winGame() {
-        gameWon = true;
         sendTitleToArenaPlayers(Message.TITLE_WIN, Message.TITLE_WIN_SUB);
 
         Optional<DeathswapPlayer> lastPlayerInArena = getLastPlayerInArena();
 
         lastPlayerInArena.flatMap(DeathswapPlayer::getActualPlayer).ifPresent(playerWinner -> {
             PlayerUtils.playerDeadStatus(playerWinner);
+            winner = Optional.of(playerWinner);
             SoundManager.winner(playerWinner);
             aresonDeathSwap.getServer().getOnlinePlayers().forEach(player -> player.sendMessage(AresonDeathSwap.instance.messages.getPlainMessage(Message.WIN_BROADCAST, Pair.of("%player%", playerWinner.getName()))));
         });
@@ -368,7 +380,6 @@ public class Arena {
     }
 
     private void sendPlayersIntoArenaWorld() {
-
         final Location spawnLocation = arenaWorld.getSpawnLocation();
         List<Player> players = this.players.keySet().parallelStream().map(DeathswapPlayer::getActualPlayer).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
 
@@ -383,11 +394,13 @@ public class Arena {
         }
 
         for (Player player : players) {
+            player.setInvulnerable(true);
             PlayerUtils.resetPlayerStatus(player);
             player.teleportAsync(spawns.remove(0)).whenComplete((aBoolean, throwable) -> {
                 SoundManager.gameStarted(player);
                 player.getInventory().clear();
                 PlayerUtils.giveInitialKit(player);
+                player.setInvulnerable(false);
             });
         }
     }

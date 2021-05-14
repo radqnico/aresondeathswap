@@ -4,8 +4,6 @@ import it.areson.aresoncore.events.GeneralEventListener;
 import it.areson.aresondeathswap.AresonDeathSwap;
 import it.areson.aresondeathswap.arena.Arena;
 import it.areson.aresondeathswap.player.DeathswapPlayer;
-import it.areson.aresondeathswap.utils.Message;
-import it.areson.aresondeathswap.utils.PlayerUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -32,9 +30,10 @@ public class DeathEvents extends GeneralEventListener {
                 event.setCancelled(true);
                 DeathswapPlayer deathswapPlayer = aresonDeathSwap.getDeathswapPlayerManager().getDeathswapPlayer(player);
                 Optional<Arena> arenaOfPlayer = aresonDeathSwap.getArenaManager().getArenaOfPlayer(deathswapPlayer);
-                arenaOfPlayer.ifPresent(arena -> {
+                if (arenaOfPlayer.isPresent()) {
+                    Arena arena = arenaOfPlayer.get();
                     arena.removePlayer(deathswapPlayer, true);
-                });
+                }
             }
         }
     }
