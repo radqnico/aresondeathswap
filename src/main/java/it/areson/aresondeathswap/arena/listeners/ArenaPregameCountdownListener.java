@@ -40,8 +40,6 @@ public class ArenaPregameCountdownListener implements CountdownListener {
         if (checkIfThisArena(countdown)) {
             arena.startGame();
             arena.resetStartingCountdown();
-
-            arena.sendMessageToArenaPlayers(AresonDeathSwap.instance.messages.getPlainMessage(Message.GAME_STARTED));
         }
     }
 

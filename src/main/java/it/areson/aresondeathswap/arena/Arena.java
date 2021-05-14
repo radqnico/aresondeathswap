@@ -36,6 +36,7 @@ public class Arena {
     private Countdown countdownSwaps;
 
     private boolean timeToKill;
+    private boolean gameWon;
 
     private HashMap<DeathswapPlayer, Boolean> playersToRemove;
     private boolean canRemovePlayers;
@@ -55,6 +56,7 @@ public class Arena {
         this.canRemovePlayers = true;
 
         this.timeToKill = false;
+        this.gameWon = false;
 
         startingCountdownListener = new ArenaPregameCountdownListener(this);
         swapsCountdownListener = new ArenaSwapsCountdownListener(this);
@@ -69,6 +71,7 @@ public class Arena {
         this.playersToRemove.clear();
         this.canRemovePlayers = true;
         this.timeToKill = false;
+        this.gameWon = false;
     }
 
     public void unregisterListeners() {
@@ -184,12 +187,15 @@ public class Arena {
                         DeathswapPlayer killerDSPlayer = aresonDeathSwap.getDeathswapPlayerManager().getDeathswapPlayer(killer);
                         killerDSPlayer.setKillCount(deathswapPlayer.getKillCount() + 1);
                     }
-                    player.sendMessage(aresonDeathSwap.messages.getPlainMessage(Message.GAME_PLAYER_DEAD));
-                    PlayerUtils.sendLongTitle(player, Message.TITLE_LOSE, Message.TITLE_LOSE_SUB);
-                    SoundManager.loser(player);
+                    if (!gameWon) {
+                        player.sendMessage(aresonDeathSwap.messages.getPlainMessage(Message.GAME_PLAYER_DEAD));
+                        PlayerUtils.sendLongTitle(player, Message.TITLE_LOSE, Message.TITLE_LOSE_SUB);
+                        SoundManager.loser(player);
+                        deathswapPlayer.setDeathCount(deathswapPlayer.getDeathCount() + 1);
+                    }
                 });
-                deathswapPlayer.setDeathCount(deathswapPlayer.getDeathCount() + 1);
             }
+
             players.remove(deathswapPlayer);
             if (checkStatusOrWin) {
                 startingToOpenIfNotMinPlayersReach();
@@ -208,6 +214,7 @@ public class Arena {
     }
 
     private void winGame() {
+        gameWon = true;
         sendTitleToArenaPlayers(Message.TITLE_WIN, Message.TITLE_WIN_SUB);
 
         Optional<DeathswapPlayer> lastPlayerInArena = getLastPlayerInArena();
@@ -279,13 +286,12 @@ public class Arena {
 
     public void startGame() {
         if (arenaStatus.equals(ArenaStatus.STARTING)) {
+            arenaWorld.setTime((int) (Math.random() * 24000));
             arenaStatus = ArenaStatus.IN_GAME;
             sendPlayersIntoArenaWorld();
             startSwapsCountdown();
 
-            sendMessageToArenaPlayers(aresonDeathSwap.messages.getPlainMessage(
-                    Message.STARTING_CD_STARTED
-            ));
+            sendMessageToArenaPlayers(AresonDeathSwap.instance.messages.getPlainMessage(Message.GAME_STARTED));
         }
     }
 
@@ -362,7 +368,6 @@ public class Arena {
     }
 
     private void sendPlayersIntoArenaWorld() {
-        arenaWorld.setTime((int) (Math.random() * 24000));
 
         final Location spawnLocation = arenaWorld.getSpawnLocation();
         List<Player> players = this.players.keySet().parallelStream().map(DeathswapPlayer::getActualPlayer).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
