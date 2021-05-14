@@ -4,6 +4,7 @@ import it.areson.aresondeathswap.AresonDeathSwap;
 import it.areson.aresondeathswap.arena.ArenaManager;
 import it.areson.aresondeathswap.player.DeathswapPlayer;
 import it.areson.aresondeathswap.player.DeathswapPlayerManager;
+import it.areson.aresondeathswap.utils.Message;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -21,7 +22,7 @@ public class LeaveCommand implements CommandExecutor, TabCompleter {
         if (commandSender instanceof Player) {
             Player player = (Player) commandSender;
             removePlayerFromArenas(player);
-            player.sendMessage("Hai lasciato tutte le arene");
+            player.sendMessage(AresonDeathSwap.instance.messages.getPlainMessage(Message.GAME_LEAVE));
         } else {
             commandSender.sendMessage("Command only available by player");
         }

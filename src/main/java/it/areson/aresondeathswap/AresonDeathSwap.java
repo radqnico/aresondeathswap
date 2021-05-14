@@ -10,20 +10,31 @@ import it.areson.aresondeathswap.commands.arena.OpenCommand;
 import it.areson.aresondeathswap.commands.play.LeaveCommand;
 import it.areson.aresondeathswap.commands.play.PlayCommand;
 import it.areson.aresondeathswap.commands.situation.SituationCommand;
+import it.areson.aresondeathswap.events.DeathEvents;
 import it.areson.aresondeathswap.player.DeathswapPlayerManager;
+import it.areson.aresondeathswap.utils.FileManager;
+import it.areson.aresondeathswap.utils.MessageManager;
+import org.bukkit.Location;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Objects;
 import java.util.logging.Level;
 
 public final class AresonDeathSwap extends JavaPlugin {
 
     public static AresonDeathSwap instance;
+    public MessageManager messages;
 
     private MySqlConnection mySqlConnection;
     private DeathswapPlayerManager deathswapPlayerManager;
 
+    private FileManager arenasFile;
+    private FileManager configFile;
+
     private ArenaManager arenaManager;
+
+    private DeathEvents deathEvents;
 
     public MySqlConnection getMySqlConnection() {
         return mySqlConnection;
@@ -37,7 +48,11 @@ public final class AresonDeathSwap extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
+        messages = new MessageManager(this, "messages.yml");
+
         saveDefaultConfig();
+
+        configFile = new FileManager(this, "config.yml");
 
         mySqlConnection = new MySqlConnection(this, new MySqlConfig(
                 Constants.MYSQL_HOST,
@@ -48,7 +63,10 @@ public final class AresonDeathSwap extends JavaPlugin {
 
         deathswapPlayerManager = new DeathswapPlayerManager(this, mySqlConnection, Constants.MYSQL_PLAYER_TABLE);
 
-        arenaManager = new ArenaManager();
+        arenasFile = new FileManager(this, "arenas.yml");
+        arenaManager = new ArenaManager(arenasFile);
+
+        deathEvents = new DeathEvents(this, this);
 
         registerCommands();
     }
@@ -96,11 +114,20 @@ public final class AresonDeathSwap extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        arenaManager.unloadAllWorld();
         deathswapPlayerManager.saveAllPlayers();
         deathswapPlayerManager.unregisterEvents();
     }
 
     public ArenaManager getArenaManager() {
         return arenaManager;
+    }
+
+    public FileManager getConfigFile() {
+        return configFile;
+    }
+
+    public Location getLobbySpawn() {
+        return configFile.getLocation("spawn").orElseGet(() -> Objects.requireNonNull(getServer().getWorld("world")).getSpawnLocation());
     }
 }

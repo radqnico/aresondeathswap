@@ -11,4 +11,6 @@ public class Constants {
     public static String COUNTDOWN_PREGAME_SUFFIX = "_pregame";
     public static String COUNTDOWN_SWAP_SUFFIX = "_swap";
 
+    public static String ARENAS_PATH = "arenas";
+
 }

@@ -121,7 +121,6 @@ public class DeathswapPlayerGateway extends DBGateway<String, DeathswapPlayer> {
         String query = objectToQuery(object);
         try {
             Connection connection = mySqlConnection.connect();
-            System.out.println(query);
             int affectedRows = mySqlConnection.update(connection, query);
             connection.close();
             if (affectedRows > 0) {

@@ -1,6 +1,6 @@
 arena-min-players: 2
 
 arena-starting-seconds: 30
-arena-min-swap-seconds: 60
-arena-max-swap-seconds: 180
+arena-min-swap-seconds: 120
+arena-max-swap-seconds: 300
 arena-max-rounds: 20

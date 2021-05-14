@@ -35,7 +35,7 @@ public class OpenCommand extends CommandParserCommand {
             commandSender.sendMessage("L'arena non esiste");
         }
 
-        commandSender.sendMessage("Deleted arena " + arenaName);
+        commandSender.sendMessage("Opened arena " + arenaName);
 
         return true;
     }

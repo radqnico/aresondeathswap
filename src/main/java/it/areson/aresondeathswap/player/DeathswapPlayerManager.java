@@ -2,7 +2,7 @@ package it.areson.aresondeathswap.player;
 
 import it.areson.aresoncore.database.MySqlConnection;
 import it.areson.aresondeathswap.AresonDeathSwap;
-import it.areson.aresondeathswap.events.PlayerQuitJoinEvents;
+import it.areson.aresondeathswap.events.QuitJoinEvents;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -16,13 +16,13 @@ public class DeathswapPlayerManager {
     private final DeathswapPlayerGateway gateway;
     private final AresonDeathSwap aresonDeathSwap;
 
-    private final PlayerQuitJoinEvents playerQuitJoinEvents;
+    private final QuitJoinEvents playerQuitJoinEvents;
 
     public DeathswapPlayerManager(AresonDeathSwap aresonDeathSwap, MySqlConnection mySqlConnection, String tableName) {
         this.aresonDeathSwap = aresonDeathSwap;
         this.onlinePlayers = new HashMap<>();
         this.gateway = new DeathswapPlayerGateway(mySqlConnection, tableName);
-        playerQuitJoinEvents = new PlayerQuitJoinEvents(aresonDeathSwap);
+        playerQuitJoinEvents = new QuitJoinEvents(aresonDeathSwap);
         registerEvents();
     }
 

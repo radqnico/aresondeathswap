@@ -6,6 +6,10 @@ import it.areson.aresondeathswap.arena.ArenaManager;
 import it.areson.aresondeathswap.arena.ArenaStatus;
 import it.areson.aresondeathswap.player.DeathswapPlayer;
 import it.areson.aresondeathswap.player.DeathswapPlayerManager;
+import it.areson.aresondeathswap.utils.Message;
+import it.areson.aresondeathswap.utils.Pair;
+import it.areson.aresondeathswap.utils.PlayerUtils;
+import it.areson.aresondeathswap.utils.SoundManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -27,7 +31,7 @@ public class PlayCommand implements CommandExecutor, TabCompleter {
                 String arenaName = strings[0];
                 addIfCan(player, arenaName);
             } else {
-                commandSender.sendMessage("Specifica l'arena in cui giocare");
+                player.sendMessage(AresonDeathSwap.instance.messages.getPlainMessage(Message.ARENA_NOT_FOUND));
             }
         } else {
             commandSender.sendMessage("Command only available by player");
@@ -39,14 +43,14 @@ public class PlayCommand implements CommandExecutor, TabCompleter {
         ArenaManager arenaManager = AresonDeathSwap.instance.getArenaManager();
         Optional<Arena> arenaByName = arenaManager.getArenaByName(arenaName);
         if (!arenaByName.isPresent()) {
-            player.sendMessage("L'arena non esiste");
+            player.sendMessage(AresonDeathSwap.instance.messages.getPlainMessage(Message.ARENA_NOT_FOUND));
             return;
         }
         Arena arena = arenaByName.get();
         if (arena.canNewPlayerJoin()) {
             addPlayerToArena(arenaManager, arena, player);
         } else {
-            player.sendMessage("L'arena non accetta nuovi giocatori ora");
+            player.sendMessage(AresonDeathSwap.instance.messages.getPlainMessage(Message.ARENA_CANNOT_JOIN));
         }
     }
 
@@ -56,13 +60,18 @@ public class PlayCommand implements CommandExecutor, TabCompleter {
 
         Optional<Arena> arenaOfPlayer = arenaManager.getArenaOfPlayer(deathswapPlayer);
         if (arenaOfPlayer.isPresent() && (arenaOfPlayer.get().equals(arena) || arenaOfPlayer.get().getArenaStatus().equals(ArenaStatus.IN_GAME))) {
-            player.sendMessage("Sei già nell'arena " + arena.getArenaName());
+            player.sendMessage(AresonDeathSwap.instance.messages.getPlainMessage(Message.ARENA_ALREADY_INTO));
+            SoundManager.cannotJoinArena(player);
             return;
         }
 
         arenaManager.removePlayerFromAllArenas(deathswapPlayer);
         arena.addPlayer(deathswapPlayer, player.getLocation());
-        player.sendMessage("Ti sei unito all'arena " + arena.getArenaName());
+
+        player.sendMessage(AresonDeathSwap.instance.messages.getPlainMessage(Message.ARENA_JOIN, Pair.of("%arena%", arena.getArenaName())));
+
+        PlayerUtils.sendShortTitle(player, Message.TITLE_JOIN_ARENA, Message.TITLE_JOIN_ARENA_SUB);
+        SoundManager.joinArena(player);
     }
 
     @Override
