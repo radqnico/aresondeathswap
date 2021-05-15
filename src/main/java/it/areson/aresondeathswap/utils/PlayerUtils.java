@@ -20,11 +20,10 @@ public class PlayerUtils {
         player.setLevel(0);
         player.setFlying(false);
         player.setHealth(20);
-        player.setFallDistance(0);
         player.setFireTicks(0);
         player.setGlowing(false);
         player.setGameMode(GameMode.SURVIVAL);
-        player.setSaturation(15);
+        player.setSaturation(20);
         player.setFoodLevel(20);
         Collection<PotionEffect> activePotionEffects = player.getActivePotionEffects();
         for (PotionEffect potionEffect : activePotionEffects) {
@@ -40,11 +39,10 @@ public class PlayerUtils {
         player.setAllowFlight(true);
         player.setFlying(true);
         player.setHealth(20);
-        player.setFallDistance(0);
         player.setFireTicks(0);
         player.setGlowing(false);
         player.setGameMode(GameMode.SURVIVAL);
-        player.setSaturation(15);
+        player.setSaturation(20);
         player.setFoodLevel(20);
         Collection<PotionEffect> activePotionEffects = player.getActivePotionEffects();
         for (PotionEffect potionEffect : activePotionEffects) {

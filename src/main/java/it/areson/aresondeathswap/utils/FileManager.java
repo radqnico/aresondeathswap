@@ -42,9 +42,9 @@ public class FileManager {
         }
     }
 
-    public void addArena(String arenaName, String arenaWorldName, int minPlayers) {
+    public void addArena(String arenaName, String arenaWorldName, int minPlayers, int maxRounds) {
         List<String> arenas = fileConfiguration.getStringList(Constants.ARENAS_PATH);
-        String stringArena = arenaName + ";" + arenaWorldName + ";" + minPlayers;
+        String stringArena = arenaName + ";" + arenaWorldName + ";" + minPlayers + ";" + maxRounds;
         if (!arenas.contains(stringArena)) {
             arenas.add(stringArena);
             fileConfiguration.set(Constants.ARENAS_PATH, arenas);

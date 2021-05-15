@@ -53,8 +53,9 @@ public class LootChest {
     }//selectLoot
 
     private void putSelectedItems() {
-        for (LootItem i : selectedItems)
+        for (LootItem i : selectedItems) {
             left.getInventory().addItem(i.getItem());
+        }
     }//putSelectedItems
 
     private void breakChest() {

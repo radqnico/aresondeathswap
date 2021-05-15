@@ -9,7 +9,7 @@ countdown-swap-message: "&6Lo swap verrà eseguito tra %seconds% secondi"
 
 win-broadcast-message: "&6%player% ha vinto una partita!"
 
-countdown-prepare-message: "&aPreparati al prossimo swap! Avverrà a caso tra 2 e 4 minuti"
+countdown-prepare-message: "&aPreparati al prossimo swap! Avverrà a caso tra 3 e 5 minuti"
 arena-not-found: "&cArena non trovata"
 arena-cannot-join: "&cNon puoi entrare ora in questa arena!"
 arena-join: "&aTi sei unito all'arena '%arena%'. Scrivi /leave per abbandonare la partita"

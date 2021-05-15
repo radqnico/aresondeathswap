@@ -1,8 +1,8 @@
 package it.areson.aresondeathswap.arena;
 
 import it.areson.aresondeathswap.AresonDeathSwap;
-import it.areson.aresondeathswap.utils.FileManager;
 import it.areson.aresondeathswap.player.DeathswapPlayer;
+import it.areson.aresondeathswap.utils.FileManager;
 import org.bukkit.Location;
 
 import java.util.HashMap;
@@ -25,7 +25,7 @@ public class ArenaManager {
         List<String> allArenasStrings = arenasFile.getAllArenasStrings();
         for (String arenaString : allArenasStrings) {
             String[] split = arenaString.split(";");
-            Arena newArenaAndLoadWorld = createNewArenaAndLoadWorld(AresonDeathSwap.instance, split[0], split[1], Integer.parseInt(split[2]));
+            Arena newArenaAndLoadWorld = createNewArenaAndLoadWorld(AresonDeathSwap.instance, split[0], split[1], Integer.parseInt(split[2]), Integer.parseInt(split[3]));
             newArenaAndLoadWorld.open();
         }
     }
@@ -34,8 +34,8 @@ public class ArenaManager {
         return arenas;
     }
 
-    public Arena createNewArenaAndLoadWorld(AresonDeathSwap aresonDeathSwap, String arenaName, String arenaWorldName, int minPlayers) {
-        Arena arena = new Arena(aresonDeathSwap, arenaName, arenaWorldName, minPlayers);
+    public Arena createNewArenaAndLoadWorld(AresonDeathSwap aresonDeathSwap, String arenaName, String arenaWorldName, int minPlayers, int maxRounds) {
+        Arena arena = new Arena(aresonDeathSwap, arenaName, arenaWorldName, minPlayers, maxRounds);
         arena.loadArenaWorld();
         addArena(arena);
         return arena;
@@ -54,7 +54,7 @@ public class ArenaManager {
         String arenaName = arena.getArenaName();
 
         arenas.put(arenaName, arena);
-        arenasFile.addArena(arenaName, arena.getArenaWorld().getName(), arena.getMinPlayers());
+        arenasFile.addArena(arenaName, arena.getArenaWorld().getName(), arena.getMinPlayers(), arena.getMaxRounds());
     }
 
     public Optional<Arena> getArenaByName(String arenaName) {

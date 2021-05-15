@@ -10,9 +10,12 @@ import it.areson.aresondeathswap.arena.listeners.ArenaSwapsCountdownListener;
 import it.areson.aresondeathswap.player.DeathswapPlayer;
 import it.areson.aresondeathswap.utils.*;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -27,13 +30,17 @@ public class Arena {
     private final String arenaName;
     private final String arenaWorldName;
     private final int minPlayers;
+    private final int maxRounds;
     private final HashMap<Player, Player> lastSwapCouples;
     private final ArenaPregameCountdownListener startingCountdownListener;
     private final ArenaSwapsCountdownListener swapsCountdownListener;
+    private int currentRound;
     private World arenaWorld;
     private ArenaStatus arenaStatus;
     private Countdown countdownStarting;
     private Countdown countdownSwaps;
+
+    private ArenaPlaceholders arenaPlaceholders;
 
     private boolean timeToKill;
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
@@ -42,11 +49,13 @@ public class Arena {
     private HashMap<DeathswapPlayer, Boolean> playersToRemove;
     private boolean canRemovePlayers;
 
-    public Arena(AresonDeathSwap aresonDeathSwap, String arenaName, String arenaWorldName, int minPlayers) {
+    public Arena(AresonDeathSwap aresonDeathSwap, String arenaName, String arenaWorldName, int minPlayers, int maxRounds) {
         this.aresonDeathSwap = aresonDeathSwap;
         this.arenaName = arenaName;
         this.arenaWorldName = arenaWorldName;
         this.minPlayers = minPlayers;
+        this.maxRounds = maxRounds;
+        this.currentRound = 0;
 
         this.arenaStatus = ArenaStatus.CLOSED;
         this.players = new HashMap<>();
@@ -64,6 +73,9 @@ public class Arena {
 
         resetStartingCountdown();
         resetSwapsCountdown();
+
+        arenaPlaceholders = new ArenaPlaceholders(this);
+        arenaPlaceholders.register();
     }
 
     private void resetArenaData() {
@@ -73,19 +85,21 @@ public class Arena {
         this.canRemovePlayers = true;
         this.timeToKill = false;
         this.winner = Optional.empty();
+        this.currentRound = 0;
     }
 
     public void unregisterListeners() {
         CountdownManager.getInstance().unregisterListener(startingCountdownListener);
         CountdownManager.getInstance().unregisterListener(swapsCountdownListener);
+        arenaPlaceholders.unregister();
     }
 
     public void resetSwapsCountdown() {
         FileManager configFile = AresonDeathSwap.instance.getConfigFile();
         int max = configFile.getFileConfiguration().getInt("arena-max-swap-seconds");
         int min = configFile.getFileConfiguration().getInt("arena-min-swap-seconds");
-        int random = (int) (Math.random() * (max - min)) + 160;
-        countdownSwaps = new Countdown(arenaName + Constants.COUNTDOWN_SWAP_SUFFIX, random, 500, 10);
+        int random = (int) (Math.random() * (max - min)) + min;
+        countdownSwaps = new Countdown(arenaName + Constants.COUNTDOWN_SWAP_SUFFIX, random, 1000, 10);
     }
 
     public void startSwapsCountdown() {
@@ -163,6 +177,8 @@ public class Arena {
     }
 
     public void removePlayer(DeathswapPlayer deathswapPlayer, boolean checkStatusOrWin) {
+
+        System.out.println("RIMOSSO " + deathswapPlayer.getNickName());
         if (!canRemovePlayers) {
             playersToRemove.put(deathswapPlayer, checkStatusOrWin);
             return;
@@ -181,7 +197,6 @@ public class Arena {
         if (arenaStatus.equals(ArenaStatus.IN_GAME) || arenaStatus.equals(ArenaStatus.CLOSED)) {
             actualPlayerOptional.ifPresent(player -> arenaWorld.strikeLightningEffect(player.getLocation()));
 
-            System.out.println("Ciao");
             deathswapPlayer.setGamesPlayed(deathswapPlayer.getGamesPlayed() + 1);
 
             actualPlayerOptional.ifPresent(player -> {
@@ -190,18 +205,12 @@ public class Arena {
                     sendMessageToArenaPlayers(aresonDeathSwap.messages.getPlainMessage(
                             Message.GAME_KILL,
                             Pair.of("%killer%", killer.getName()),
-                            Pair.of("%players%", deathswapPlayer.getNickName())
+                            Pair.of("%player%", deathswapPlayer.getNickName())
                     ));
                     DeathswapPlayer killerDSPlayer = aresonDeathSwap.getDeathswapPlayerManager().getDeathswapPlayer(killer);
                     killerDSPlayer.setKillCount(deathswapPlayer.getKillCount() + 1);
                 }
-                if (!winner.isPresent()) {
-                    sendMessageToArenaPlayers(aresonDeathSwap.messages.getPlainMessage(
-                            Message.GAME_PLAYERS_REMAINING,
-                            Pair.of("%number%", players.size() + ""),
-                            Pair.of("%players%", players.keySet().parallelStream().map(DeathswapPlayer::getNickName).collect(Collectors.joining(" ")))
-                    ));
-                }
+
                 if (!winner.isPresent() || !winner.get().equals(player)) {
                     sendMessageToArenaPlayers(aresonDeathSwap.messages.getPlainMessage(
                             Message.GAME_PLAYERS_REMAINING,
@@ -358,6 +367,10 @@ public class Arena {
             teleportsResults.add(playerToTeleport.teleportAsync(destination).whenComplete((aBoolean, throwable) -> {
                 PlayerUtils.sendShortTitle(playerToTeleport, Message.TITLE_SWAP, Message.TITLE_SWAP_SUB);
                 SoundManager.teleport(playerToTeleport);
+
+                if (Math.random() < 0.5) {
+                    spawnChestNearPlayer(playerToTeleport);
+                }
             }));
         }
 
@@ -365,6 +378,11 @@ public class Arena {
             canRemovePlayers = true;
             removeAllPendingPlayers();
             timeToKill = true;
+
+            currentRound++;
+            if (getRemainingRounds() == 0) {
+                witherPlayers(players);
+            }
 
             Scheduler.getInstance().scheduleTask(arenaName + "_timeToKill", LocalDateTime.now().plus(10, ChronoUnit.SECONDS), () -> {
                 timeToKill = false;
@@ -379,40 +397,66 @@ public class Arena {
 
     }
 
+    public void witherPlayers(List<Player> players) {
+        for (Player player : players) {
+            player.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, Integer.MAX_VALUE, 3));
+        }
+    }
+
+    public int getRemainingRounds() {
+        return Math.max(maxRounds - currentRound, 0);
+    }
+
     private void sendPlayersIntoArenaWorld() {
         final Location spawnLocation = arenaWorld.getSpawnLocation();
         List<Player> players = this.players.keySet().parallelStream().map(DeathswapPlayer::getActualPlayer).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
 
         List<Location> spawns = new ArrayList<>();
 
+        int radiusFormSpawn = 1000;
+
         for (int i = 0; i < players.size(); i++) {
             final Location clone = spawnLocation.clone();
-            clone.add((Math.random() * 4000) - 2000, 0, (Math.random() * 4000) - 2000);
-            int highestBlockYAt = clone.getWorld().getHighestBlockYAt(spawnLocation.getBlockX(), spawnLocation.getBlockY());
+            double randomX = (Math.random() * radiusFormSpawn * 2) - radiusFormSpawn;
+            double randomZ = (Math.random() * radiusFormSpawn * 2) - radiusFormSpawn;
+            clone.add(randomX, 0, randomZ);
+            int highestBlockYAt = arenaWorld.getHighestBlockYAt((int) randomX, (int) randomZ);
             clone.setY(highestBlockYAt + 1);
             spawns.add(clone);
         }
 
         for (Player player : players) {
-            player.setInvulnerable(true);
+
+            player.teleport(spawns.remove(0));
+            player.getLocation().clone().add(0, -1, 0).getBlock().setType(Material.GLASS);
             PlayerUtils.resetPlayerStatus(player);
-            player.teleportAsync(spawns.remove(0)).whenComplete((aBoolean, throwable) -> {
-                SoundManager.gameStarted(player);
-                player.getInventory().clear();
-                PlayerUtils.giveInitialKit(player);
-                player.setInvulnerable(false);
-            });
+            player.getInventory().clear();
+            PlayerUtils.giveInitialKit(player);
+
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 5, 2, false, false));
+
+            SoundManager.gameStarted(player);
+
+            spawnChestNearPlayer(player);
         }
+    }
+
+    public void spawnChestNearPlayer(Player player) {
+        aresonDeathSwap.loots.placeNewChestNear(player);
+        player.sendMessage(aresonDeathSwap.messages.getPlainMessage(Message.GAME_CHEST_SPAWNED));
+        SoundManager.chestAppear(player);
     }
 
     private void resetArena() {
         close();
         resetArenaData();
         unloadArenaWorld();
-        loadArenaWorld();
+        Scheduler.getInstance().scheduleTask(arenaName + "_reloadWorld", LocalDateTime.now().plus(5, ChronoUnit.SECONDS), () -> {
+            loadArenaWorld();
+            open();
+        });
         resetSwapsCountdown();
         resetStartingCountdown();
-        open();
     }
 
     private void close() {
@@ -436,4 +480,7 @@ public class Arena {
         return Objects.hash(arenaName);
     }
 
+    public int getMaxRounds() {
+        return maxRounds;
+    }
 }

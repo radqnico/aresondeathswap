@@ -22,6 +22,7 @@ public class Message {
     public static String GAME_LEAVE = "game-leaved";
     public static String GAME_PLAYER_DEAD = "player-dead";
     public static String GAME_KILL = "player-kill";
+    public static String GAME_CHEST_SPAWNED = "chest-spawned";
 
     public static String TITLE_JOIN = "title-join";
     public static String TITLE_JOIN_SUB = "subtitle-join";

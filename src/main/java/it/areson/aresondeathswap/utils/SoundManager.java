@@ -53,13 +53,14 @@ public class SoundManager {
 
     public static void openChest(Location target) {
         World world = target.getWorld();
-        if(world!=null) {
+        if (world != null) {
             world.playSound(target, Sound.BLOCK_BEACON_POWER_SELECT, SoundCategory.MASTER, 0.4f, 2f);
         }
     }
 
-    public static void chestAppear(Player target){
+    public static void chestAppear(Player target) {
         target.playSound(target.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1f, 0.75f);
+        target.playSound(target.getLocation(), Sound.BLOCK_CHEST_OPEN, SoundCategory.MASTER, 1f, 1f);
     }
 
 }

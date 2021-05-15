@@ -10,7 +10,9 @@ import it.areson.aresondeathswap.commands.arena.OpenCommand;
 import it.areson.aresondeathswap.commands.play.LeaveCommand;
 import it.areson.aresondeathswap.commands.play.PlayCommand;
 import it.areson.aresondeathswap.commands.situation.SituationCommand;
+import it.areson.aresondeathswap.events.ChatEvents;
 import it.areson.aresondeathswap.events.DeathEvents;
+import it.areson.aresondeathswap.loot.LootConfigReader;
 import it.areson.aresondeathswap.player.DeathswapPlayerManager;
 import it.areson.aresondeathswap.utils.FileManager;
 import it.areson.aresondeathswap.utils.MessageManager;
@@ -25,6 +27,7 @@ public final class AresonDeathSwap extends JavaPlugin {
 
     public static AresonDeathSwap instance;
     public MessageManager messages;
+    public LootConfigReader loots;
 
     private MySqlConnection mySqlConnection;
     private DeathswapPlayerManager deathswapPlayerManager;
@@ -35,6 +38,7 @@ public final class AresonDeathSwap extends JavaPlugin {
     private ArenaManager arenaManager;
 
     private DeathEvents deathEvents;
+    private ChatEvents chatEvents;
 
     public MySqlConnection getMySqlConnection() {
         return mySqlConnection;
@@ -67,7 +71,10 @@ public final class AresonDeathSwap extends JavaPlugin {
         arenaManager = new ArenaManager(arenasFile);
 
         deathEvents = new DeathEvents(this, this);
+        chatEvents = new ChatEvents(this);
 
+        loots = new LootConfigReader(this, "loot.yml");
+        loots.readLoot();
         registerCommands();
     }
 
