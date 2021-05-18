@@ -14,6 +14,7 @@ import it.areson.aresondeathswap.events.ChatEvents;
 import it.areson.aresondeathswap.events.DeathEvents;
 import it.areson.aresondeathswap.loot.LootConfigReader;
 import it.areson.aresondeathswap.player.DeathswapPlayerManager;
+import it.areson.aresondeathswap.player.PlayerStatsPlaceholders;
 import it.areson.aresondeathswap.utils.FileManager;
 import it.areson.aresondeathswap.utils.MessageManager;
 import org.bukkit.Location;
@@ -64,6 +65,8 @@ public final class AresonDeathSwap extends JavaPlugin {
                 Constants.MYSQL_PASS,
                 Constants.MYSQL_DB
         ));
+
+        new PlayerStatsPlaceholders().register();
 
         deathswapPlayerManager = new DeathswapPlayerManager(this, mySqlConnection, Constants.MYSQL_PLAYER_TABLE);
 

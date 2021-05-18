@@ -29,6 +29,7 @@ public class PlayerUtils {
         for (PotionEffect potionEffect : activePotionEffects) {
             player.removePotionEffect(potionEffect.getType());
         }
+        player.getInventory().clear();
     }
 
     public static void playerDeadStatus(Player player) {

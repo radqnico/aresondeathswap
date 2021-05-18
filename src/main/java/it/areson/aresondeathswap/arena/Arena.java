@@ -183,8 +183,10 @@ public class Arena {
             playersToRemove.put(deathswapPlayer, checkStatusOrWin);
             return;
         }
-
-        returnPlayerToPreviousLocation(deathswapPlayer);
+        
+        if (arenaStatus.equals(ArenaStatus.IN_GAME) || arenaStatus.equals(ArenaStatus.CLOSED)) {
+            returnPlayerToPreviousLocation(deathswapPlayer);
+        }
 
         Optional<Player> actualPlayerOptional = deathswapPlayer.getActualPlayer();
         players.remove(deathswapPlayer);
@@ -433,7 +435,7 @@ public class Arena {
             player.getInventory().clear();
             PlayerUtils.giveInitialKit(player);
 
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 5, 2, false, false));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 200, 1));
 
             SoundManager.gameStarted(player);
 
