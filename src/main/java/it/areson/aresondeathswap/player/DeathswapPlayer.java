@@ -66,6 +66,14 @@ public class DeathswapPlayer {
         this.gamesPlayed = gamesPlayed;
     }
 
+    public int getWinsCount() {
+        return gamesPlayed - deathCount;
+    }
+
+    public double getWinRate() {
+        return (double) getWinsCount() / (double) gamesPlayed;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

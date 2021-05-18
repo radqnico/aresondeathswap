@@ -37,6 +37,10 @@ public class ArenaPlaceholders extends PlaceholderExpansion {
             return arena.getPlayers().size() + "";
         }
 
+        if (identifier.equals("minplayers")) {
+            return arena.getMinPlayers() + "";
+        }
+
         if (identifier.equals("status")) {
             switch (arena.getArenaStatus()) {
                 case CLOSED:

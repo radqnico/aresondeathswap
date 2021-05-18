@@ -171,8 +171,8 @@ public class Arena {
 
     private void returnPlayerToPreviousLocation(DeathswapPlayer deathswapPlayer) {
         deathswapPlayer.getActualPlayer().ifPresent(player -> {
-            player.teleport(players.get(deathswapPlayer));
             PlayerUtils.resetPlayerStatus(player);
+            player.teleport(players.get(deathswapPlayer));
         });
     }
 
@@ -198,7 +198,6 @@ public class Arena {
 
         if (arenaStatus.equals(ArenaStatus.IN_GAME) || arenaStatus.equals(ArenaStatus.CLOSED)) {
             actualPlayerOptional.ifPresent(player -> arenaWorld.strikeLightningEffect(player.getLocation()));
-
             deathswapPlayer.setGamesPlayed(deathswapPlayer.getGamesPlayed() + 1);
 
             actualPlayerOptional.ifPresent(player -> {
@@ -214,6 +213,7 @@ public class Arena {
                 }
 
                 if (!winner.isPresent() || !winner.get().equals(player)) {
+                    deathswapPlayer.setDeathCount(deathswapPlayer.getDeathCount() + 1);
                     sendMessageToArenaPlayers(aresonDeathSwap.messages.getPlainMessage(
                             Message.GAME_PLAYERS_REMAINING,
                             Pair.of("%number%", players.size() + ""),
@@ -223,7 +223,6 @@ public class Arena {
                     player.sendMessage(aresonDeathSwap.messages.getPlainMessage(Message.GAME_PLAYER_DEAD));
                     PlayerUtils.sendLongTitle(player, Message.TITLE_LOSE, Message.TITLE_LOSE_SUB);
                     SoundManager.loser(player);
-                    deathswapPlayer.setDeathCount(deathswapPlayer.getDeathCount() + 1);
                 }
             });
         }
@@ -282,7 +281,8 @@ public class Arena {
             }
 
             sendMessageToArenaPlayers(aresonDeathSwap.messages.getPlainMessage(
-                    Message.STARTING_CD_STARTED
+                    Message.STARTING_CD_STARTED,
+                    Pair.of("%seconds%", countdownStarting.getCountdownSeconds()+"")
             ));
         }
     }

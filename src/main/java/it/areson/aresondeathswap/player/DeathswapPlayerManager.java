@@ -6,24 +6,28 @@ import it.areson.aresondeathswap.events.PlayerEvents;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class DeathswapPlayerManager {
 
     private final HashMap<String, DeathswapPlayer> onlinePlayers;
     private final DeathswapPlayerGateway gateway;
     private final AresonDeathSwap aresonDeathSwap;
-
     private final PlayerEvents playerPlayerEvents;
-
     public DeathswapPlayerManager(AresonDeathSwap aresonDeathSwap, MySqlConnection mySqlConnection, String tableName) {
         this.aresonDeathSwap = aresonDeathSwap;
         this.onlinePlayers = new HashMap<>();
         this.gateway = new DeathswapPlayerGateway(mySqlConnection, tableName);
         playerPlayerEvents = new PlayerEvents(aresonDeathSwap);
         registerEvents();
+    }
+
+    public DeathswapPlayerGateway getGateway() {
+        return gateway;
+    }
+
+    public HashMap<String, DeathswapPlayer> getOnlinePlayers() {
+        return onlinePlayers;
     }
 
     public void registerEvents() {
@@ -53,9 +57,9 @@ public class DeathswapPlayerManager {
     public void saveDeathswapPlayer(Player player) {
         DeathswapPlayer deathswapPlayer = onlinePlayers.get(player.getName());
         if (deathswapPlayer != null) {
-            if(gateway.upsert(deathswapPlayer)){
+            if (gateway.upsert(deathswapPlayer)) {
                 aresonDeathSwap.getLogger().info("Player " + player.getName() + "' saved on DB");
-            }else{
+            } else {
                 aresonDeathSwap.getLogger().info("Player " + player.getName() + "' NOT saved on DB");
             }
         }
@@ -66,9 +70,5 @@ public class DeathswapPlayerManager {
         for (DeathswapPlayer deathswapPlayer : onlinePlayers.values()) {
             gateway.upsert(deathswapPlayer);
         }
-    }
-
-    public List<String> getOnlinePlayersNames() {
-        return onlinePlayers.values().stream().map(DeathswapPlayer::getNickName).collect(Collectors.toList());
     }
 }
