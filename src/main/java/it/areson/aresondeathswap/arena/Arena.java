@@ -183,9 +183,10 @@ public class Arena {
             playersToRemove.put(deathswapPlayer, checkStatusOrWin);
             return;
         }
-        
+
         if (arenaStatus.equals(ArenaStatus.IN_GAME) || arenaStatus.equals(ArenaStatus.CLOSED)) {
             returnPlayerToPreviousLocation(deathswapPlayer);
+            aresonDeathSwap.getDeathswapPlayerManager().saveDeathswapPlayer(deathswapPlayer);
         }
 
         Optional<Player> actualPlayerOptional = deathswapPlayer.getActualPlayer();
@@ -199,21 +200,21 @@ public class Arena {
         if (arenaStatus.equals(ArenaStatus.IN_GAME) || arenaStatus.equals(ArenaStatus.CLOSED)) {
             actualPlayerOptional.ifPresent(player -> arenaWorld.strikeLightningEffect(player.getLocation()));
             deathswapPlayer.setGamesPlayed(deathswapPlayer.getGamesPlayed() + 1);
+            deathswapPlayer.setDeathCount(deathswapPlayer.getDeathCount() + 1);
 
             actualPlayerOptional.ifPresent(player -> {
-                if (timeToKill) {
-                    Player killer = lastSwapCouples.get(player);
-                    sendMessageToArenaPlayers(aresonDeathSwap.messages.getPlainMessage(
-                            Message.GAME_KILL,
-                            Pair.of("%killer%", killer.getName()),
-                            Pair.of("%player%", deathswapPlayer.getNickName())
-                    ));
-                    DeathswapPlayer killerDSPlayer = aresonDeathSwap.getDeathswapPlayerManager().getDeathswapPlayer(killer);
-                    killerDSPlayer.setKillCount(deathswapPlayer.getKillCount() + 1);
-                }
-
                 if (!winner.isPresent() || !winner.get().equals(player)) {
-                    deathswapPlayer.setDeathCount(deathswapPlayer.getDeathCount() + 1);
+                    if (timeToKill) {
+                        Player killer = lastSwapCouples.get(player);
+                        sendMessageToArenaPlayers(aresonDeathSwap.messages.getPlainMessage(
+                                Message.GAME_KILL,
+                                Pair.of("%killer%", killer.getName()),
+                                Pair.of("%player%", deathswapPlayer.getNickName())
+                        ));
+                        DeathswapPlayer killerDSPlayer = aresonDeathSwap.getDeathswapPlayerManager().getDeathswapPlayer(killer);
+                        killerDSPlayer.setKillCount(killerDSPlayer.getKillCount() + 1);
+                    }
+
                     sendMessageToArenaPlayers(aresonDeathSwap.messages.getPlainMessage(
                             Message.GAME_PLAYERS_REMAINING,
                             Pair.of("%number%", players.size() + ""),
@@ -239,7 +240,9 @@ public class Arena {
         sendTitleToArenaPlayers(Message.TITLE_WIN, Message.TITLE_WIN_SUB);
 
         Optional<DeathswapPlayer> lastPlayerInArena = getLastPlayerInArena();
-
+        lastPlayerInArena.ifPresent(deathswapPlayer -> {
+            deathswapPlayer.setDeathCount(deathswapPlayer.getDeathCount() - 1);
+        });
         lastPlayerInArena.flatMap(DeathswapPlayer::getActualPlayer).ifPresent(playerWinner -> {
             PlayerUtils.playerDeadStatus(playerWinner);
             winner = Optional.of(playerWinner);
@@ -282,7 +285,7 @@ public class Arena {
 
             sendMessageToArenaPlayers(aresonDeathSwap.messages.getPlainMessage(
                     Message.STARTING_CD_STARTED,
-                    Pair.of("%seconds%", countdownStarting.getCountdownSeconds()+"")
+                    Pair.of("%seconds%", countdownStarting.getCountdownSeconds() + "")
             ));
         }
     }

@@ -14,6 +14,7 @@ public class DeathswapPlayerManager {
     private final DeathswapPlayerGateway gateway;
     private final AresonDeathSwap aresonDeathSwap;
     private final PlayerEvents playerPlayerEvents;
+
     public DeathswapPlayerManager(AresonDeathSwap aresonDeathSwap, MySqlConnection mySqlConnection, String tableName) {
         this.aresonDeathSwap = aresonDeathSwap;
         this.onlinePlayers = new HashMap<>();
@@ -63,7 +64,16 @@ public class DeathswapPlayerManager {
                 aresonDeathSwap.getLogger().info("Player " + player.getName() + "' NOT saved on DB");
             }
         }
+    }
 
+    public void saveDeathswapPlayer(DeathswapPlayer deathswapPlayer) {
+        if (deathswapPlayer != null) {
+            if (gateway.upsert(deathswapPlayer)) {
+                aresonDeathSwap.getLogger().info("Player " + deathswapPlayer.getNickName() + "' saved on DB");
+            } else {
+                aresonDeathSwap.getLogger().info("Player " + deathswapPlayer.getNickName() + "' NOT saved on DB");
+            }
+        }
     }
 
     public void saveAllPlayers() {

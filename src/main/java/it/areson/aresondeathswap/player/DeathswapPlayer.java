@@ -71,7 +71,11 @@ public class DeathswapPlayer {
     }
 
     public double getWinRate() {
-        return (double) getWinsCount() / (double) gamesPlayed;
+        if (gamesPlayed == 0) {
+            return 0;
+        } else {
+            return (double) getWinsCount() / gamesPlayed;
+        }
     }
 
     @Override

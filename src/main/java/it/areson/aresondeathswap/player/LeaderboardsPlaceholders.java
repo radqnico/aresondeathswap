@@ -5,6 +5,7 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -44,35 +45,38 @@ public class LeaderboardsPlaceholders extends PlaceholderExpansion {
         }
 
         if (stat.equalsIgnoreCase("wins")) {
-            List<DeathswapPlayer> deathswapPlayerArrayList = AresonDeathSwap.instance.getDeathswapPlayerManager().getGateway().getAll(false);
+            List<DeathswapPlayer> deathswapPlayerArrayList = AresonDeathSwap.instance.getDeathswapPlayerManager().getGateway().getAll(true);
             deathswapPlayerArrayList.sort(Comparator.comparingInt(DeathswapPlayer::getWinsCount));
+            Collections.reverse(deathswapPlayerArrayList);
 
             if (position > deathswapPlayerArrayList.size()) {
                 return "Nessun dato";
             } else {
-                return deathswapPlayerArrayList.get(position - 1).getNickName() + deathswapPlayerArrayList.get(position - 1).getWinsCount();
+                return deathswapPlayerArrayList.get(position - 1).getNickName() + " " + deathswapPlayerArrayList.get(position - 1).getWinsCount();
             }
         }
 
         if (stat.equalsIgnoreCase("aggressive")) {
-            List<DeathswapPlayer> deathswapPlayerArrayList = AresonDeathSwap.instance.getDeathswapPlayerManager().getGateway().getAll(false);
+            List<DeathswapPlayer> deathswapPlayerArrayList = AresonDeathSwap.instance.getDeathswapPlayerManager().getGateway().getAll(true);
             deathswapPlayerArrayList.sort(Comparator.comparingInt(DeathswapPlayer::getKillCount));
+            Collections.reverse(deathswapPlayerArrayList);
 
             if (position > deathswapPlayerArrayList.size()) {
                 return "Nessun dato";
             } else {
-                return deathswapPlayerArrayList.get(position - 1).getNickName() + deathswapPlayerArrayList.get(position - 1).getKillCount();
+                return deathswapPlayerArrayList.get(position - 1).getNickName() + " " + deathswapPlayerArrayList.get(position - 1).getKillCount();
             }
         }
 
         if (stat.equalsIgnoreCase("winrate")) {
-            List<DeathswapPlayer> deathswapPlayerArrayList = AresonDeathSwap.instance.getDeathswapPlayerManager().getGateway().getAll(false);
+            List<DeathswapPlayer> deathswapPlayerArrayList = AresonDeathSwap.instance.getDeathswapPlayerManager().getGateway().getAll(true);
             deathswapPlayerArrayList.sort(Comparator.comparingDouble(DeathswapPlayer::getWinRate));
+            Collections.reverse(deathswapPlayerArrayList);
 
             if (position > deathswapPlayerArrayList.size()) {
                 return "Nessun dato";
             } else {
-                return deathswapPlayerArrayList.get(position - 1).getNickName() + deathswapPlayerArrayList.get(position - 1).getKillCount();
+                return deathswapPlayerArrayList.get(position - 1).getNickName() + " " + Math.round(deathswapPlayerArrayList.get(position - 1).getWinRate() * 100.0) / 100.0;
             }
         }
 
