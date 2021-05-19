@@ -13,7 +13,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -146,44 +145,12 @@ public class Arena {
         this.arenaStatus = ArenaStatus.OPEN;
     }
 
-    public int findHighestBlockY(int x, int z) {
-        long start = System.currentTimeMillis();
-        for (int y = 0; y < 250; y++) {
-            Block blockAt1 = arenaWorld.getBlockAt(x, y, z);
-            Block blockAt2 = arenaWorld.getBlockAt(x, y + 1, z);
-            Block blockAt3 = arenaWorld.getBlockAt(x, y + 2, z);
-            if (blockAt1.getType().equals(Material.AIR) && blockAt2.getType().equals(Material.AIR) && blockAt3.getType().equals(Material.AIR)) {
-                return y;
-            }
-        }
-        long stop = System.currentTimeMillis();
-        System.out.println("aAAAAAAA     " + (stop-start) + "ms");
-        start = System.currentTimeMillis();
-        arenaWorld.getHighestBlockYAt(x, z);
-        stop = System.currentTimeMillis();
-        System.out.println("BBBBBBBB     " + (stop-start) + "ms");
-        return arenaWorld.getHighestBlockYAt(x, z);
-    }
-
-    public void addRandomSpawnToSpawnsList() {
-        int radiusFormSpawn = 1000;
-        final Location spawnLocation = arenaWorld.getSpawnLocation();
-        final Location clone = spawnLocation.clone();
-
-        double randomX = (Math.random() * radiusFormSpawn * 2) - radiusFormSpawn;
-        double randomZ = (Math.random() * radiusFormSpawn * 2) - radiusFormSpawn;
-        clone.add(randomX, 0, randomZ);
-        int highestBlockYAt = findHighestBlockY((int) randomX, (int) randomZ);
-        clone.setY(highestBlockYAt + 1);
-        gameSpawns.add(clone);
-        aresonDeathSwap.getLogger().info("Added spawn at " + clone.toString());
-    }
-
     public void addPlayer(DeathswapPlayer deathswapPlayer, Location previousLocation) {
         players.putIfAbsent(deathswapPlayer, previousLocation);
 
         if (players.size() > gameSpawns.size()) {
-            addRandomSpawnToSpawnsList();
+            Location randomLocationInRadius = ArenaUtils.getRandomLocationInRadius(arenaWorld, 1000);
+            gameSpawns.add(randomLocationInRadius);
         }
 
         openToStartingIfMinPlayersReached();
@@ -199,7 +166,7 @@ public class Arena {
         if (arenaWorld != null) {
             arenaWorld.setAutoSave(false);
             arenaWorld.getWorldBorder().setCenter(arenaWorld.getSpawnLocation());
-            arenaWorld.getWorldBorder().setSize(8000);
+            arenaWorld.getWorldBorder().setSize(2000);
         }
     }
 
