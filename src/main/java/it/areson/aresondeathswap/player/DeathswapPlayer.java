@@ -78,6 +78,14 @@ public class DeathswapPlayer {
         }
     }
 
+    public double getKD() {
+        if (deathCount == 0) {
+            return 0;
+        } else {
+            return (double) killCount / deathCount;
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

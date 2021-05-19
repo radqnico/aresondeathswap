@@ -3,6 +3,7 @@ package it.areson.aresondeathswap.utils;
 import it.areson.aresondeathswap.AresonDeathSwap;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -30,6 +31,7 @@ public class PlayerUtils {
             player.removePotionEffect(potionEffect.getType());
         }
         player.getInventory().clear();
+        player.setStatistic(Statistic.TIME_SINCE_REST, 0);
     }
 
     public static void playerDeadStatus(Player player) {

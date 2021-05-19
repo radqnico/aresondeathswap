@@ -13,6 +13,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -45,6 +46,7 @@ public class Arena {
     private boolean timeToKill;
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     private Optional<Player> winner;
+    private ArrayList<Location> gameSpawns;
 
     private HashMap<DeathswapPlayer, Boolean> playersToRemove;
     private boolean canRemovePlayers;
@@ -67,6 +69,8 @@ public class Arena {
 
         this.timeToKill = false;
         this.winner = Optional.empty();
+
+        this.gameSpawns = new ArrayList<>();
 
         startingCountdownListener = new ArenaPregameCountdownListener(this);
         swapsCountdownListener = new ArenaSwapsCountdownListener(this);
@@ -142,8 +146,46 @@ public class Arena {
         this.arenaStatus = ArenaStatus.OPEN;
     }
 
+    public int findHighestBlockY(int x, int z) {
+        long start = System.currentTimeMillis();
+        for (int y = 0; y < 250; y++) {
+            Block blockAt1 = arenaWorld.getBlockAt(x, y, z);
+            Block blockAt2 = arenaWorld.getBlockAt(x, y + 1, z);
+            Block blockAt3 = arenaWorld.getBlockAt(x, y + 2, z);
+            if (blockAt1.getType().equals(Material.AIR) && blockAt2.getType().equals(Material.AIR) && blockAt3.getType().equals(Material.AIR)) {
+                return y;
+            }
+        }
+        long stop = System.currentTimeMillis();
+        System.out.println("aAAAAAAA     " + (stop-start) + "ms");
+        start = System.currentTimeMillis();
+        arenaWorld.getHighestBlockYAt(x, z);
+        stop = System.currentTimeMillis();
+        System.out.println("BBBBBBBB     " + (stop-start) + "ms");
+        return arenaWorld.getHighestBlockYAt(x, z);
+    }
+
+    public void addRandomSpawnToSpawnsList() {
+        int radiusFormSpawn = 1000;
+        final Location spawnLocation = arenaWorld.getSpawnLocation();
+        final Location clone = spawnLocation.clone();
+
+        double randomX = (Math.random() * radiusFormSpawn * 2) - radiusFormSpawn;
+        double randomZ = (Math.random() * radiusFormSpawn * 2) - radiusFormSpawn;
+        clone.add(randomX, 0, randomZ);
+        int highestBlockYAt = findHighestBlockY((int) randomX, (int) randomZ);
+        clone.setY(highestBlockYAt + 1);
+        gameSpawns.add(clone);
+        aresonDeathSwap.getLogger().info("Added spawn at " + clone.toString());
+    }
+
     public void addPlayer(DeathswapPlayer deathswapPlayer, Location previousLocation) {
         players.putIfAbsent(deathswapPlayer, previousLocation);
+
+        if (players.size() > gameSpawns.size()) {
+            addRandomSpawnToSpawnsList();
+        }
+
         openToStartingIfMinPlayersReached();
 
         sendMessageToArenaPlayers(aresonDeathSwap.messages.getPlainMessage(
@@ -177,8 +219,6 @@ public class Arena {
     }
 
     public void removePlayer(DeathswapPlayer deathswapPlayer, boolean checkStatusOrWin) {
-
-        System.out.println("RIMOSSO " + deathswapPlayer.getNickName());
         if (!canRemovePlayers) {
             playersToRemove.put(deathswapPlayer, checkStatusOrWin);
             return;
@@ -394,12 +434,6 @@ public class Arena {
             });
         });
 
-        String result = lastSwapCouples.entrySet().stream()
-                .map(e -> e.getKey().getName() + " -> " + e.getValue().getName())
-                .collect(Collectors.joining(";"));
-
-        aresonDeathSwap.getLogger().info(result);
-
     }
 
     public void witherPlayers(List<Player> players) {
@@ -413,37 +447,24 @@ public class Arena {
     }
 
     private void sendPlayersIntoArenaWorld() {
-        final Location spawnLocation = arenaWorld.getSpawnLocation();
         List<Player> players = this.players.keySet().parallelStream().map(DeathswapPlayer::getActualPlayer).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
 
-        List<Location> spawns = new ArrayList<>();
-
-        int radiusFormSpawn = 1000;
-
-        for (int i = 0; i < players.size(); i++) {
-            final Location clone = spawnLocation.clone();
-            double randomX = (Math.random() * radiusFormSpawn * 2) - radiusFormSpawn;
-            double randomZ = (Math.random() * radiusFormSpawn * 2) - radiusFormSpawn;
-            clone.add(randomX, 0, randomZ);
-            int highestBlockYAt = arenaWorld.getHighestBlockYAt((int) randomX, (int) randomZ);
-            clone.setY(highestBlockYAt + 1);
-            spawns.add(clone);
-        }
-
         for (Player player : players) {
+            player.teleportAsync(gameSpawns.remove(0)).whenComplete((aBoolean, throwable) -> {
+                player.getLocation().clone().add(0, -1, 0).getBlock().setType(Material.GLASS);
+                PlayerUtils.resetPlayerStatus(player);
+                player.getInventory().clear();
+                PlayerUtils.giveInitialKit(player);
 
-            player.teleport(spawns.remove(0));
-            player.getLocation().clone().add(0, -1, 0).getBlock().setType(Material.GLASS);
-            PlayerUtils.resetPlayerStatus(player);
-            player.getInventory().clear();
-            PlayerUtils.giveInitialKit(player);
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 200, 1));
 
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 200, 1));
+                SoundManager.gameStarted(player);
 
-            SoundManager.gameStarted(player);
-
-            spawnChestNearPlayer(player);
+                spawnChestNearPlayer(player);
+            });
         }
+
+        gameSpawns.clear();
     }
 
     public void spawnChestNearPlayer(Player player) {

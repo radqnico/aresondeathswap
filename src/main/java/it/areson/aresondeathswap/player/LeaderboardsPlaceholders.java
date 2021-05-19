@@ -80,6 +80,18 @@ public class LeaderboardsPlaceholders extends PlaceholderExpansion {
             }
         }
 
+        if (stat.equalsIgnoreCase("kd")) {
+            List<DeathswapPlayer> deathswapPlayerArrayList = AresonDeathSwap.instance.getDeathswapPlayerManager().getGateway().getAll(true);
+            deathswapPlayerArrayList.sort(Comparator.comparingDouble(DeathswapPlayer::getKD));
+            Collections.reverse(deathswapPlayerArrayList);
+
+            if (position > deathswapPlayerArrayList.size()) {
+                return "Nessun dato";
+            } else {
+                return deathswapPlayerArrayList.get(position - 1).getNickName() + " " + Math.round(deathswapPlayerArrayList.get(position - 1).getWinRate() * 100.0) / 100.0;
+            }
+        }
+
         return null;
     }
 
